@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rani Laxmi Bai Central Agricultural University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px; position: relative; overflow: hidden;
+  }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-nirf { background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-nirf .value { color: #a78bfa; }
+
+  /* TABS */
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; position: sticky; top: 60px; z-index: 90; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* LAYOUT */
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+
+  /* TAB PANELS */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: contents; }
+
+  /* CARDS */
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* COURSE TABLE */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-new { background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid var(--border); }
+
+  /* GRID LIST */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* FACILITIES */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* SIDEBAR */
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 60%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* PhD TAGS */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  /* SECTION HDR */
+  .section-hdr { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 10px; margin-top: 16px; }
+  .section-hdr:first-child { margin-top: 0; }
+
+  /* FEE TABLE */
+  .fee-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .fee-table th { color: var(--muted); text-align: left; padding: 8px 10px; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; background: rgba(255,255,255,0.03); }
+  .fee-table td { padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .fee-table tr:last-child td { border-bottom: none; }
+  .fee-table tr:hover td { background: rgba(245,166,35,0.04); }
+  .fee-highlight { color: var(--gold); font-weight: 700; }
+
+  /* PLACEMENT */
+  .placement-stat { text-align: center; padding: 18px 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; }
+  .placement-stat .num { font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+  .placement-stat .lbl { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
+  /* RECRUITER */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* HOSTEL */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* NOTICE */
+  .notice-box { background: rgba(245,166,35,0.08); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 0.78rem; color: var(--muted); margin-top: 14px; }
+  .notice-box strong { color: var(--gold); }
+
+  /* ELIGIBILITY TABLE */
+  .elig-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 10px; }
+  .elig-table th { background: rgba(255,255,255,0.05); color: var(--muted); padding: 8px 12px; text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .elig-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .elig-table tr:last-child td { border-bottom: none; }
+
+  /* ADMISSION STEPS */
+  .steps { counter-reset: step; }
+  .step-item { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .step-item:last-child { border-bottom: none; }
+  .step-num { counter-increment: step; width: 28px; height: 28px; min-width: 28px; background: var(--tag-bg); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 700; font-size: 0.75rem; }
+  .step-text { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+  .step-text strong { color: var(--white); display: block; margin-bottom: 2px; }
+
+  /* SCHOLARSHIP */
+  .scholar-item { padding: 10px 14px; background: rgba(72,187,120,0.06); border: 1px solid rgba(72,187,120,0.2); border-radius: 10px; margin-bottom: 8px; font-size: 0.8rem; }
+  .scholar-item .s-name { font-weight: 600; color: var(--accent-green); margin-bottom: 3px; }
+  .scholar-item .s-detail { color: var(--muted); font-size: 0.73rem; }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <button class="nav-btn btn-stream">🌾 Agriculture &amp; Allied</button>
+    <button class="nav-btn btn-shortlist" id="shortlistBtn">⭐ Shortlist <span class="badge" id="shortlistCount">0</span></button>
+    <button class="nav-btn btn-logout">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a href="#">Home</a> › <a href="#">Universities</a> › Rani Laxmi Bai Central Agricultural University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🌾</div>
+    <div class="uni-title">
+      <h1>Rani Laxmi Bai Central <span>Agricultural University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Jhansi, Uttar Pradesh</strong></span>
+        <span class="meta-chip">🏛️ <strong>Central Agricultural University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2014</strong></span>
+        <span class="meta-chip" style="cursor:pointer" onclick="window.open('https://rlbcau.ac.in','_blank')">🌐 <strong>rlbcau.ac.in</strong></span>
+      </div>
+
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">ICAR NAEAB</span>
+      <span class="value">Grade C</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">~300 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Type</span>
+      <span class="value">Central</span>
+    </div>
+    <div class="hero-badge hb-nirf">
+      <span class="label">IIRF Rank 2024</span>
+      <span class="value">#44</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar" id="tabsBar">
+  <div class="tab active" data-tab="overview">Overview</div>
+  <div class="tab" data-tab="ug">UG Courses</div>
+  <div class="tab" data-tab="pg">PG Courses</div>
+  <div class="tab" data-tab="phd">PhD</div>
+  <div class="tab" data-tab="admissions">Admissions</div>
+  <div class="tab" data-tab="fees">Fees &amp; Scholarships</div>
+  <div class="tab" data-tab="campus">Campus Life</div>
+</div>
+
+<!-- ============================== OVERVIEW ============================== -->
+<div id="tab-overview" class="content-wrap">
+  <div>
+    <!-- BASIC INFO -->
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Basic Information</div>
+      <div class="grid-3">
+        <div class="info-chip"><div class="lbl">Established</div><div class="val">2014</div></div>
+        <div class="info-chip"><div class="lbl">Type</div><div class="val">Central Agricultural Univ.</div></div>
+        <div class="info-chip"><div class="lbl">Location</div><div class="val">Jhansi, UP</div></div>
+        <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">ICAR NAEAB Grade C</div></div>
+        <div class="info-chip"><div class="lbl">Campus</div><div class="val">~300 Acres</div></div>
+        <div class="info-chip"><div class="lbl">Admission</div><div class="val">ICAR AIEEA / CUET</div></div>
+        <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC, DARE, ICAR</div></div>
+        <div class="info-chip"><div class="lbl">Region Served</div><div class="val">Bundelkhand (UP &amp; MP)</div></div>
+        <div class="info-chip"><div class="lbl">Constituent Colleges</div><div class="val">4 Colleges</div></div>
+      </div>
+    </div>
+
+    <!-- CONSTITUENT COLLEGES -->
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Constituent Colleges</div>
+      <div class="course-block">
+        <div class="course-row">
+          <div class="course-name">🏫 College of Agriculture</div>
+          <div class="course-meta"><strong>Main Campus</strong>Jhansi, UP</div>
+          <span class="tag tag-fees">Active</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">🌿 College of Horticulture &amp; Forestry</div>
+          <div class="course-meta"><strong>Main Campus</strong>Jhansi, UP</div>
+          <span class="tag tag-fees">Active</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">🐄 College of Veterinary &amp; Animal Sciences</div>
+          <div class="course-meta"><strong>Datia Campus</strong>Madhya Pradesh</div>
+          <span class="tag tag-exam">Certificate</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">🐟 College of Fisheries</div>
+          <div class="course-meta"><strong>MP Campus</strong>Madhya Pradesh</div>
+          <span class="tag tag-new">Being Est.</span>
+        </div>
+      </div>
+      <div class="notice-box">📌 <strong>Note:</strong> Main campus is situated on the campuses of ICAR's IGFRI and NRCAF, enabling collaborative research opportunities for all students.</div>
+    </div>
+
+    <!-- RECRUITERS / SECTORS -->
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Career Sectors &amp; Recruiters</div>
+      <div class="recruiter-list">
+        <span class="recruiter-tag">ICAR Research Institutes</span>
+        <span class="recruiter-tag">State Agriculture Depts.</span>
+        <span class="recruiter-tag">Agri-Input Companies</span>
+        <span class="recruiter-tag">Seed Companies</span>
+        <span class="recruiter-tag">Fertilizer Corporations</span>
+        <span class="recruiter-tag">Food Processing Firms</span>
+        <span class="recruiter-tag">Horticulture Boards</span>
+        <span class="recruiter-tag">Forest Survey of India</span>
+        <span class="recruiter-tag">NABARD / Banks</span>
+        <span class="recruiter-tag">NGOs (Agriculture)</span>
+        <span class="recruiter-tag">Veterinary Depts.</span>
+        <span class="recruiter-tag">Entrepreneurship / Startups</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR OVERVIEW -->
+  <div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Facts</div>
+      <div class="key-val"><span class="k">Act</span><span class="v">Parliament Act No. 10 of 2014</span></div>
+      <div class="key-val"><span class="k">Status</span><span class="v v-gold">Institution of National Importance</span></div>
+      <div class="key-val"><span class="k">Address</span><span class="v">NH-75, Near Pahuj Dam, Gwalior Road, Jhansi – 284003</span></div>
+      <div class="key-val"><span class="k">Phone</span><span class="v">0

@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AIIMS Patna – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --accent-red: #f56565;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+ 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+ 
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+ 
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+ 
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+ 
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+ 
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac  { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus  { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-purple  { background: rgba(183,148,244,0.12); border: 1px solid rgba(183,148,244,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value   { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value  { color: #63b3ed; }
+  .hb-purple .value  { color: #b794f4; }
+ 
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+ 
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+ 
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+ 
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+ 
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-dm   { background: rgba(183,148,244,0.12); color: #b794f4; border: 1px solid rgba(183,148,244,0.25); }
+ 
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+ 
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+ 
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 58%; }
+  .v-gold  { color: var(--gold) !important; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-blue  { color: #63b3ed !important; }
+  .v-purple{ color: #b794f4 !important; }
+ 
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+ 
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+ 
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+ 
+  /* ── DEPT / PhD LIST ── */
+  .dept-category { margin-bottom: 14px; }
+  .dept-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .dept-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .dept-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+ 
+  /* ── ADMISSIONS TIMELINE ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+ 
+  /* ── PLACEMENTS ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+ 
+  /* ── CAMPUS LIFE ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+ 
+  /* Scholarship tags */
+  .schol-tag {
+    background: rgba(99,179,237,0.1);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: #63b3ed;
+    display: inline-block;
+    margin: 3px;
+  }
+ 
+  /* Comparison table */
+  .comp-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .comp-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:600; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; background:rgba(255,255,255,0.03); }
+  .comp-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:middle; }
+  .comp-table tr:last-child td { border-bottom:none; }
+  .comp-table tr.highlight-row td { background:rgba(245,166,35,0.07); color:var(--gold); font-weight:600; }
+  .comp-table tr:hover td { background:rgba(255,255,255,0.03); }
+ 
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+ 
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        🩺 <span id="streamLabel">Medical</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Medical','🩺')">🩺 Medical</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    AIIMS Patna
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏥</div>
+    <div class="uni-title">
+      <h1>AIIMS <span>Patna</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Phulwari Sharif, Patna, Bihar</strong></span>
+        <span class="meta-chip">🏛️ <strong>Institution of National Importance</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2012</strong></span>
+        <span class="meta-chip">🏆 <strong>NIRF Rank 27 (Medical 2025)</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://aiimspatna.edu.in/','_blank')">🌐 <strong>aiimspatna.edu.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Status</span>
+      <span class="value">Fully Operational</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Hospital Beds</span>
+      <span class="value">1,331 Total</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Campus Area</span>
+      <span class="value">134 Acres</span>
+    </div>
+    <div class="hero-badge hb-purple">
+      <span class="label">Departments</span>
+      <span class="value">42 Specialised</span>
+    </div>
+  </div>
+</div>
+ 
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Departments</div>
+  <div class="tab" onclick="switchTab(5,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+ 
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+ 
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+ 
+      <div class="card" style="background:rgba(72,187,120,0.06);border-color:rgba(72,187,120,0.25);">
+        <div class="card-title"><span class="dot" style="background:var(--accent-green);"></span>✅ Fully Operational – Admissions Open Every Year</div>
+        <p style="font-size:0.82rem;color:var(--accent-green);line-height:1.75;">
+          AIIMS Patna is <strong>fully operational</strong> since 2012–13 with 42 specialised departments, 1,331 total hospital beds, and 24×7 Emergency &amp; Trauma services. MBBS (125 seats) and B.Sc. Nursing (75 seats) admissions happen annually via <strong>NEET-UG + MCC All India Counselling</strong>. PG / Super-specialty admissions via <strong>INI CET</strong>. Visit aiimspatna.edu.in for current notifications.
+        </p>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2012 (Ordinance 16 Jul 2012)</div></div>
+          <div class="info-chip"><div class="lbl">Scheme</div><div class="val">PMSSY – Phase I</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Institution of National Importance</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Phulwari Sharif, Patna, Bihar – 801505</div></div>
+          <div class="info-chip"><div class="lbl">Campus Area</div><div class="val">134 Acres (100 + 34 Residential)</div></div>
+          <div class="info-chip"><div class="lbl">Hospital Beds</div><div class="val">960 Inpatient / 1,331 Total</div></div>
+          <div class="info-chip"><div class="lbl">Departments</div><div class="val">42 Specialised Medical Depts</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Medical Rank 2025</div><div class="val">27th (Score: 59.24)</div></div>
+          <div class="info-chip"><div class="lbl">IIRF Medical Rank 2025</div><div class="val">18th in Medical &amp; Dental</div></div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About AIIMS Patna</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          AIIMS Patna is one of the original <strong style="color:var(--white);">6 new AIIMS</strong> established under the Pradhan Mantri Swasthya Suraksha Yojana (PMSSY) Phase I — announced by PM Atal Bihari Vajpayee on 15 August 2003. It was established by ordinance on <strong style="color:var(--white);">16 July 2012</strong> and made permanent by the AIIMS (Amendment) Act 2012. The first MBBS and B.Sc. Nursing batches enrolled in 2012; OPD/IPD services began in mid-2013. The motto — <strong style="color:var(--white);">"Koi Bhi Bimari Se Pidit Na Ho"</strong> (May no one suffer from illness) — reflects its mission as the premier tertiary care institution for Bihar and East India. Recognised by <strong style="color:var(--white);">NMC, INC</strong>, and formerly MCI, AIIMS Patna is approved by the <strong style="color:var(--white);">Ministry of Health &amp; Family Welfare, GoI</strong> and offers MBBS, B.Sc. Nursing, M.Sc. Nursing, MD, MS, MDS, DM, M.Ch., and PhD programmes. NIRF 2026 data shows UG graduates earn an <strong style="color:var(--white);">average package of ₹14.26 LPA</strong>.
+        </p>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Key Statistics (2025)</div>
+        <div class="stat-row">
+          <div class="stat-box"><div class="s-val" style="color:var(--gold);">125</div><div class="s-lbl">MBBS Seats / Year</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">₹5,856</div><div class="s-lbl">Total MBBS Fee (Entire Course)</div></div>
+          <div class="stat-box"><div class="s-val" style="color:#63b3ed;">₹14.26 LPA</div><div class="s-lbl">Avg Package UG (NIRF 2026)</div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box"><div class="s-val" style="color:#b794f4;">27th</div><div class="s-lbl">NIRF Medical Rank 2025</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">42</div><div class="s-lbl">Specialised Departments</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--gold);">1,331</div><div class="s-lbl">Total Hospital Beds</div></div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Special Features &amp; Unique Capabilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">🧠</div>3T MRI Scanner (Advanced Neurological &amp; Oncological)</div>
+          <div class="fac-item"><div class="fac-icon">🩻</div>256-Slice CT Scan (Highest in Bihar at install)</div>
+          <div class="fac-item"><div class="fac-icon">💉</div>Biplane DSA – Interventional Radiology</div>
+          <div class="fac-item"><div class="fac-icon">🎗️</div>Cancer / Radiotherapy Centre (Linear Accelerators)</div>
+          <div class="fac-item"><div class="fac-icon">🚁</div>Drone Medicine Delivery (Pilot – 1st in Bihar)</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>AYUSH Integration Clinic</div>
+          <div class="fac-item"><div class="fac-icon">🚨</div>24×7 Emergency &amp; Trauma Centre</div>
+          <div class="fac-item"><div class="fac-icon">💡</div>APIIC – MedTech Innovation &amp; Incubation Centre</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>e-Governance (Paperless Administration)</div>
+          <div class="fac-item"><div class="fac-icon">🫀</div>Arthroscopy &amp; Cochlear Implant Surgery</div>
+          <div class="fac-item"><div class="fac-icon">🧬</div>Modular OTs with Laminar Air Flow</div>
+          <div class="fac-item"><div class="fac-icon">🩸</div>ICU / ICCU / PICU / NICU</div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="card-title" style="font-size:0.8rem;color:var(--gold);margin:0 0 12px;">Academic Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library (Books + e-Journals)</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium (1,200 Seats)</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>4 AC Lecture Theatres</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Pre &amp; Para-Clinical Labs</div>
+          <div class="fac-item"><div class="fac-icon">📊</div>Information Centre (PubMed, Cochrane, UpToDate)</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Smart Classrooms &amp; AV Aids</div>
+        </div>
+        <div class="card-title" style="font-size:0.8rem;color:var(--gold);margin:20px 0 12px;">Hostel &amp; Residential Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Separate MBBS Students' Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Nursing Students' Hostel (Compulsory)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏥</span> PG Residents &amp; Senior Residents Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏘️</span> Faculty Residential Campus (34 Acres)</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Across Campus &amp; Hostels</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> CCTV &amp; 24-Hour Security</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess: Breakfast 8–9 AM | Lunch 1–2 PM | Dinner 8–9 PM</div>
+          <div class="hostel-item"><span class="hostel-icon">🏨</span> Guest House for Visiting Faculty &amp; Parents</div>
+          <div class="hostel-item"><span class="hostel-icon">🚌</span> Shuttle Service (Campus Zones)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏦</span> Bank Branch &amp; ATM on Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">📮</span> Post Office within Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">☕</span> Cafeteria / Food Court</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees (MBBS):</span>
+          <span style="color:var(--muted);"> Included in total MBBS fee of ₹5,856 (hostel + other charges: ₹4,228) · B.Sc. Nursing: ~₹3,100/year (hostel included) + Mess ₹4,100/month · All students compulsorily residential · No external PG/rental allowed for B.Sc. Nursing students</span>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">✅ Admissions Open Annually:</span>
+          <span style="color:var(--muted);"> MBBS via NEET-UG + MCC All India Counselling each year. B.Sc. Nursing via AIIMS Nursing Entrance. Compulsory residential for all UG students.</span>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">MBBS · 5.5 Years · NEET-UG · Total Fee ₹5,856 (Entire Course!)</span>
+          <div class="course-row">
+            <div class="course-name">MBBS (Bachelor of Medicine &amp; Bachelor of Surgery)</div>
+            <div class="course-meta"><strong>NEET-UG (NTA)</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Years</strong>4.5 yr + 1 yr Internship</div>
+            <span class="tag tag-fees">₹5,856 Total!</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            <strong style="color:var(--white);">Annual Intake:</strong> 125 seats · <strong style="color:var(--white);">Total Fee (Indian):</strong> ₹5,856 entire course (Tuition ₹1,628 + Hostel &amp; others ₹4,228) · <strong style="color:var(--white);">Foreign Nationals:</strong> approx. USD 75,000 entire course<br>
+            <strong style="color:var(--white);">NEET 2025 Closing Rank (General, AIQ):</strong> ~4,952 (last round) · <strong style="color:var(--white);">Internship Stipend:</strong> ~₹17,900/month (as per NMC norms)<br>
+            <strong style="color:var(--white);">Reservation:</strong> 15% SC | 7.5% ST | 27% OBC-NCL | 10% EWS | 5% PwBD (horizontal)<br>
+            <strong style="color:var(--white);">Eligibility:</strong> 10+2 with PCB + English; min. 60% (General/OBC/EWS); NEET-UG qualified
+          </div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">B.Sc. (Hons.) Nursing · 4 Years + 6-month Internship · AIIMS Nursing Entrance · ~₹3,100/year</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Nursing</div>
+            <div class="course-meta"><strong>AIIMS Nursing Entrance</strong>Entrance (by AIIMS Delhi)</div>
+            <div class="course-meta"><strong>4 Yrs + 6 months</strong>Internship</div>
+            <span class="tag tag-fees">~₹3,100/year</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            <strong style="color:var(--white);">Annual Intake:</strong> 75 seats (extended from 60 in 2020) · <strong style="color:var(--white);">Fee:</strong> ~₹3,100/year (hostel included); Mess ₹4,100/month extra · <strong style="color:var(--white);">Internship Stipend:</strong> ₹13,100/month during 6-month internship (4th year)<br>
+            <strong style="color:var(--white);">Hostel:</strong> Compulsory residential — students MUST stay in hostel; no external PG/rent allowed<br>
+            <strong style="color:var(--white);">Eligibility:</strong> 10+2 with PCB + English; min. 60% (General/OBC/EWS); 55% (SC/ST/PwD); Age: 17–25 years<br>
+            <strong style="color:var(--white);">Reservation:</strong> 15% SC | 7.5% ST | 27% OBC-NCL | 10% EWS | 5% PwBD
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">ℹ️ PG Admissions:</span>
+          <span style="color:var(--muted);"> All PG and Super-Specialty admissions are through <strong style="color:var(--white);">INI CET</strong> (Institute of National Importance Combined Entrance Test) conducted by AIIMS Delhi. DM/M.Ch. via <strong style="color:var(--white);">INI SS</strong> (Super-Specialty Entrance Test). Fees are among the <strong style="color:var(--white);">lowest in the world</strong> for super-specialty medical education.</span>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">MD · 3 Years · INI CET · Total Fee ₹2,927 (Entire 3-Year Course!)</span>
+          <div class="course-row"><div class="course-name">MD General Medicine</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Paediatrics</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Psychiatry</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Anaesthesiology</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Radiodiagnosis</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Pathology</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Pharmacology</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Microbiology</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Biochemistry</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Anatomy</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Physiology</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Community Medicine</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Forensic Medicine &amp; Toxicology</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Dermatology, Venereology &amp; Leprosy (DVL)</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Obstetrics &amp; Gynaecology</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Radiotherapy</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-row"><div class="course-name">MD Physical Medicine &amp; Rehabilitation</div><div class="course-meta"><strong>INI CET</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹2,927 Total</span></div>
+          <div class="course-<div class="course-block">
+          <span class="course-type-label">Fellowship Programmes · 1–2 Years · AIIMS Fellowship Entrance / Nomination</span>
+          <div class="course-row">
+            <div class="course-name">Clinical Fellowships (Various Super-Specialty Disciplines)</div>
+            <div class="course-meta"><strong>AIIMS Fellowship Test / Nomination</strong></div>
+            <div class="course-meta"><strong>1–2 Yrs</strong></div>
+            <span class="tag tag-exam">Nominal Fees</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Open to post-DM/M.Ch. doctors and international candidates. Available in various super-specialty disciplines. Practicals as per AIIMS Patna PG professional exam schedule.</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programmes</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:18px;">AIIMS Patna offers PhD programmes in medical and allied health sciences across all pre-clinical, para-clinical and clinical departments. Research-driven doctoral programmes with strong translational focus. Collaboration with AYUSH, ICMR, DBT, DST and WHO.</p>
+ 
+        <div class="dept-category">
+          <div class="dept-cat-label">Pre-Clinical Sciences</div>
+          <div class="dept-tags">
+            <span class="dept-tag">PhD Anatomy</span>
+            <span class="dept-tag">PhD Physiology</span>
+            <span class="dept-tag">PhD Biochemistry</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Para-Clinical Sciences</div>
+          <div class="dept-tags">
+            <span class="dept-tag">PhD Pathology</span>
+            <span class="dept-tag">PhD Microbiology</span>
+            <span class="dept-tag">PhD Pharmacology</span>
+            <span class="dept-tag">PhD Forensic Medicine</span>
+            <span class="dept-tag">PhD Community Medicine</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Clinical Sciences</div>
+          <div class="dept-tags">
+            <span class="dept-tag">PhD Radiodiagnosis / Radiology</span>
+            <span class="dept-tag">PhD Anaesthesiology</span>
+            <span class="dept-tag">PhD General Medicine</span>
+            <span class="dept-tag">PhD Paediatrics</span>
+            <span class="dept-tag">PhD Surgery</span>
+            <span class="dept-tag">PhD Orthopaedics</span>
+            <span class="dept-tag">PhD Obstetrics &amp; Gynaecology</span>
+            <span class="dept-tag">PhD Ophthalmology</span>
+            <span class="dept-tag">PhD ENT</span>
+            <span class="dept-tag">PhD Psychiatry</span>
+            <span class="dept-tag">PhD Dermatology</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Super-Specialty &amp; Allied Sciences</div>
+          <div class="dept-tags">
+            <span class="dept-tag">PhD Cardiology</span>
+            <span class="dept-tag">PhD Neurology</span>
+            <span class="dept-tag">PhD Nephrology</span>
+            <span class="dept-tag">PhD Gastroenterology</span>
+            <span class="dept-tag">PhD Endocrinology</span>
+            <span class="dept-tag">PhD Nursing Sciences</span>
+            <span class="dept-tag">PhD Public Health</span>
+            <span class="dept-tag">PhD Biomedical Sciences (Interdisciplinary)</span>
+          </div>
+        </div>
+ 
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission Process</div>
+          <div class="key-val"><span class="k">General / OBC / EWS</span><span class="v">MD/MS/MDS/M.Sc. (relevant) with min. 55%</span></div>
+          <div class="key-val"><span class="k">SC / ST / PwD</span><span class="v">Min. 50% in qualifying postgraduate degree</span></div>
+          <div class="key-val"><span class="k">Preference Given To</span><span class="v">UGC-NET / CSIR-NET / JRF / ICMR-JRF qualified</span></div>
+          <div class="key-val"><span class="k">Selection Process</span><span class="v">Written Test + Research Proposal Presentation + Interview</span></div>
+          <div class="key-val"><span class="k">Duration (Full-Time)</span><span class="v">3 to 5 years (UGC Regulations 2022)</span></div>
+          <div class="key-val" style="border:none"><span class="k">Part-Time PhD</span><span class="v">Available for in-service medical faculty (select disciplines)</span></div>
+        </div>
+ 
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">PhD Fellowships &amp; Financial Aid</div>
+          <div>
+            <span class="schol-tag">ICMR-JRF: ₹37,000/month</span>
+            <span class="schol-tag">UGC-JRF: ₹37,000/month (yr 1–2); SRF ₹42,000 (yr 3+) + HRA</span>
+            <span class="schol-tag">CSIR-JRF</span>
+            <span class="schol-tag">DBT-JRF / BINC Fellowship</span>
+            <span class="schol-tag">DST-INSPIRE: ₹31,000/month + ₹20,000 annual contingency</span>
+            <span class="schol-tag">PM Research Fellowship (PMRF): ₹70,000–80,000/month</span>
+            <span class="schol-tag">AIIMS Patna Institute Fellowship</span>
+            <span class="schol-tag">MD/MS Senior Resident Stipend: ₹90,000–1,00,000/month</span>
+            <span class="schol-tag">DM/M.Ch. Senior Resident: ₹1,00,000+/month</span>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 4: DEPARTMENTS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>42 Specialised Departments</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:18px;">AIIMS Patna has 42 specialised departments covering the full spectrum of pre-clinical, para-clinical, clinical and super-specialty disciplines.</p>
+ 
+        <div class="dept-category">
+          <div class="dept-cat-label">Pre-Clinical Departments</div>
+          <div class="dept-tags">
+            <span class="dept-tag">Anatomy</span>
+            <span class="dept-tag">Physiology</span>
+            <span class="dept-tag">Biochemistry</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Para-Clinical Departments</div>
+          <div class="dept-tags">
+            <span class="dept-tag">Pathology</span>
+            <span class="dept-tag">Microbiology</span>
+            <span class="dept-tag">Pharmacology</span>
+            <span class="dept-tag">Forensic Medicine &amp; Toxicology</span>
+            <span class="dept-tag">Community &amp; Family Medicine</span>
+            <span class="dept-tag">Hospital Administration</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Clinical Departments</div>
+          <div class="dept-tags">
+            <span class="dept-tag">General Medicine</span>
+            <span class="dept-tag">General Surgery</span>
+            <span class="dept-tag">Paediatrics</span>
+            <span class="dept-tag">Obstetrics &amp; Gynaecology</span>
+            <span class="dept-tag">Orthopaedics</span>
+            <span class="dept-tag">ENT (Ear, Nose &amp; Throat)</span>
+            <span class="dept-tag">Ophthalmology</span>
+            <span class="dept-tag">Dermatology, Venereology &amp; Leprosy (DVL)</span>
+            <span class="dept-tag">Psychiatry</span>
+            <span class="dept-tag">Radiodiagnosis</span>
+            <span class="dept-tag">Anaesthesiology</span>
+            <span class="dept-tag">Dentistry</span>
+            <span class="dept-tag">Radiotherapy / Radiation Oncology</span>
+            <span class="dept-tag">Physical Medicine &amp; Rehabilitation (PMR)</span>
+            <span class="dept-tag">Transfusion Medicine (Blood Bank)</span>
+            <span class="dept-tag">Emergency Medicine &amp; Trauma Care</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Super-Specialty Departments – DM</div>
+          <div class="dept-tags">
+            <span class="dept-tag">Cardiology (DM)</span>
+            <span class="dept-tag">Endocrinology &amp; Metabolism (DM)</span>
+            <span class="dept-tag">Gastroenterology (DM)</span>
+            <span class="dept-tag">Nephrology (DM)</span>
+            <span class="dept-tag">Neurology (DM)</span>
+            <span class="dept-tag">Pulmonary Medicine (DM)</span>
+            <span class="dept-tag">Rheumatology (DM)</span>
+            <span class="dept-tag">Haematology (DM)</span>
+            <span class="dept-tag">Medical Oncology (DM)</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Super-Specialty Departments – M.Ch.</div>
+          <div class="dept-tags">
+            <span class="dept-tag">Cardiothoracic &amp; Vascular Surgery – CTVS (M.Ch.)</span>
+            <span class="dept-tag">Neurosurgery (M.Ch.)</span>
+            <span class="dept-tag">Urology (M.Ch.)</span>
+            <span class="dept-tag">Plastic &amp; Reconstructive Surgery (M.Ch.)</span>
+            <span class="dept-tag">Paediatric Surgery (M.Ch.)</span>
+            <span class="dept-tag">Surgical Oncology (M.Ch.)</span>
+            <span class="dept-tag">Surgical Gastroenterology (M.Ch.)</span>
+            <span class="dept-tag">Burns &amp; Plastic Surgery (M.Ch.)</span>
+          </div>
+        </div>
+        <div class="dept-category">
+          <div class="dept-cat-label">Nursing &amp; Allied Sciences</div>
+          <div class="dept-tags">
+            <span class="dept-tag">College of Nursing – B.Sc. (Hons.) Nursing &amp; M.Sc. Nursing</span>
+            <span class="dept-tag">Physiotherapy &amp; Rehabilitation</span>
+            <span class="dept-tag">Medical Laboratory Technology</span>
+            <span class="dept-tag">Radiology &amp; Imaging Technology</span>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 5: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>MBBS Admission Process</div>
+        <div style="margin-bottom:16px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">📅 Annual Admissions:</span>
+          <span style="color:var(--muted);"> MBBS admissions happen every year via NEET-UG + MCC All India Counselling. Apply at <strong style="color:var(--white);">mcc.nic.in</strong> after NEET-UG results.</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear in NEET-UG (NTA)</div>
+            <div class="tl-desc">Appear in NEET-UG conducted by NTA (usually in May each year). Target score for AIIMS Patna (General, AIQ): 600–650+ | NEET 2025 closing rank (General, AIQ): ~4,952 (last round).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — MCC All India Quota (AIQ) Counselling Registration</div>
+            <div class="tl-desc">Register on the MCC portal (mcc.nic.in) for All India Quota counselling. AIIMS Patna has 100% AIQ seats — open to candidates from all states across India.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Choice Filling &amp; Locking</div>
+            <div class="tl-desc">Fill and lock your institute preferences during the designated window. Round 1 → Round 2 → Mop-Up Round → Stray Vacancy Round.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Seat Allotment &amp; Document Verification</div>
+            <div class="tl-desc">Documents required: NEET scorecard, 10th &amp; 12th marksheets, ID proof, category certificate (if applicable), medical fitness certificate. Report for verification at the allotted centre.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; Reporting at AIIMS Patna</div>
+            <div class="tl-desc">Total MBBS fee for Indian nationals: ₹5,856 (entire 5.5-year course). Report to AIIMS Patna, Phulwari Sharif. Hostel is compulsory — allotment done at the time of reporting.</div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG / Super-Specialty Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear in INI CET (for MD/MS/MDS) or INI SS (for DM/M.Ch.)</div>
+            <div class="tl-desc">INI CET conducted by AIIMS Delhi twice yearly (January &amp; July sessions). AIIMS Patna PG exams: Theory May 1–8 | Practicals May 10–17 (2025 schedule). INI SS for super-specialty DM/M.Ch. conducted separately.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Counselling via INI CET / INI SS Portal</div>
+            <div class="tl-desc">Centralised counselling through the INI CET/INI SS portal. Select AIIMS Patna as preference for your desired department and specialisation.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Security Deposit (DM/M.Ch. only)</div>
+            <div class="tl-desc">For DM/M.Ch. super-specialty admissions: ₹3 Lakh security deposit via RTGS/NEFT at the time of seat acceptance.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Joining &amp; Residency</div>
+            <div class="tl-desc">PG students serve as Senior Residents with monthly stipends: MD/MS ₹90,000–1,00,000/month; DM/M.Ch. ~₹1,00,000+/month. All PG students are residentially housed at AIIMS Patna.</div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">MBBS</div><div></div><div></div><span class="tag tag-exam">NEET-UG (NTA) + MCC AIQ Counselling</span></div>
+        <div class="course-row"><div class="course-name">B.Sc. (Hons.) Nursing</div><div></div><div></div><span class="tag tag-exam">AIIMS B.Sc. Nursing Entrance (AIIMS Delhi)</span></div>
+        <div class="course-row"><div class="course-name">MD / MS / MDS (3 Years)</div><div></div><div></div><span class="tag tag-exam">INI CET (Jan &amp; Jul) – AIIMS Delhi</span></div>
+        <div class="course-row"><div class="course-name">DM / M.Ch. (Super-Specialty)</div><div></div><div></div><span class="tag tag-exam">INI SS – AIIMS Delhi</span></div>
+        <div class="course-row"><div class="course-name">M.Sc. Nursing</div><div></div><div></div><span class="tag tag-exam">AIIMS Nursing PG Entrance (AIIMS Delhi)</span></div>
+        <div class="course-row"><div class="course-name">Fellowship</div><div></div><div></div><span class="tag tag-exam">AIIMS Fellowship Test / Nomination</span></div>
+        <div class="course-row"><div class="course-name">PhD</div><div></div><div></div><span class="tag tag-exam">AIIMS Patna PhD Entrance + Interview</span></div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Aid</div>
+        <div style="margin-bottom:12px;">
+          <div class="dept-cat-label" style="margin-bottom:8px;">Central Government &amp; AIIMS Scholarships</div>
+          <div>
+            <span class="schol-tag">Central Govt. Merit Scholarship</span>
+            <span class="schol-tag">SC/ST Full Fee Waiver + Stipend</span>
+            <span class="schol-tag">Post-Matric Scholarship (OBC/SC/ST/EBC)</span>
+            <span class="schol-tag">PM Yasasvi Scholarship (OBC/EBC/DNT)</span>
+            <span class="schol-tag">EWS Scholarship</span>
+            <span class="schol-tag">AIIMS Patna Internal Financial Assistance</span>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div class="dept-cat-label" style="margin-bottom:8px;">Research Fellowships</div>
+          <div>
+            <span class="schol-tag">ICMR-JRF: ₹37,000/month</span>
+            <span class="schol-tag">UGC-JRF: ₹37,000 → SRF ₹42,000/month</span>
+            <span class="schol-tag">CSIR-JRF</span>
+            <span class="schol-tag">DBT-JRF / BINC Fellowship</span>
+            <span class="schol-tag">DST-INSPIRE: ₹31,000/month + ₹20,000/yr contingency</span>
+            <span class="schol-tag">PM Research Fellowship (PMRF): ₹70,000–80,000/month</span>
+            <span class="schol-tag">AIIMS Patna Institute Fellowship</span>
+          </div>
+        </div>
+        <div>
+          <div class="dept-cat-label" style="margin-bottom:8px;">State Scholarships (Bihar)</div>
+          <div>
+            <span class="schol-tag">Bihar State Scholarship (E-Kalyan)</span>
+            <span class="schol-tag">Bihar Student Credit Card (up to ₹4 Lakh)</span>
+            <span class="schol-tag">SC/ST Post-Matric via National Scholarship Portal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at AIIMS Patna</div>
+ 
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Academic Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Cultural Fest</strong> — Inter-hospital cultural competitions, music, drama and fine arts</div></div>
+            <div class="event-item"><span class="event-icon">🏅</span><div><strong>Annual Sports Meet</strong> — Cricket, football, basketball, volleyball, badminton, athletics competitions</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>CME Programmes</strong> — Regular Continuing Medical Education workshops, conferences and seminars at 1,200-seat auditorium</div></div>
+            <div class="event-item"><span class="event-icon">🌍</span><div><strong>International Research Collaborations</strong> — Active partnerships with ICMR, DBT, DST, WHO for translational medical research</div></div>
+            <div class="event-item"><span class="event-icon">💡</span><div><strong>APIIC – MedTech Innovation</strong> — AIIMS Patna Innovation &amp; Incubation Centre for medical technology startups and entrepreneurship</div></div>
+            <div class="event-item"><span class="event-icon">🤝</span><div><strong>AIIMS Patna Alumni Association</strong> — Strong network of graduates in India and abroad for mentorship and career support</div></div>
+          </div>
+        </div>
+ 
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-ico</div><!-- /left -->
+ 
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://aiimspatna.edu.in/','_blank')">🌐 Official Website</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://aiimsexams.ac.in/','_blank')">📝 Admissions Portal (NEET / INI CET)</button>
+    </div>
+ 
+    <!-- Status -->
+    <div class="sidebar-card" style="background:rgba(72,187,120,0.06);border-color:rgba(72,187,120,0.25);">
+      <div class="sidebar-title" style="color:var(--accent-green);">✅ Status</div>
+      <div class="key-val"><span class="k">Status</span><span class="v v-green">Fully Operational</span></div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2012</span></div>
+      <div class="key-val"><span class="k">MBBS Admissions</span><span class="v v-green">Open Annually</span></div>
+      <div class="key-val"><span class="k">Entrance (MBBS)</span><span class="v">NEET-UG + MCC AIQ</span></div>
+      <div class="key-val" style="border:none"><span class="k">NEET 2025 Closing Rank</span><span class="v v-gold">~4,952 (General)</span></div>
+    </div>
+ 
+    <!-- Key Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Full Name</span><span class="v">AIIMS, Patna</span></div>
+      <div class="key-val"><span class="k">Scheme</span><span class="v v-gold">PMSSY – Phase I</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">Institution of National Importance</span></div>
+      <div class="key-val"><span class="k">Governance</span><span class="v v-gold">MoHFW, GoI</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">134 Acres (Phulwari Sharif)</span></div>
+      <div class="key-val"><span class="k">Hospital Beds</span><span class="v">960 IP / 1,331 Total</span></div>
+      <div class="key-val"><span class="k">Departments</span><span class="v">42 Specialised</span></div>
+      <div class="key-val"><span class="k">NIRF Medical 2025</span><span class="v v-gold">27th</span></div>
+      <div class="key-val"><span class="k">NIRF Overall 2025</span><span class="v v-gold">99th</span></div>
+      <div class="key-val"><span class="k">IIRF Medical 2025</span><span class="v v-gold">18th</span></div>
+      <div class="key-val"><span class="k">Avg UG Package (NIRF 2026)</span><span class="v v-green">₹14.26 LPA</span></div>
+    </div>
+ 
+    <!-- Courses & Seats -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Courses &amp; Seats</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Seats</th></tr>
+        <tr><td>MBBS (5.5 Yrs)</td><td><span class="tag tag-fees">125/yr</span></td></tr>
+        <tr><td>B.Sc. (Hons.) Nursing (4 Yrs)</td><td><span class="tag tag-fees">75/yr</span></td></tr>
+        <tr><td>M.Sc. Nursing (2 Yrs)</td><td><span class="tag tag-fees">12/yr</span></td></tr>
+        <tr><td>MD / MS (3 Yrs)</td><td><span class="tag tag-exam">Multiple</span></td></tr>
+        <tr><td>MDS (3 Yrs)</td><td><span class="tag tag-exam">Multiple</span></td></tr>
+        <tr><td>DM / M.Ch. (3 Yrs)</td><td><span class="tag tag-dm">Multiple</span></td></tr>
+        <tr><td>Fellowship (1–2 Yrs)</td><td><span class="tag tag-dm">Select</span></td></tr>
+        <tr><td>PhD (3–5 Yrs)</td><td><span class="tag tag-exam">Multiple</span></td></tr>
+      </table>
+    </div>
+ 
+    <!-- Entrance Exams -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>MBBS</td><td><span class="tag tag-exam">NEET-UG (NTA)</span></td></tr>
+        <tr><td>B.Sc. Nursing</td><td><span class="tag tag-exam">AIIMS Nursing Entrance</span></td></tr>
+        <tr><td>MD / MS / MDS</td><td><span class="tag tag-exam">INI CET</span></td></tr>
+        <tr><td>DM / M.Ch.</td><td><span class="tag tag-dm">INI SS</span></td></tr>
+        <tr><td>M.Sc. Nursing</td><td><span class="tag tag-exam">AIIMS Nursing PG</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">AIIMS Patna PhD Entrance</span></td></tr>
+      </table>
+    </div>
+ 
+    <!-- Fee Structure -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Fee Structure (Indian Nationals)</div>
+      <div class="key-val"><span class="k">MBBS (Full 5.5-Year Course)</span><span class="v v-green">₹5,856 Total!</span></div>
+      <div class="key-val"><span class="k">B.Sc. Nursing (Per Year)</span><span class="v v-green">~₹3,100/yr</span></div>
+      <div class="key-val"><span class="k">MD / MS (Full 3-Year Course)</span><span class="v v-green">₹2,927 Total!</span></div>
+      <div class="key-val"><span class="k">MDS (Full 3-Year Course)</span><span class="v v-green">~₹3,000–5,000</span></div>
+      <div class="key-val"><span class="k">DM / M.Ch. (Full 3-Year Course)</span><span class="v v-green">₹3,375 Total!</span></div>
+      <div class="key-val"><span class="k">M.Sc. Nursing (Full 2-Year Course)</span><span class="v v-green">₹2,305 Total!</span></div>
+      <div class="key-val"><span class="k">Hostel (MBBS)</span><span class="v v-green">Included in ₹5,856</span></div>
+      <div class="key-val" style="border:none"><span class="k">Mess / Dining</span><span class="v">₹4,100/month (extra)</span></div>
+      <div style="margin-top:10px;font-size:0.7rem;color:var(--muted);">Among the lowest fees in the world for medical education. Fully funded by Central Govt. of India.</div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+ 
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+ 
+<script>
+  let shortlisted = false;
+ 
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'AIIMS Patna added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+ 
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+ 
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+ 
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+ 
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+ 
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+ 
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

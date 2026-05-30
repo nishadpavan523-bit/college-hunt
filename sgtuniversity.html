@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SGT University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* ── RECRUITERS ── */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* ── PhD LIST ── */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── ADMISSIONS TAB ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* ── PLACEMENTS TAB ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ── CAMPUS LIFE TAB ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    SGT University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🎓</div>
+    <div class="uni-title">
+      <h1>SGT <span>University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Budhera, Gurugram, Haryana</strong></span>
+        <span class="meta-chip">🏛️ <strong>Private University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2013</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.sgtuniversity.ac.in/','_blank')" title="Open official website">🌐 <strong>sgtuniversity.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC Grade</span>
+      <span class="value">A+</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">70+ Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Programs</span>
+      <span class="value">200+</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2013</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Private University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Budhera, Gurugram, HR</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC "A+" Grade</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">70+ Acres (Residential)</div></div>
+          <div class="info-chip"><div class="lbl">Programs</div><div class="val">200+ UG, PG, PhD</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About SGT University</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          SGT University, Gurugram is a prestigious private university established in 2013, located in Budhera, Gurugram (Gurgaon), Haryana. Accredited with <strong style="color:var(--white);">NAAC "A+" Grade</strong>, SGT University is one of the most reputed multidisciplinary universities in the NCR region. Spread across a sprawling 70+ acre modern residential campus, the university houses <strong style="color:var(--white);">18+ distinct faculties</strong> covering Medicine &amp; Health Sciences, Engineering &amp; Technology, Dental Sciences, Pharmacy, Nursing, Law, Management, and Agricultural Sciences. With over <strong style="color:var(--white);">200+ programs</strong> across UG, PG, Diploma, and PhD levels, SGT is a one-stop destination for students seeking professional and academic excellence.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Teaching Hospital</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">💡</div>Innovation Centre</div>
+          <div class="fac-item"><div class="fac-icon">🦷</div>Dental College</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>Green Campus</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess / Dining</div>
+          <div class="hostel-item"><span class="hostel-icon">❄️</span> AC &amp; Non-AC Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">⚽</span> Sports</div>
+          <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gym</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> Non-AC: ₹1,00,000–1,40,000/year &nbsp;|&nbsp; AC: ₹1,50,000–2,00,000/year (Mess charges typically bundled in residential plans)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Tech · 4 Years · JEE Main / PUEEE</span>
+          <div class="course-row">
+            <div class="course-name">B.Tech Computer Science &amp; Engineering (CSE)</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,00,000/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Physics + Mathematics + Chemistry/CS, min. 60% · Specializations available: AI/ML, Cloud Computing</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Medical &amp; Clinical · NEET UG (Mandatory)</span>
+          <div class="course-row">
+            <div class="course-name">MBBS (Bachelor of Medicine and Bachelor of Surgery)</div>
+            <div class="course-meta"><strong>NEET UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">NEET</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BDS (Bachelor of Dental Surgery)</div>
+            <div class="course-meta"><strong>NEET UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">NEET</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BAMS (Bachelor of Ayurvedic Medicine &amp; Surgery)</div>
+            <div class="course-meta"><strong>NEET UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">NEET</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Admission: National counselling alignment (MCC / State Counselling) mandatory</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Allied Health Sciences · 4 Years</span>
+          <div class="course-row">
+            <div class="course-name">B.Pharma (Bachelor of Pharmacy)</div>
+            <div class="course-meta"><strong>Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,40,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. Nursing</div>
+            <div class="course-meta"><strong>NCET-SGTU</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,50,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BPT (Bachelor of Physiotherapy)</div>
+            <div class="course-meta"><strong>Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>4.5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB/PCM · B.Sc. Nursing requires min. 45%–60% in PCB + English</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Agriculture · 4 Years · Merit</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Agriculture</div>
+            <div class="course-meta"><strong>Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">Science</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Science stream (PCB/PCM) with required passing threshold</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Law · 5 Years · SGT Entrance / Merit</span>
+          <div class="course-row">
+            <div class="course-name">BA LLB (Hons.)</div>
+            <div class="course-meta"><strong>SGT Test</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,60,000–1,95,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BBA LLB (Hons.)</div>
+            <div class="course-meta"><strong>SGT Test</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,60,000–1,95,000/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 pass with min. 50%–60% aggregate from a recognised board</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">BCA / BBA · 3 Years · SGT Entrance / Merit</span>
+          <div class="course-row">
+            <div class="course-name">BCA (Regular &amp; AI/ML, Cloud Computing Specializations)</div>
+            <div class="course-meta"><strong>SGT Test</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,35,000–1,50,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BBA (Bachelor of Business Administration)</div>
+            <div class="course-meta"><strong>SGT Test</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,35,000–1,50,000/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Entrance: SGT Entrance Test conducted in multiple phases or merit-based</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. · 2 Years · ₹1.25–4.5L/yr</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Clinical Psychology</span>
+            <span class="phd-tag">Counseling Psychology</span>
+            <span class="phd-tag">Nursing</span>
+            <span class="phd-tag">Agriculture – Agronomy</span>
+            <span class="phd-tag">Agriculture – Entomology</span>
+            <span class="phd-tag">Agriculture – Horticulture</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Bachelor's in matching domain with min. 50%–55% · Clinical Psychology streams: ₹3.5L–4.5L+ per annum</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA · 2 Years · CAT/MAT · ₹1,80,000/yr</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">MBA General / Dual Specialization</span>
+            <span class="phd-tag">MBA Agri-Business</span>
+            <span class="phd-tag">M.Com</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Graduation in any field with min. 55% marks · Selection via CAT/MAT followed by PI</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech / MCA · 2 Years · GATE · ₹86,250/yr</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.Tech Computer Science</span>
+            <span class="phd-tag">M.Tech Mechanical Engineering</span>
+            <span class="phd-tag">M.Tech Civil Engineering</span>
+            <span class="phd-tag">MCA (Master of Computer Applications)</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: B.E./B.Tech or Bachelor's with Mathematics components, min. 55% aggregate</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Law &amp; Professional PG · ₹1.72–2.25L/yr</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">LLM (1-Year Track)</span>
+            <span class="phd-tag">M.Pharm – Pharmacology</span>
+            <span class="phd-tag">M.Pharm – Pharmaceutics</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Relevant professional bachelor's credentials (LLB / B.Pharm) with min. 55% marks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Medical &amp; Health Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Clinical Psychology</span>
+            <span class="phd-tag">Medical Sciences</span>
+            <span class="phd-tag">Dental Sciences</span>
+            <span class="phd-tag">Pharmacy</span>
+            <span class="phd-tag">Nursing</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Engineering &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Computer Science</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Basic Sciences &amp; Agriculture</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Environmental Sciences</span>
+            <span class="phd-tag">Agricultural Streams</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Humanities, Law &amp; Management</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Education</span>
+            <span class="phd-tag">Law</span>
+            <span class="phd-tag">Management</span>
+            <span class="phd-tag">Commerce</span>
+            <span class="phd-tag">English</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Screening (Session 2026–27)</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's or equivalent professional degree (min. 55%)</span></div>
+          <div class="key-val"><span class="k">Relaxation</span><span class="v">50% for SC/ST/OBC (non-creamy)/PwD</span></div>
+          <div class="key-val"><span class="k">Application Deadline</span><span class="v">July 11, 2026</span></div>
+          <div class="key-val"><span class="k">Entrance Exam Date</span><span class="v">July 18, 2026</span></div>
+          <div class="key-val"><span class="k">Exam Structure</span><span class="v">70 MCQs — 50% Subject Knowledge + 50% Research Methodology</span></div>
+          <div class="key-val"><span class="k">Exemptions</span><span class="v">UGC-NET / CSIR-NET / GATE / SLET qualified — Direct to Interview</span></div>
+          <div class="key-val"><span class="k">Annual Fee</span><span class="v">~₹1,50,000 per annum</span></div>
+          <div class="key-val" style="border:none"><span class="k">Duration</span><span class="v">Min. 3 Years – Max. 6 Years (UGC norms)</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Fellowship:</span>
+          <span style="color:var(--muted);"> UGC/CSIR JRF holders receive standard national payouts. Institutional merit allowances and teaching assistantships available based on internal performance metrics.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (PG)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Visit the Admission Portal</div>
+            <div class="tl-desc">Navigate to the centralised online dashboard at admission.sgtuniversity.ac.in and create your applicant account.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Choose Course &amp; Pay Registration Fee</div>
+            <div class="tl-desc">Select your desired course track and submit the registration fee of ₹1,500 online through the portal.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Entrance Exam or National Score Submission</div>
+            <div class="tl-desc">Appear for the university's institutional entrance exam OR submit national-level scores: GATE (for M.Tech) or CAT/MAT (for MBA).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Personal Interview (PI)</div>
+            <div class="tl-desc">Attend the scheduled Personal Interview round conducted over video streaming platforms for final selection.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Document Verification &amp; Enrolment</div>
+            <div class="tl-desc">Submit original marksheets, degree certificates, category certificate, and ID proof. Complete fee payment and enrolment formalities.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (UG)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear in Relevant Entrance Exam</div>
+            <div class="tl-desc">Appear for JEE Main (B.Tech), NEET UG (MBBS/BDS/BAMS), NCET-SGTU (Nursing), or SGT Entrance Test (BCA/BBA/Law) as applicable.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Apply via Admission Portal</div>
+            <div class="tl-desc">Register at admission.sgtuniversity.ac.in, fill the application form, and pay the ₹1,500 registration fee.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Merit List / Counselling</div>
+            <div class="tl-desc">MBBS/BDS/BAMS via national/state counselling. Other programs via SGT merit list based on entrance scores and qualifying marks.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification &amp; Fee Payment</div>
+            <div class="tl-desc">Submit 10th, 12th marksheets, category certificate, ID proof, entrance scorecard, and photographs. Pay semester/annual fees online.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">B.Tech CSE</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">JEE Main / PUEEE</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBBS / BDS / BAMS</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">NEET UG</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Sc. Nursing</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">NCET-SGTU</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">BCA / BBA / Law</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">SGT Entrance Test</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Tech</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">GATE</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">CAT / MAT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">SGT RET / NET / GATE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: PLACEMENTS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">Healthcare</div>
+            <div class="s-lbl">Top Sector</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">18+</div>
+            <div class="s-lbl">Faculties</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">200+</div>
+            <div class="s-lbl">Programs</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Key Recruiting Sectors</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Hospitals &amp; Healthcare</span>
+          <span class="recruiter-tag">Pharma Companies</span>
+          <span class="recruiter-tag">IT &amp; Tech Firms</span>
+          <span class="recruiter-tag">Law Firms &amp; Courts</span>
+          <span class="recruiter-tag">Agribusiness &amp; FMCG</span>
+          <span class="recruiter-tag">Banks &amp; Financial Services</span>
+          <span class="recruiter-tag">Government / PSU</span>
+          <span class="recruiter-tag">Research &amp; Academia</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Notes</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          SGT University's dedicated Training &amp; Placement Cell facilitates campus recruitment across its diverse faculties. The university's strong healthcare ecosystem — with its own teaching hospital and dental college — provides direct employment pathways for MBBS, BDS, Nursing, Pharmacy, and Physiotherapy graduates in leading hospitals, clinics, and healthcare chains. B.Tech and BCA graduates are placed in top IT companies, while MBA graduates find opportunities in management consulting, banking, and agribusiness. The university's NCR location near Gurugram provides students excellent access to corporate recruiters from the Delhi-NCR corridor.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Utsav</strong> — Annual Cultural Fest with music, dance, drama, and inter-faculty competitions</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Sports Week</strong> — Inter-faculty athletic competitions covering cricket, football, basketball, and more</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research Conclave</strong> — Annual research symposium showcasing student and faculty innovations across all disciplines</div></div>
+            <div class="event-item"><span class="event-icon">⚕️</span><div><strong>Health Mela</strong> — Community health awareness drive organised by medical and nursing students</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony for graduating students across all faculties</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga Centre</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Activities</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Medical Society</span>
+            <span class="phd-tag">Coding Club</span>
+            <span class="phd-tag">Moot Court Society</span>
+            <span class="phd-tag">NSS</span>
+            <span class="phd-tag">NCC</span>
+            <span class="phd-tag">Literary Society</span>
+            <span class="phd-tag">Eco Club</span>
+            <span class="phd-tag">Debate Society</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Music Club</span>
+            <span class="phd-tag">Entrepreneurship Cell</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <!-- Quick Action -->
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.sgtuniversity.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <!-- Key Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2013</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">Private University</span></div>
+      <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">A+ Grade</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">70+ Acres (Residential)</span></div>
+      <div class="key-val"><span class="k">Faculties</span><span class="v">18+ Distinct Faculties</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Budhera, Gurugram, HR</span></div>
+    </div>
+
+    <!-- Entrance Exams -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course Type</th><th>Exam</th></tr>
+        <tr><td>B.Tech CSE</td><td><span class="tag tag-exam">JEE Main</span></td></tr>
+        <tr><td>MBBS / BDS / BAMS</td><td><span class="tag tag-exam">NEET UG</span></td></tr>
+        <tr><td>B.Sc. Nursing</td><td><span class="tag tag-exam">NCET-SGTU</span></td></tr>
+        <tr><td>BCA / BBA / Law</td><td><span class="tag tag-exam">SGT Test</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT / MAT</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">RET / NET / GATE</span></td></tr>
+      </table>
+    </div>
+
+    <!-- Approx Fees Summary -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Annual)</div>
+      <div class="key-val"><span class="k">B.Tech CSE</span><span class="v v-gold">₹2,00,000</span></div>
+      <div class="key-val"><span class="k">B.Pharma</span><span class="v v-gold">₹2,40,000</span></div>
+      <div class="key-val"><span class="k">B.Sc. Nursing</span><span class="v v-gold">₹2,50,000</span></div>
+      <div class="key-val"><span class="k">BPT</span><span class="v v-gold">₹1,40,000</span></div>
+      <div class="key-val"><span class="k">BA/BBA LLB</span><span class="v v-gold">₹1,60,000–1,95,000</span></div>
+      <div class="key-val"><span class="k">BCA / BBA</span><span class="v v-gold">₹1,35,000–1,50,000</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹1,80,000</span></div>
+      <div class="key-val"><span class="k">M.Tech / MCA</span><span class="v v-gold">₹86,250</span></div>
+      <div class="key-val"><span class="k">PhD</span><span class="v v-gold">~₹1,50,000</span></div>
+      <div class="key-val"><span class="k">Hostel Non-AC/yr</span><span class="v v-gold">₹1,00,000–1,40,000</span></div>
+      <div class="key-val"><span class="k">Hostel AC/yr</span><span class="v v-gold">₹1,50,000–2,00,000</span></div>
+    </div>
+
+    <!-- Placement Snapshot -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Top Sectors</span><span class="v" style="color:var(--accent-green);">Healthcare, IT, Law, Agri</span></div>
+      <div class="key-val"><span class="k">NCR Advantage</span><span class="v">Near Gurugram Corp. Hub</span></div>
+      <div class="key-val"><span class="k">PhD Application</span><span class="v">Closes July 11, 2026</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  /* ── SHORTLIST STATE ── */
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'SGT University added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  /* ── TABS ── */
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  /* ── STREAM DROPDOWN ── */
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  /* ── LOGOUT MODAL ── */
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

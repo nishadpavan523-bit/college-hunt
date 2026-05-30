@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIT Jalandhar - CollegeHunt</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Poppins',sans-serif;
+background:#0f1535;
+color:white;
+}
+
+/* NAVBAR */
+
+nav{
+background:#111b4a;
+padding:18px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+font-size:1.5rem;
+font-weight:700;
+color:#f5a623;
+}
+
+.nav-right{
+display:flex;
+gap:15px;
+align-items:center;
+}
+
+.nav-btn{
+padding:10px 18px;
+border:none;
+border-radius:25px;
+cursor:pointer;
+font-weight:600;
+background:#f5a623;
+color:black;
+}
+
+.logout{
+background:transparent;
+color:white;
+border:1px solid rgba(255,255,255,.3);
+}
+
+select{
+padding:10px;
+border-radius:20px;
+background:#1b2454;
+color:white;
+border:1px solid #f5a623;
+}
+
+/* HERO */
+
+.hero{
+padding:50px;
+background:linear-gradient(135deg,#1a2250,#24348f,#1a2250);
+}
+
+.hero h1{
+font-size:2.5rem;
+margin-bottom:15px;
+}
+
+.hero span{
+color:#f5a623;
+}
+
+.meta{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+margin-top:20px;
+}
+
+.meta-box{
+background:rgba(255,255,255,.08);
+padding:10px 16px;
+border-radius:25px;
+}
+
+
+/* TAB BAR */
+
+.tabs-bar{
+background:#1a2250;
+display:flex;
+gap:10px;
+padding:0 20px;
+overflow-x:auto;
+border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.tabs-bar::-webkit-scrollbar{
+display:none;
+}
+
+.tab{
+padding:18px;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+color:#a4add1;
+border-bottom:3px solid transparent;
+white-space:nowrap;
+transition:.3s;
+}
+
+.tab:hover{
+color:white;
+}
+
+.tab.active{
+color:white;
+border-bottom:3px solid #f5a623;
+}
+
+/* CONTENT */
+
+.main{
+max-width:1200px;
+margin:auto;
+padding:30px;
+}
+
+.card{
+background:#1b2454;
+padding:25px;
+border-radius:18px;
+margin-bottom:20px;
+}
+
+.card-title{
+color:#f5a623;
+margin-bottom:20px;
+font-size:1.2rem;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+}
+
+.info{
+background:rgba(255,255,255,.05);
+padding:16px;
+border-radius:12px;
+}
+
+.info small{
+display:block;
+margin-bottom:5px;
+color:#aaa;
+}
+
+.course{
+background:rgba(255,255,255,.05);
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+display:flex;
+justify-content:space-between;
+}
+
+.tag{
+background:#48bb78;
+padding:5px 10px;
+border-radius:8px;
+}
+
+.facility-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
+}
+
+.facility{
+background:rgba(255,255,255,.05);
+padding:18px;
+text-align:center;
+border-radius:12px;
+}
+
+/* TAB CONTENT */
+
+.tab-content{
+display:none;
+}
+
+.active-content{
+display:block;
+}
+
+@media(max-width:700px){
+
+.hero{
+padding:30px;
+}
+
+.hero h1{
+font-size:1.7rem;
+}
+
+nav{
+padding:15px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+🎓 CollegeHunt
+</div>
+
+<div class="nav-right">
+
+<select>
+<option>Engineering</option>
+<option>Science</option>
+<option>Management</option>
+</select>
+
+<button class="nav-btn">
+⭐ Shortlist
+</button>
+
+<button class="nav-btn logout">
+Logout
+</button>
+
+</div>
+
+</nav>
+
+
+<section class="hero">
+
+<h1>
+
+Dr. B. R. Ambedkar
+<span>National Institute of Technology Jalandhar</span>
+
+</h1>
+
+<div class="meta">
+
+<div class="meta-box">
+📍 Jalandhar, Punjab
+</div>
+
+<div class="meta-box">
+🏛️ NIT Institute
+</div>
+
+<div class="meta-box">
+📅 Established 1987
+</div>
+
+<div class="meta-box">
+🌐 nitj.ac.in
+</div>
+
+</div>
+
+</section>
+
+
+<div class="tabs-bar">
+
+<div class="tab active"
+onclick="switchTab(this,'overview')">
+Overview
+</div>
+
+<div class="tab"
+onclick="switchTab(this,'ug')">
+UG Courses
+</div>
+
+<div class="tab"
+onclick="switchTab(this,'pg')">
+PG Courses
+</div>
+
+<div class="tab"
+onclick="switchTab(this,'phd')">
+PhD
+</div>
+
+<div class="tab"
+onclick="switchTab(this,'admissions')">
+Admissions
+</div>
+
+<div class="tab"
+onclick="switchTab(this,'placements')">
+Placements
+</div>
+
+<div class="tab"
+onclick="switchTab(this,'campus')">
+Campus Life
+</div>
+
+</div>
+
+
+
+<div class="tab-content active-content"
+id="overview">
+
+<div class="main">
+
+<div class="card">
+
+<div class="card-title">
+Basic Information
+</div>
+
+<div class="grid">
+
+<div class="info">
+<small>Campus Area</small>
+154 Acres
+</div>
+
+<div class="info">
+<small>Recognition</small>
+Institute of National Importance
+</div>
+
+<div class="info">
+<small>Admission</small>
+JEE Main + JoSAA
+</div>
+
+<div class="info">
+<small>Programs</small>
+UG, PG & PhD
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="tab-content" id="ug">
+
+<div class="main">
+
+<div class="card">
+
+<div class="card-title">
+UG Courses
+</div>
+
+<div class="course">
+<div>B.Tech CSE</div>
+<div class="tag">₹5–7L</div>
+</div>
+
+<div class="course">
+<div>B.Tech IT</div>
+<div class="tag">₹5–7L</div>
+</div>
+
+<div class="course">
+<div>B.Tech ECE</div>
+<div class="tag">₹5–7L</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="tab-content" id="pg">
+
+<div class="main">
+
+<div class="card">
+
+<div class="card-title">
+PG Courses
+</div>
+
+<div class="course">
+<div>M.Tech</div>
+<div class="tag">GATE</div>
+</div>
+
+<div class="course">
+<div>MBA</div>
+<div class="tag">CAT</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="tab-content" id="phd">
+
+<div class="main">
+
+<div class="card">
+
+<div class="card-title">
+PhD Programs
+</div>
+
+Research opportunities available across departments.
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="tab-content" id="admissions">
+
+<div class="main">
+
+<div class="card">
+
+<div class="card-title">
+Admissions
+</div>
+
+Admission through JEE Main + JoSAA counseling.
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="tab-content" id="placements">
+
+<div class="main">
+
+<div class="card">
+
+<div class="card-title">
+Placement Highlights
+</div>
+
+<div class="grid">
+
+<div class="info">
+<small>Highest Package</small>
+₹40+ LPA
+</div>
+
+<div class="info">
+<small>Average Package</small>
+₹12–14 LPA
+</div>
+
+<div class="info">
+<small>Top Recruiters</small>
+Microsoft, Amazon
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="tab-content" id="campus">
+
+<div class="main">
+
+<div class="card">
+
+<div class="card-title">
+Campus Life
+</div>
+
+<div class="facility-grid">
+
+<div class="facility">📚 Library</div>
+<div class="facility">🏋️ Gym</div>
+<div class="facility">⚽ Sports</div>
+<div class="facility">🍽️ Cafeteria</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+function switchTab(element,id){
+
+document
+.querySelectorAll(".tab")
+.forEach(tab=>tab.classList.remove("active"));
+
+document
+.querySelectorAll(".tab-content")
+.forEach(content=>content.classList.remove("active-content"));
+
+element.classList.add("active");
+
+document
+.getElementById(id)
+.classList.add("active-content");
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BRABU – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-rank { background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-rank .value { color: #b794f4; }
+
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .schol-tag { background: rgba(99,179,237,0.1); border: 1px solid rgba(99,179,237,0.2); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: #63b3ed; display: inline-block; margin: 3px; }
+
+  .college-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .college-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .college-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+  .college-table tr:last-child td { border-bottom:none; }
+  .college-table tr:hover td { background:rgba(245,166,35,0.04); }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Arts &amp; Humanities</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    BRABU
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🎓</div>
+    <div class="uni-title">
+      <h1>Babasaheb Bhimrao Ambedkar <span>Bihar University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Muzaffarpur, Bihar</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Public University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1952 / Renamed 1992</strong></span>
+        <span class="meta-chip">🎓 <strong>77+ Colleges</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://brabu.ac.in/','_blank')">🌐 <strong>brabu.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC</span>
+      <span class="value">Grade B</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus</span>
+      <span class="value">250 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">NIRF 2023</span>
+      <span class="value">#42</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">Courses</span>
+      <span class="value">97+</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Full Name</div><div class="val">Babasaheb Bhimrao Ambedkar Bihar University</div></div>
+          <div class="info-chip"><div class="lbl">Also Known As</div><div class="val">BRABU / Bihar University (formerly)</div></div>
+          <div class="info-chip"><div class="lbl">Named After</div><div class="val">Dr. B.R. Ambedkar</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Kalambagh Road, Muzaffarpur, Bihar – 842001</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Public University, Govt. of Bihar</div></div>
+          <div class="info-chip"><div class="lbl">Jurisdiction</div><div class="val">5 Districts of North Bihar</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About BRABU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          BRABU has a rich history dating back to <strong style="color:var(--white);">1952</strong> when Bihar University was established at Patna. It was bifurcated in <strong style="color:var(--white);">1960</strong> and shifted to Muzaffarpur, then renamed <strong style="color:var(--white);">Babasaheb Bhimrao Ambedkar Bihar University in 1992</strong> in honour of the architect of the Indian Constitution. Today it serves <strong style="color:var(--white);">5 districts of North Bihar</strong> through <strong style="color:var(--white);">77+ colleges</strong> (42 constituent + 40+ affiliated) offering <strong style="color:var(--white);">97+ UG, PG, PG Diploma, Certificate and PhD programmes</strong>. Recognised by <strong style="color:var(--white);">UGC</strong> and a member of <strong style="color:var(--white);">AIU</strong>, the university holds a <strong style="color:var(--white);">NAAC Grade B</strong> accreditation and was ranked <strong style="color:var(--white);">42nd in the NIRF 2023</strong> University category.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Key Constituent Colleges</div>
+        <table class="college-table">
+          <thead>
+            <tr><th>College Name</th><th>Type</th><th>Location</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>L.S. College</td><td><span class="tag tag-fees">Constituent</span></td><td>Muzaffarpur</td></tr>
+            <tr><td>M.D.D.M. College (Women)</td><td><span class="tag tag-fees">Constituent</span></td><td>Muzaffarpur</td></tr>
+            <tr><td>R.B.S. College</td><td><span class="tag tag-fees">Constituent</span></td><td>Muzaffarpur</td></tr>
+            <tr><td>R.D.S. College</td><td><span class="tag tag-fees">Constituent</span></td><td>Muzaffarpur</td></tr>
+            <tr><td>M.P. Sinha Science College</td><td><span class="tag tag-fees">Constituent</span></td><td>Muzaffarpur</td></tr>
+            <tr><td>S.K. Mahila College (Women)</td><td><span class="tag tag-fees">Constituent</span></td><td>Muzaffarpur</td></tr>
+            <tr><td>Raj Bahadur Lal College</td><td><span class="tag tag-fees">Constituent</span></td><td>West Champaran</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Labs</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Science Labs</div>
+          <div class="fac-item"><div class="fac-icon">🗣️</div>Language Labs</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Facility</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Digital Learning</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">🏠</div>Hostels (Boys &amp; Girls)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">📅 Admissions 2026-27 Open:</span>
+          <span style="color:var(--muted);"> Applications from <strong style="color:var(--white);">10 May 2026</strong> · Last date: <strong style="color:var(--white);">31 July 2026</strong> · Fee: ₹600 (General) · Merit-based; no entrance for BA/BSc/BCom</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.A. – Arts &amp; Humanities · 3 Years</span>
+          <div class="course-row"><div class="course-name">B.A. (General / Pass)</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5,000–10,000/yr</span></div>
+          <div class="course-row"><div class="course-name">B.A. (Hons.) – Hindi, English, Urdu, Sanskrit, Maithili, Bengali, Persian, Arabic</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5,000–10,000/yr</span></div>
+          <div class="course-row"><div class="course-name">B.A. (Hons.) – History, Political Science, Economics, Sociology, Psychology, Philosophy</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5,000–10,000/yr</span></div>
+          <div class="course-row"><div class="course-name">B.A. (Hons.) – Geography, Home Science, Music, Fine Arts, Education</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5,000–10,000/yr</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 from recognised board · Min. 45% (General/OBC/EWS) · 40% (SC/ST/PwD)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Sc. – Science · 3 Years</span>
+          <div class="course-row"><div class="course-name">B.Sc. (General / Pass)</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹6,000–10,000/yr</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. (Hons.) – Physics, Chemistry, Mathematics, Statistics</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹6,000–10,000/yr</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. (Hons.) – Botany, Zoology, Biochemistry, Microbiology, Biotechnology</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹6,000–10,000/yr</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. (Hons.) – Computer Science, Electronics, IT, Geography, Geology, Home Science</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹6,000–10,000/yr</span></div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Com. – Commerce · 3 Years</span>
+          <div class="course-row"><div class="course-name">B.Com. (General / Pass)</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5,000–10,000/yr</span></div>
+          <div class="course-row"><div class="course-name">B.Com. (Hons.) – Accounting, Finance, Business Studies</div><div class="course-meta"><strong>Merit-based</strong>10+2 Marks</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5,000–10,000/yr</span></div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Professional UG Courses</span>
+          <div class="course-row"><div class="course-name">BCA (Bachelor of Computer Applications)</div><div class="course-meta"><strong>Merit / BRABU Test</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">~₹26,000 Total</span></div>
+          <div class="course-row"><div class="course-name">BBA (Bachelor of Business Administration)</div><div class="course-meta"><strong>Merit / BRABU Test</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10,000–20,000/yr</span></div>
+          <div class="course-row"><div class="course-name">LLB (Bachelor of Laws)</div><div class="course-meta"><strong>Merit / CLAT</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-exam">Graduation Required</span></div>
+          <div class="course-row"><div class="course-name">B.Ed. (Bachelor of Education)</div><div class="course-meta"><strong>Bihar B.Ed. CET</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹68,500 (1st Yr)</span></div>
+          <div class="course-row"><div class="course-name">BA-B.Ed. / B.Sc.-B.Ed. Integrated (NEP 2020)</div><div class="course-meta"><strong>BRABU Test</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-exam">NEP 2020</span></div>
+          <div class="course-row"><div class="course-name">BAMS / BHMS / BUMS</div><div class="course-meta"><strong>NEET-UG + BCECEB</strong>Entrance</div><div class="course-meta"><strong>5.5 Yrs</strong>Duration</div><span class="tag tag-exam">NEET Required</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">📅 PG Admissions 2026:</span>
+          <span style="color:var(--muted);"> Last date <strong style="color:var(--white);">31 July 2026</strong> · 28 PG programmes available · Apply at brabu.ac.in</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.A. Programmes – 16 Specialisations · 2 Years</span>
+          <div class="course-row"><div class="course-name">M.A. Hindi / English / Urdu / Sanskrit / Maithili / Bengali / Persian / Arabic</div><div class="course-meta"><strong>BRABU PG Test / Merit</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹6,900–16,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.A. History / Political Science / Economics / Sociology / Psychology / Philosophy</div><div class="course-meta"><strong>BRABU PG Test / Merit</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹6,900–16,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.A. Geography / Home Science</div><div class="course-meta"><strong>BRABU PG Test / Merit</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹6,900–16,000 Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: BA in relevant subject · Min. 45–50% (General/OBC/EWS) · 40–45% (SC/ST/PwD)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. Programmes – 7 Specialisations · 2 Years</span>
+          <div class="course-row"><div class="course-name">M.Sc. Physics / Chemistry / Mathematics / Botany / Zoology</div><div class="course-meta"><strong>BRABU PG Test / Merit</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹8,650 (1st Yr)</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Computer Science / Home Science</div><div class="course-meta"><strong>BRABU PG Test / Merit</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹15,000–25,000 Total</span></div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Commerce &amp; Management</span>
+          <div class="course-row"><div class="course-name">M.Com. (Master of Commerce)</div><div class="course-meta"><strong>BRABU PG Test / Merit</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹13,800–20,000 Total</span></div>
+          <div class="course-row"><div class="course-name">MBA (3 Specialisations)</div><div class="course-meta"><strong>CAT/XAT/MAT/CMAT</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹93,500 (1st Yr)</span></div>
+          <div class="course-row"><div class="course-name">MCA (Master of Computer Applications)</div><div class="course-meta"><strong>BRABU Test / NIMCET</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹30,000–50,000 Total</span></div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Education &amp; Library Science</span>
+          <div class="course-row"><div class="course-name">M.Ed. (Master of Education)</div><div class="course-meta"><strong>Bihar M.Ed. Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹60,000–1,00,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.Lib.I.Sc. (Master of Library &amp; Information Science)</div><div class="course-meta"><strong>Merit-based</strong>Graduation Marks</div><div class="course-meta"><strong>1 Yr</strong>Duration</div><span class="tag tag-fees">₹9,000–13,000</span></div>
+          <div class="course-row"><div class="course-name">M.P.Ed. (Master of Physical Education)</div><div class="course-meta"><strong>Merit-based</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">As per norms</span></div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">PG Diploma Programmes – 1 Year</span>
+          <div class="course-row"><div class="course-name">PG Diploma in Computer Applications (PGDCA)</div><div class="course-meta"><strong>Merit-based</strong>Graduation Marks</div><div class="course-meta"><strong>1 Yr</strong>Duration</div><span class="tag tag-fees">₹11,000</span></div>
+          <div class="course-row"><div class="course-name">PG Diploma in Business Management</div><div class="course-meta"><strong>Merit-based</strong>Graduation Marks</div><div class="course-meta"><strong>1 Yr</strong>Duration</div><span class="tag tag-fees">₹11,000–13,000</span></div>
+          <div class="course-row"><div class="course-name">PG Diploma in Environmental Science</div><div class="course-meta"><strong>Merit-based</strong>Graduation Marks</div><div class="course-meta"><strong>1 Yr</strong>Duration</div><span class="tag tag-fees">₹11,000</span></div>
+          <div class="course-row"><div class="course-name">PG Diploma in Human Rights &amp; Duties</div><div class="course-meta"><strong>Merit-based</strong>Graduation Marks</div><div class="course-meta"><strong>1 Yr</strong>Duration</div><span class="tag tag-fees">₹9,000</span></div>
+          <div class="course-row"><div class="course-name">PG Diploma in Journalism &amp; Mass Communication</div><div class="course-meta"><strong>Merit-based</strong>Graduation Marks</div><div class="course-meta"><strong>1 Yr</strong>Duration</div><span class="tag tag-fees">₹11,000</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Graduation in any discipline with min. 45% marks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programmes – 26 Disciplines</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Humanities &amp; Languages</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Hindi</span><span class="phd-tag">PhD English</span><span class="phd-tag">PhD Urdu</span><span class="phd-tag">PhD Sanskrit</span><span class="phd-tag">PhD Maithili</span><span class="phd-tag">PhD Bengali</span><span class="phd-tag">PhD Persian</span><span class="phd-tag">PhD Arabic</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD History</span><span class="phd-tag">PhD Political Science</span><span class="phd-tag">PhD Economics</span><span class="phd-tag">PhD Sociology</span><span class="phd-tag">PhD Psychology</span><span class="phd-tag">PhD Philosophy</span><span class="phd-tag">PhD Geography</span><span class="phd-tag">PhD Home Science</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Science</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Physics</span><span class="phd-tag">PhD Chemistry</span><span class="phd-tag">PhD Mathematics</span><span class="phd-tag">PhD Botany</span><span class="phd-tag">PhD Zoology</span><span class="phd-tag">PhD Computer Science</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce, Management &amp; Education</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Commerce</span><span class="phd-tag">PhD Management Studies</span><span class="phd-tag">PhD Education</span><span class="phd-tag">PhD Library &amp; Information Science</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission – PAT (PhD Admission Test)</div>
+          <div class="key-val"><span class="k">General / OBC / EWS</span><span class="v">Min. 55% marks in relevant PG degree</span></div>
+          <div class="key-val"><span class="k">SC / ST / PwD</span><span class="v">Min. 50% marks in relevant PG degree</span></div>
+          <div class="key-val"><span class="k">Exemption</span><span class="v">UGC-NET / CSIR-NET / UGC-JRF qualified</span></div>
+          <div class="key-val"><span class="k">PAT Format</span><span class="v">MCQ – Research Methodology + Subject</span></div>
+          <div class="key-val"><span class="k">Selection Criteria</span><span class="v">Written Test (70%) + Interview (30%)</span></div>
+          <div class="key-val"><span class="k">Application Fee</span><span class="v">₹600 (General) | ₹300 (SC/ST/PwD)</span></div>
+          <div class="key-val"><span class="k">Last Date 2026-27</span><span class="v">31 July 2026</span></div>
+          <div class="key-val" style="border:none"><span class="k">Duration</span><span class="v">3–6 years (Full-Time / Part-Time)</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#63b3ed;font-weight:600;">PhD Fees:</span>
+          <span style="color:var(--muted);"> ₹6,400–₹6,900 per year · Total programme (3 yrs) ~₹19,200–₹25,000 · Among most affordable in India</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships for PhD Scholars</div>
+        <div style="margin-bottom:10px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">National Fellowships</div>
+          <span class="schol-tag">UGC-JRF ₹37,000/month</span>
+          <span class="schol-tag">CSIR-JRF ₹37,000/month</span>
+          <span class="schol-tag">ICSSR Junior Research Fellowship</span>
+          <span class="schol-tag">Bihar State Research Fellowship</span>
+        </div>
+        <div>
+          <div class="phd-cat-label" style="margin-bottom:8px;">State &amp; Central Scholarships</div>
+          <span class="schol-tag">E-Kalyan Scholarship (Bihar) ₹1,500–3,000/month</span>
+          <span class="schol-tag">Post-Matric Scholarship</span>
+          <span class="schol-tag">Bihar Student Credit Card (up to ₹4 Lakh)</span>
+          <span class="schol-tag">PM Yasasvi Scholarship</span>
+          <span class="schol-tag">Mukhyamantri Kanya Utthan Yojana</span>
+          <span class="schol-tag">Central Sector Scholarship (MoE)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (2026-27)</div>
+        <div style="margin-bottom:16px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">📅 Applications Open:</span>
+          <span style="color:var(--muted);"> From <strong style="color:var(--white);">10 May 2026</strong> · Last date: <strong style="color:var(--white);">31 July 2026</strong> · Apply at brabu.ac.in · Application fee: ₹600 (General)</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Register on brabu.ac.in</div>
+            <div class="tl-desc">Visit the official admissions portal. Register with email and mobile number. Fill the online application form with personal and academic details.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Fill Course Preference</div>
+            <div class="tl-desc">Select preferred course, college and subject combination. BA/BSc/BCom admissions are merit-based on 10+2 marks — no separate entrance exam required.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Pay Application Fee</div>
+            <div class="tl-desc">Pay ₹600 (General/OBC/EWS) or ₹300 (SC/ST/PwD) online. Keep the payment receipt for future reference.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Merit List Release</div>
+            <div class="tl-desc">Merit list released online on brabu.ac.in based on 10+2 marks (for UG) or graduation marks (for PG). Check the list regularly for updates.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Document Verification</div>
+            <div class="tl-desc">Visit the allotted college with original documents for verification. Carry 10+2/Graduation marksheets, caste/category certificates, domicile proof and photographs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Fee Payment &amp; Enrolment</div>
+            <div class="tl-desc">Pay the college tuition fee to confirm your seat. BA/BSc/BCom fees are very affordable at ₹5,000–10,000 per year. B.Ed. and professional course fees differ as per Bihar Govt. norms.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">BA / BSc / BCom (General / Hons.)</div><div></div><div></div><span class="tag tag-exam">Merit on 10+2 Marks</span></div>
+        <div class="course-row"><div class="course-name">BCA / BBA</div><div></div><div></div><span class="tag tag-exam">Merit / BRABU Test</span></div>
+        <div class="course-row"><div class="course-name">B.Ed.</div><div></div><div></div><span class="tag tag-exam">Bihar B.Ed. CET (LNMU)</span></div>
+        <div class="course-row"><div class="course-name">BAMS / BHMS / BUMS</div><div></div><div></div><span class="tag tag-exam">NEET-UG + BCECEB</span></div>
+        <div class="course-row"><div class="course-name">MA / MSc / MCom</div><div></div><div></div><span class="tag tag-exam">BRABU PG Test / Merit</span></div>
+        <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">CAT / XAT / MAT / CMAT</span></div>
+        <div class="course-row"><div class="course-name">MCA</div><div></div><div></div><span class="tag tag-exam">BRABU Test / NIMCET</span></div>
+        <div class="course-row"><div class="course-name">PhD (PAT)</div><div></div><div></div><span class="tag tag-exam">PAT / UGC-NET / JRF</span></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview (2025)</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">215</div>
+            <div class="s-lbl">Students Placed</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">2,626</div>
+            <div class="s-lbl">Total Graduates</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">~8%</div>
+            <div class="s-lbl">Placement Rate</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Recruiters 2025</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Flipkart</span>
+          <span class="recruiter-tag">Mahindra</span>
+          <span class="recruiter-tag">HDFC Bank</span>
+          <span class="recruiter-tag">SBI</span>
+          <span class="recruiter-tag">Accenture</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Career Opportunities</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          BRABU graduates pursue diverse career paths across government services, banking, education and private sector. The university has an active <strong style="color:var(--white);">Industry Collaboration Cell</strong> for career guidance and campus placement. Top recruiters include Amazon, Flipkart, Mahindra, HDFC and SBI. Many students opt for <strong style="color:var(--white);">Bihar Public Service Commission (BPSC)</strong>, <strong style="color:var(--white);">UPSC</strong>, <strong style="color:var(--white);">Teaching &amp; Research</strong>, banking examinations and government services. The Distance Education Directorate also allows working professionals to pursue PG programmes simultaneously.
+        </p>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Financial Aid</div>
+          <div class="course-row"><div class="course-name">Bihar Student Credit Card Scheme</div><div></div><div></div><span class="tag tag-fees">Up to ₹4 Lakh Loan</span></div>
+          <div class="course-row"><div class="course-name">E-Kalyan Scholarship (SC/ST/EBC/BC)</div><div></div><div></div><span class="tag tag-fees">₹1,500–3,000/month</span></div>
+          <div class="course-row"><div class="course-name">Mukhyamantri Kanya Utthan Yojana</div><div></div><div></div><span class="tag tag-fees">Girl Students</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏟️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball</div>
+            <div class="fac-item"><div class="fac-icon">🤼</div>Kabaddi</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Sports Meet</strong> — Inter-college competitions organised by BRABU across 5 districts</div></div>
+            <div class="event-item"><span class="event-icon">🎓</span><div><strong>Cultural Fests &amp; Literary Festivals</strong> — Annual events at constituent colleges celebrating arts and culture</div></div>
+            <div class="event-item"><span class="event-icon">🌱</span><div><strong>NSS (National Service Scheme)</strong> — Active social service units across constituent colleges</div></div>
+            <div class="event-item"><span class="event-icon">🪖</span><div><strong>NCC (National Cadet Corps)</strong> — Units at major constituent colleges for discipline and leadership</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>National &amp; International Seminars</strong> — Regular workshops, training programmes and academic conferences</div></div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏠 Hostel Facilities</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏠</div>Boys' Hostels</div>
+            <div class="fac-item"><div class="fac-icon">🏡</div>Girls' Hostels</div>
+            <div class="fac-item"><div class="fac-icon">🍽️</div>Mess / Dining</div>
+            <div class="fac-item"><div class="fac-icon">📷</div>CCTV Surveillance</div>
+            <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security</div>
+            <div class="fac-item"><div class="fac-icon">👨‍💼</div>Warden Support</div>
+          </div>
+          <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+            <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+            <span style="color:var(--muted);"> Approx. ₹5,000–₹15,000 per year at constituent colleges · Mess charges payable separately</span>
+          </div>
+        </div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">📍 Location Advantage:</span>
+          <span style="color:var(--muted);"> Located in Muzaffarpur, the second-largest city of Bihar — the famous 'City of Lychees' — well-connected by road, rail and bus. SWAYAM / MOOCs integration for digital learning. Anti-ragging cell and student grievance redressal committee active.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://brabu.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Full Name</span><span class="v">Babasaheb Bhimrao Ambedkar Bihar University</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">BRABU</span></div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1952 (Bihar Univ.) / 1992 (BRABU)</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State Public University</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-gold">NAAC Grade B</span></div>
+      <div class="key-val"><span class="k">NIRF 2023</span><span class="v v-gold">#42 (University)</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">250 Acres, Muzaffarpur</span></div>
+      <div class="key-val"><span class="k">Constituent Colleges</span><span class="v">42</span></div>
+      <div class="key-val"><span class="k">Total Colleges</span><span class="v">77+</span></div>
+      <div class="key-val"><span class="k">Courses</span><span class="v">97+</span></div>
+      <div class="key-val"><span class="k">Global Ranking</span><span class="v">4,331st (2024)</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>BA/BSc/BCom</td><td><span class="tag tag-exam">Merit (10+2)</span></td></tr>
+        <tr><td>B.Ed.</td><td><span class="tag tag-exam">Bihar B.Ed. CET</span></td></tr>
+        <tr><td>BAMS/BHMS</td><td><span class="tag tag-exam">NEET-UG</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT/XAT/MAT</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-exam">BRABU/NIMCET</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">PAT / UGC-NET</span></td></tr>
+      </table>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">BA/BSc/BCom (3 Yrs)</span><span class="v v-gold">₹15,000–30,000 Total</span></div>
+      <div class="key-val"><span class="k">BCA (3 Yrs)</span><span class="v v-gold">~₹26,000 Total</span></div>
+      <div class="key-val"><span class="k">BBA (3 Yrs)</span><span class="v v-gold">₹30,000–60,000 Total</span></div>
+      <div class="key-val"><span class="k">B.Ed. (2 Yrs)</span><span class="v v-gold">~₹1,35,500 Total</span></div>
+      <div class="key-val"><span class="k">MA (2 Yrs)</span><span class="v v-gold">₹6,900–16,000 Total</span></div>
+      <div class="key-val"><span class="k">MSc (2 Yrs)</span><span class="v v-gold">₹15,000–25,000 Total</span></div>
+      <div class="key-val"><span class="k">MBA (2 Yrs)</span><span class="v v-gold">₹1,50,000–2,00,000</span></div>
+      <div class="key-val"><span class="k">PhD (per year)</span><span class="v v-gold">₹6,400–6,900/yr</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Reservation Policy</div>
+      <div class="key-val"><span class="k">SC</span><span class="v">15%</span></div>
+      <div class="key-val"><span class="k">ST</span><span class="v">1%</span></div>
+      <div class="key-val"><span class="k">OBC</span><span class="v">27%</span></div>
+      <div class="key-val"><span class="k">EWS</span><span class="v">10%</span></div>
+      <div class="key-val"><span class="k">Women (Horizontal)</span><span class="v v-gold">35%</span></div>
+      <div class="key-val"><span class="k">PwD (Horizontal)</span><span class="v">3%</span></div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge = document.getElementById('shortlistBadge');
+    const navBtn = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added'); sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'BRABU added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added'); sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown'))
+      document.getElementById('streamDropdown').classList.remove('open');
+  });
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

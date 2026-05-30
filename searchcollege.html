@@ -1,0 +1,895 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SearchCollege – University Counselling Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./first.css"/>
+</head>
+<body>
+ 
+<div id="loginPage" class="page active">
+  <div class="login-bg">
+    <div class="login-orb orb1"></div>
+    <div class="login-orb orb2"></div>
+    <div class="login-orb orb3"></div>
+    <div class="login-grid"></div>
+  </div>
+  <div class="login-container">
+    <div class="login-left">
+      <div class="brand">
+        <div class="brand-icon">🎓</div>
+        <div>
+          <h1 class="brand-name">SearchCollege</h1>
+          <p class="brand-tagline">University Counselling Portal</p>
+        </div>
+      </div>
+      <div class="login-hero-text">
+        <h2>Find Your<br/>Dream College<br><span class="highlight">Shape Your Future</span></h2>
+        <p>Explore 100+ top universities across Punjab, Haryana, Uttar Pradesh & Bihar. Make informed decisions for your future.</p>
+        <div class="stats-row">
+          <div class="stat"><span>100+</span><small>Universities</small></div>
+          <div class="stat"><span>8</span><small>Streams</small></div>
+          <div class="stat"><span>Free</span><small>Counselling</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-card">
+        <h3>Shape Your Future</h3>
+        <p class="login-sub">Sign in to access your counselling dashboard</p>
+        <div id="loginAlert" class="alert hidden"></div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="loginName" placeholder="Enter your full name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="loginEmail" placeholder="you@example.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="loginPassword" placeholder="Enter password"/>
+            <button class="toggle-pw" onclick="togglePassword()">👁</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="checkbox-label"><input type="checkbox" id="rememberMe"/> Remember me</label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+        <button class="btn-login" onclick="handleLogin()"><span>Sign In</span><span class="btn-arrow">→</span></button>
+        <div class="divider"><span>or</span></div>
+        <button class="btn-demo" onclick="handleDemoLogin()">Continue as Demo User</button>
+        <p class="register-link">New student? <a href="#" onclick="showRegister()">Create account</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div id="streamPage" class="page">
+  <div class="stream-bg">
+    <div class="stream-grid-bg"></div>
+    <div class="stream-orb1"></div>
+    <div class="stream-orb2"></div>
+  </div>
+  <div class="stream-container">
+    <div class="stream-header">
+      <div class="stream-logo">
+        <span>🎓</span>
+        <span class="logo-text">SearchCollege</span>
+      </div>
+      <div class="stream-step"><span>2</span> Step 2 of 2 – Choose Your Stream</div>
+      <h1>What do you want to<br/><em>study?</em></h1>
+      <p>Select your preferred stream to see universities with matching courses. You can change this anytime.</p>
+    </div>
+    <div class="stream-grid" id="streamGrid"></div>
+    <div class="stream-actions">
+      <button class="btn-continue" id="continueBtn" onclick="proceedToMain()" disabled>
+        Continue to Universities →
+      </button>
+      <button class="btn-skip-stream" onclick="proceedToMain(true)">Browse All</button>
+    </div>
+  </div>
+</div>
+ 
+<div id="mainPage" class="page">
+ 
+  <nav class="navbar">
+    <div class="nav-brand"><span>🎓</span> SearchCollege</div>
+    <div class="nav-center"><span id="navWelcome">Welcome</span></div>
+    <div class="nav-right">
+      <div class="stream-badge-nav" id="navStreamBadge" style="display:none"></div>
+      <div class="shortlist-badge" onclick="showShortlist()">⭐ Shortlist <span id="shortlistCount">0</span></div>
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="scroll-search-standalone" style="position: sticky; top: 64px; z-index: 998; background:lightgrey; padding: 16px 24px; display: flex; justify-content: center; border-bottom: 1px solid #e8ecf5; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+    <div style="position:relative; width:100%; max-width:600px;">
+      <div class="scroll-search-mini" style="color:black; background-color:lightcyan; display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:12px; width:100%; box-shadow:0 2px 12px rgba(0,0,0,0.08); border: 1px solid black; box-sizing:border-box;">
+        <span style="font-size:18px;">🔍</span>
+        <input
+          type="text"
+          id="scrollSearchInput"
+          placeholder="Search universities, city, course..."
+          oninput="toggleClearBtn(this.value); showAutoSuggestions(this.value)"
+          onkeydown="handleSuggestionKey(event)"
+          autocomplete="off"
+          style="border:none; background:transparent; outline:none; width:100%; font-size:15px; color:#1e293b;"
+        />
+        <button onclick="clearAutoSearch()" id="clearSearchBtn" style="display:none; background:none; border:none; cursor:pointer; font-size:16px; color:#64748b;">✕</button>
+      </div>
+      <div id="autoSuggestBox" style="
+        display:none;
+        position:absolute;
+        top:calc(100% + 6px);
+        left:0; right:0;
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 8px 30px rgba(0,0,0,0.15);
+        z-index:9999;
+        max-height:340px;
+        overflow-y:auto;
+        border:1px solid #e2e8f0;
+      "></div>
+    </div>
+  </div>
+ 
+  <div class="scroll-filter-bar" id="scrollFilterBar" style="position:sticky; top:140px; z-index:997;">
+    <div class="scroll-filter-inner">
+      <span class="scroll-filter-label"></span>
+      <div class="scroll-filter-tabs">
+        <button class="scroll-tab active" data-type="all" onclick="scrollFilterByType(this,'all')">🏛 All</button>
+        <button class="scroll-tab" data-type="iit" onclick="scrollFilterByType(this,'iit')">🔬 IITs</button>
+        <button class="scroll-tab" data-type="nit" onclick="scrollFilterByType(this,'nit')">🔩 NITs</button>
+        <button class="scroll-tab" data-type="central" onclick="scrollFilterByType(this,'central')">🏛 Central</button>
+        <button class="scroll-tab" data-type="government" onclick="scrollFilterByType(this,'government')">🏢 Govt.</button>
+        <button class="scroll-tab" data-type="private" onclick="scrollFilterByType(this,'private')">🏫 Private</button>
+        <button class="scroll-tab" data-type="deemed" onclick="scrollFilterByType(this,'deemed')">📜 Deemed</button>
+        <button>  <div class="nav-location-tag" id="navLocationTag"
+           onclick="detectLocation()"
+           title="Click to detect your location">
+        <span class="loc-icon" id="navLocIcon"></span>
+        <span class="loc-text" id="navLocText">Detect Location</span>
+      </div></button>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1>Explore Universities for <span class="hero-hl">Admission Counselling</span></h1>
+      <p id="heroBannerDesc">Browse 100 universities across states — filter, compare, and shortlist your top choices</p>
+      <div id="heroStreamPill" class="hero-stream-pill" style="display:none">
+        <span>Showing universities for: <strong id="heroStreamName"></strong></span>
+        <button class="btn-change-stream" onclick="goToStreamPage()">Change Stream</button>
+      </div>
+    </div>
+    <div class="hero-decoration">
+      <div class="deco-circle c1"></div>
+      <div class="deco-circle c2"></div>
+      <div class="deco-circle c3"></div>
+    </div>
+  </div>
+ 
+  <div class="section-jumper">
+    <span class="section-jumper-label"></span>
+    <button onclick="jumpToSection('iit-section')">🔬 IITs</button>
+    <button onclick="jumpToSection('nit-section')">🔩 NITs</button>
+    <button onclick="jumpToSection('all-section')">🏛 All Universities</button>
+    <button onclick="jumpToSection('feedback-section')">💬 Feedback</button>
+  </div>
+
+  <div class="nearby-bar hidden" id="nearbyBar">
+    <span></span>
+    <p id="nearbyBarText">Finding colleges near you…</p>
+    <button class="btn-nearby" id="nearbyBtn" onclick="toggleNearby()">Show Nearby Colleges</button>
+    <button class="btn-close-nearby" onclick="closeNearbyBar()">✕</button>
+  </div>
+ 
+  <div class="institute-section" id="iit-section">
+    <div class="institute-section-header iit-header">
+      <div class="ish-left">
+        <div class="ish-icon iit-icon">🔬</div>
+        <div>
+          <h2>IITs <span>Indian Institutes of Technology</span></h2>
+        </div>
+      </div>
+      <div class="ish-stats">
+        <div class="ish-stat"><span id="iitCount">0</span><small>IITs</small></div>
+        <div class="ish-stat"><span>NIRF</span><small>Top Ranked</small></div>
+      </div>
+    </div>
+    <div class="institute-grid" id="iitGrid"></div>
+  </div>
+ 
+  <div class="institute-section" id="nit-section">
+    <div class="institute-section-header nit-header">
+      <div class="ish-left">
+        <div class="ish-icon nit-icon">🔩</div>
+        <div>
+          <h2>NITs <span>National Institutes of Technology</span></h2>
+        </div>
+      </div>
+      <div class="ish-stats">
+        <div class="ish-stat"><span id="nitCount">0</span><small>NITs</small></div>
+        <div class="ish-stat"><span>NAAC A+</span><small>Accredited</small></div>
+      </div>
+    </div>
+    <div class="institute-grid" id="nitGrid"></div>
+  </div>
+ 
+  <div class="all-univ-section" id="all-section">
+    <div class="all-univ-header">
+      <h2>🏛 All Universities</h2>
+    </div>
+ 
+    <div class="filter-bar">
+      <div class="filter-tabs" id="stateTabs">
+        <button class="tab active" data-state="all" onclick="filterByState(this,'all')">All States</button>
+        <button class="tab" data-state="Punjab" onclick="filterByState(this,'Punjab')">Punjab</button>
+        <button class="tab" data-state="Haryana" onclick="filterByState(this,'Haryana')">Haryana</button>
+        <button class="tab" data-state="Uttar Pradesh" onclick="filterByState(this,'Uttar Pradesh')">Uttar Pradesh</button>
+        <button class="tab" data-state="Bihar" onclick="filterByState(this,'Bihar')">Bihar</button>
+      </div>
+      <div class="sort-wrap">
+        <select id="sortSelect" onchange="filterColleges()">
+          <option value="default">Sort: Default</option>
+          <option value="az">Name A–Z</option>
+          <option value="za">Name Z–A</option>
+          <option value="rating">Top Rated</option>
+          <option value="distance">Nearest First</option>
+          <option value="fees_low">Fees: Low–High</option>
+        </select>
+      </div>
+    </div>
+
+    <input type="text" id="searchInput" style="display:none;" oninput="filterColleges()"/>
+ 
+    <div class="results-bar">
+      <span id="resultCount">Showing 100 universities</span>
+      <span id="activeStateLabel" class="state-pill">All States</span>
+      <span id="nearbyPill" class="nearby-pill hidden">Near Me</span>
+      <button class="clear-filters" id="clearFiltersBtn" onclick="clearAllFilters()" style="display:none">✕ Clear Filters</button>
+    </div>
+ 
+    <div class="college-grid" id="collegeGrid"></div>
+  </div>
+ 
+  <div class="feedback-section" id="feedback-section">
+    <div class="feedback-container">
+      <div class="feedback-header">
+        <div class="feedback-icon">💬</div>
+        <h2>Share Your Feedback</h2>
+        <p>Help us improve SearchCollege. Your opinion matters to us!</p>
+      </div>
+      <div class="feedback-form-wrap">
+        <div id="feedbackSuccess" class="feedback-success hidden">
+          <div class="fs-icon">🎉</div>
+          <h3>Thank you for your feedback!</h3>
+          <p>We appreciate you taking the time to share your thoughts. This helps us improve for every student.</p>
+          <button onclick="resetFeedback()">Submit Another Response</button>
+        </div>
+        <div id="feedbackFormBody">
+          <div class="feedback-name-row">
+            <div class="fb-group">
+              <label>Your Name <span class="req">*</span></label>
+              <input type="text" id="fbName" placeholder="Enter your name"/>
+            </div>
+            <div class="fb-group">
+              <label>Email <span class="opt">(optional)</span></label>
+              <input type="email" id="fbEmail" placeholder="you@example.com"/>
+            </div>
+          </div>
+          <div class="fb-group">
+            <label>Overall Rating <span class="req">*</span></label>
+            <div class="star-rating-wrap">
+              <div class="star-rating" id="starRating">
+                <span class="star" data-val="1" onmouseover="hoverRating(1)" onmouseout="unhoverRating()" onclick="setRating(1)">★</span>
+                <span class="star" data-val="2" onmouseover="hoverRating(2)" onmouseout="unhoverRating()" onclick="setRating(2)">★</span>
+                <span class="star" data-val="3" onmouseover="hoverRating(3)" onmouseout="unhoverRating()" onclick="setRating(3)">★</span>
+                <span class="star" data-val="4" onmouseover="hoverRating(4)" onmouseout="unhoverRating()" onclick="setRating(4)">★</span>
+                <span class="star" data-val="5" onmouseover="hoverRating(5)" onmouseout="unhoverRating()" onclick="setRating(5)">★</span>
+              </div>
+              <span class="star-label" id="starLabel">Click to rate</span>
+            </div>
+          </div>
+          <div class="fb-group">
+            <label>What did you like most?</label>
+            <div class="fb-chips" id="fbLikeChips">
+              <span class="fb-chip" onclick="toggleChip(this)">Easy to use</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Good data</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Helpful filters</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Nice design</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Stream selection</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Shortlist feature</span>
+              <span class="fb-chip" onclick="toggleChip(this)">IIT/NIT section</span>
+            </div>
+          </div>
+          <div class="fb-group">
+            <label>Your Message</label>
+            <textarea id="fbMessage" rows="4" placeholder="Tell us about your experience, suggestions, or anything we can improve…"></textarea>
+          </div>
+          <div class="fb-group">
+            <label>Would you recommend SearchCollege?</label>
+            <div class="fb-recommend">
+              <button class="fb-rec-btn" id="fbRecYes" onclick="setRecommend('yes')">👍 Yes, definitely!</button>
+              <button class="fb-rec-btn" id="fbRecMaybe" onclick="setRecommend('maybe')">🤔 Maybe</button>
+              <button class="fb-rec-btn" id="fbRecNo" onclick="setRecommend('no')">👎 Not really</button>
+            </div>
+          </div>
+          <div id="fbError" class="fb-error hidden">⚠️ Please enter your name and select a star rating.</div>
+          <button class="btn-submit-feedback" onclick="submitFeedback()">
+            <span>Submit Feedback</span><span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div id="shortlistModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>⭐ My Shortlisted Universities</h3>
+        <button onclick="closeShortlist()">✕</button>
+      </div>
+      <div class="modal-body" id="shortlistBody"><p class="empty-msg">No universities shortlisted yet.</p></div>
+      <div class="modal-footer">
+        <button class="btn-apply" onclick="applyAll()">Apply to All</button>
+        <button class="btn-clear" onclick="clearShortlist()">Clear All</button>
+      </div>
+    </div>
+  </div>
+ 
+  <div id="detailModal" class="modal-overlay hidden">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 id="detailTitle">University Details</h3>
+        <button onclick="closeDetail()">✕</button>
+      </div>
+      <div class="modal-body" id="detailBody"></div>
+    </div>
+  </div>
+ 
+  <footer class="footer">
+    <p>© 2026 SearchCollege – University Counselling Portal &nbsp;|&nbsp; Punjab • Haryana • Uttar Pradesh • Bihar</p>
+    <p>Powered by Central University of Punjab</p>
+  </footer>
+</div>
+<script src="./script.js"></script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SearchCollege – University Counselling Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./first.css"/>
+<style>
+  /* ── Filter bar: always visible, proper layout ── */
+  #scrollFilterBar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    min-height: 52px;
+  }
+
+  #scrollFilterBar .scroll-filter-inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 20px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: 52px;
+  }
+
+  /* Location pill */
+  #navLocationTag {
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    background: #ffffff !important;
+    border: 1.5px solid #c7d2e0 !important;
+    border-radius: 22px !important;
+    padding: 7px 16px !important;
+    cursor: pointer !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #1e3a5f !important;
+    white-space: nowrap !important;
+    transition: all .25s !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08) !important;
+    order: 0;
+  }
+  #navLocationTag:hover {
+    background: #f0f9ff !important;
+    border-color: #3b82f6 !important;
+    color: #1d4ed8 !important;
+    box-shadow: 0 3px 12px rgba(59,130,246,.2) !important;
+  }
+
+  /* Tabs container — far RIGHT */
+  #scrollFilterBar .scroll-filter-tabs {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+    order: 1;
+  }
+
+  /* Individual tab buttons */
+  #scrollFilterBar .scroll-tab {
+    padding: 6px 13px !important;
+    border-radius: 20px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    color: #475569 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: all .2s !important;
+  }
+  #scrollFilterBar .scroll-tab:hover {
+    background: #f0f9ff !important;
+    border-color: #93c5fd !important;
+    color: #1d4ed8 !important;
+  }
+  #scrollFilterBar .scroll-tab.active {
+    background: #1e3a5f !important;
+    border-color: #1e3a5f !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+</style>
+</head>
+<body>
+ 
+<div id="loginPage" class="page active">
+  <div class="login-bg">
+    <div class="login-orb orb1"></div>
+    <div class="login-orb orb2"></div>
+    <div class="login-orb orb3"></div>
+    <div class="login-grid"></div>
+  </div>
+  <div class="login-container">
+    <div class="login-left">
+      <div class="brand">
+        <div class="brand-icon">🎓</div>
+        <div>
+          <h1 class="brand-name">SearchCollege</h1>
+          <p class="brand-tagline">University Counselling Portal</p>
+        </div>
+      </div>
+      <div class="login-hero-text">
+        <h2>Find Your<br/>Dream College<br><span class="highlight">Shape Your Future</span></h2>
+        <p>Explore 100+ top universities across All India. Make informed decisions for your future.</p>
+        <div class="stats-row">
+          <div class="stat"><span>200+</span><small>Universities</small></div>
+          <div class="stat"><span>8</span><small>Streams</small></div>
+          <div class="stat"><span>Free</span><small>Counselling</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-card">
+        <h3>Shape Your Future</h3>
+        <p class="login-sub">Sign in to access your counselling dashboard</p>
+        <div id="loginAlert" class="alert hidden"></div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="loginName" placeholder="Enter your full name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="loginEmail" placeholder="you@example.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="loginPassword" placeholder="Enter password"/>
+            <button class="toggle-pw" onclick="togglePassword()">👁</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="checkbox-label"><input type="checkbox" id="rememberMe"/> Remember me</label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+        <button class="btn-login" onclick="handleLogin()"><span>Sign In</span><span class="btn-arrow">→</span></button>
+        <div class="divider"><span>or</span></div>
+        <button class="btn-demo" onclick="handleDemoLogin()">Continue as Demo User</button>
+        <p class="register-link">New student? <a href="#" onclick="showRegister()">Create account</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div id="streamPage" class="page">
+  <div class="stream-bg">
+    <div class="stream-grid-bg"></div>
+    <div class="stream-orb1"></div>
+    <div class="stream-orb2"></div>
+  </div>
+  <div class="stream-container">
+    <div class="stream-header">
+      <div class="stream-logo">
+        <span>🎓</span>
+        <span class="logo-text">SearchCollege</span>
+      </div>
+      <div class="stream-step"><span>2</span> Step 2 of 2 – Choose Your Stream</div>
+      <h1>What do you want to<br/><em>study?</em></h1>
+      <p>Select your preferred stream to see universities with matching courses. You can change this anytime.</p>
+    </div>
+    <div class="stream-grid" id="streamGrid"></div>
+    <div class="stream-actions">
+      <button class="btn-continue" id="continueBtn" onclick="proceedToMain()" disabled>
+        Continue to Universities →
+      </button>
+      <button class="btn-skip-stream" onclick="proceedToMain(true)">Browse All</button>
+    </div>
+  </div>
+</div>
+ 
+<div id="mainPage" class="page">
+ 
+  <nav class="navbar">
+    <div class="nav-brand"><span>🎓</span> SearchCollege</div>
+    <div class="nav-center"><span id="navWelcome">Welcome</span></div>
+    <div class="nav-right">
+      <div class="stream-badge-nav" id="navStreamBadge" style="display:none"></div>
+      <div class="shortlist-badge" onclick="showShortlist()">⭐ Shortlist <span id="shortlistCount">0</span></div>
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Search Bar -->
+  <div class="scroll-search-standalone" style="position: sticky; top: 64px; z-index: 998; background:lightgrey; padding: 16px 24px; display: flex; justify-content: center; border-bottom: 1px solid #e8ecf5; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+    <div style="position:relative; width:100%; max-width:600px;">
+      <div class="scroll-search-mini" style="color:black; background-color:lightcyan; display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:12px; width:100%; box-shadow:0 2px 12px rgba(0,0,0,0.08); border: 1px solid black; box-sizing:border-box;">
+        <span style="font-size:18px;">🔍</span>
+        <input
+          type="text"
+          id="scrollSearchInput"
+          placeholder="Search universities, city, course..."
+          oninput="toggleClearBtn(this.value); showAutoSuggestions(this.value)"
+          onkeydown="handleSuggestionKey(event)"
+          autocomplete="off"
+          style="border:none; background:transparent; outline:none; width:100%; font-size:15px; color:#1e293b;"
+        />
+        <button onclick="clearAutoSearch()" id="clearSearchBtn" style="display:none; background:none; border:none; cursor:pointer; font-size:16px; color:#64748b;">✕</button>
+      </div>
+      <div id="autoSuggestBox" style="
+        display:none;
+        position:absolute;
+        top:calc(100% + 6px);
+        left:0; right:0;
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 8px 30px rgba(0,0,0,0.15);
+        z-index:9999;
+        max-height:340px;
+        overflow-y:auto;
+        border:1px solid #e2e8f0;
+      "></div>
+    </div>
+  </div>
+
+  <!-- ── FILTER BAR: Location far LEFT · Tabs far RIGHT ── -->
+  <div class="scroll-filter-bar" id="scrollFilterBar" style="position:sticky; top:140px; z-index:997;">
+    <div class="scroll-filter-inner" style="
+        display:flex;
+        align-items:center;
+        padding:0 20px;
+        width:100%;
+        box-sizing:border-box;
+        justify-content:space-between;">
+
+      <!-- 📍 Location button — absolutely far LEFT -->
+      <div class="nav-location-tag" id="navLocationTag"
+           onclick="detectLocation()"
+           title="Click to detect your location"
+           style="flex-shrink:0;
+                  display:flex;
+                  align-items:center;
+                  gap:7px;
+                  background:#fff;
+                  border:1.5px solid #c7d2e0;
+                  border-radius:22px;
+                  padding:7px 16px;
+                  cursor:pointer;
+                  font-size:13px;
+                  font-weight:600;
+                  color:#1e3a5f;
+                  white-space:nowrap;
+                  transition:all .25s;
+                  box-shadow:0 2px 8px rgba(0,0,0,.08);">
+        <span class="loc-icon" id="navLocIcon"></span>
+        <span class="loc-text" id="navLocText">Detect Location</span>
+      </div>
+
+      <!-- Type filter tabs — pushed to far RIGHT via margin-left:auto -->
+      <div class="scroll-filter-tabs" style="
+          display:flex;
+          align-items:center;
+          gap:6px;
+          flex-wrap:nowrap;
+          margin-left:auto;">
+        <button class="scroll-tab active" data-type="all"        onclick="scrollFilterByType(this,'all')">🏛 All</button>
+        <button class="scroll-tab"        data-type="iit"        onclick="scrollFilterByType(this,'iit')">🔬 IITs</button>
+        <button class="scroll-tab"        data-type="nit"        onclick="scrollFilterByType(this,'nit')">🔩 NITs</button>
+        <button class="scroll-tab"        data-type="central"    onclick="scrollFilterByType(this,'central')">🏛 Central</button>
+        <button class="scroll-tab"        data-type="government" onclick="scrollFilterByType(this,'government')">🏢 Govt.</button>
+        <button class="scroll-tab"        data-type="private"    onclick="scrollFilterByType(this,'private')">🏫 Private</button>
+        <button class="scroll-tab"        data-type="deemed"     onclick="scrollFilterByType(this,'deemed')">📜 Deemed</button>
+      </div>
+      
+
+    </div>
+  </div>
+ 
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1>Explore Universities for <span class="hero-hl">Admission Counselling</span></h1>
+      <p id="heroBannerDesc">Browse 100 universities across states — filter, compare, and shortlist your top choices</p>
+      <div id="heroStreamPill" class="hero-stream-pill" style="display:none">
+        <span>Showing universities for: <strong id="heroStreamName"></strong></span>
+        <button class="btn-change-stream" onclick="goToStreamPage()">Change Stream</button>
+      </div>
+    </div>
+    <div class="hero-decoration">
+      <div class="deco-circle c1"></div>
+      <div class="deco-circle c2"></div>
+      <div class="deco-circle c3"></div>
+    </div>
+  </div>
+ 
+  <div class="section-jumper">
+    <span class="section-jumper-label"></span>
+    <button onclick="jumpToSection('iit-section')">🔬 IITs</button>
+    <button onclick="jumpToSection('nit-section')">🔩 NITs</button>
+    <button onclick="jumpToSection('all-section')">🏛 All Universities</button>
+    <button onclick="jumpToSection('feedback-section')">💬 Feedback</button>
+  </div>
+
+  <div class="nearby-bar hidden" id="nearbyBar">
+    <span></span>
+    <p id="nearbyBarText">Finding colleges near you…</p>
+    <button class="btn-nearby" id="nearbyBtn" onclick="toggleNearby()">Show Nearby Colleges</button>
+    <button class="btn-close-nearby" onclick="closeNearbyBar()">✕</button>
+  </div>
+ 
+  <div class="institute-section" id="iit-section">
+    <div class="institute-section-header iit-header">
+      <div class="ish-left">
+        <div class="ish-icon iit-icon">🔬</div>
+        <div>
+          <h2>IITs <span>Indian Institutes of Technology</span></h2>
+        </div>
+      </div>
+      <div class="ish-stats">
+        <div class="ish-stat"><span id="iitCount">0</span><small>IITs</small></div>
+        <div class="ish-stat"><span>NIRF</span><small>Top Ranked</small></div>
+      </div>
+    </div>
+    <div class="institute-grid" id="iitGrid"></div>
+  </div>
+ 
+  <div class="institute-section" id="nit-section">
+    <div class="institute-section-header nit-header">
+      <div class="ish-left">
+        <div class="ish-icon nit-icon">🔩</div>
+        <div>
+          <h2>NITs <span>National Institutes of Technology</span></h2>
+        </div>
+      </div>
+      <div class="ish-stats">
+        <div class="ish-stat"><span id="nitCount">0</span><small>NITs</small></div>
+        <div class="ish-stat"><span>NAAC A+</span><small>Accredited</small></div>
+      </div>
+    </div>
+    <div class="institute-grid" id="nitGrid"></div>
+  </div>
+ 
+  <div class="all-univ-section" id="all-section">
+    <div class="all-univ-header">
+      <h2>🏛 All Universities</h2>
+    </div>
+ 
+<div class="filter-bar">
+    <div class="filter-tabs" id="stateTabs">
+        <button class="tab active" data-state="all" onclick="filterByState(this,'all')">All States</button>
+
+        <button class="tab" data-state="Andhra Pradesh" onclick="filterByState(this,'Andhra Pradesh')">Andhra Pradesh</button>
+        <button class="tab" data-state="Arunachal Pradesh" onclick="filterByState(this,'Arunachal Pradesh')">Arunachal Pradesh</button>
+        <button class="tab" data-state="Assam" onclick="filterByState(this,'Assam')">Assam</button>
+        <button class="tab" data-state="Bihar" onclick="filterByState(this,'Bihar')">Bihar</button>
+        <button class="tab" data-state="Chhattisgarh" onclick="filterByState(this,'Chhattisgarh')">Chhattisgarh</button>
+        <button class="tab" data-state="Goa" onclick="filterByState(this,'Goa')">Goa</button>
+        <button class="tab" data-state="Gujarat" onclick="filterByState(this,'Gujarat')">Gujarat</button>
+        <button class="tab" data-state="Haryana" onclick="filterByState(this,'Haryana')">Haryana</button>
+        <button class="tab" data-state="Himachal Pradesh" onclick="filterByState(this,'Himachal Pradesh')">Himachal Pradesh</button>
+        <button class="tab" data-state="Jharkhand" onclick="filterByState(this,'Jharkhand')">Jharkhand</button>
+        <button class="tab" data-state="Karnataka" onclick="filterByState(this,'Karnataka')">Karnataka</button>
+        <button class="tab" data-state="Kerala" onclick="filterByState(this,'Kerala')">Kerala</button>
+        <button class="tab" data-state="Madhya Pradesh" onclick="filterByState(this,'Madhya Pradesh')">Madhya Pradesh</button>
+        <button class="tab" data-state="Maharashtra" onclick="filterByState(this,'Maharashtra')">Maharashtra</button>
+        <button class="tab" data-state="Manipur" onclick="filterByState(this,'Manipur')">Manipur</button>
+        <button class="tab" data-state="Meghalaya" onclick="filterByState(this,'Meghalaya')">Meghalaya</button>
+        <button class="tab" data-state="Mizoram" onclick="filterByState(this,'Mizoram')">Mizoram</button>
+        <button class="tab" data-state="Nagaland" onclick="filterByState(this,'Nagaland')">Nagaland</button>
+        <button class="tab" data-state="Odisha" onclick="filterByState(this,'Odisha')">Odisha</button>
+        <button class="tab" data-state="Punjab" onclick="filterByState(this,'Punjab')">Punjab</button>
+        <button class="tab" data-state="Rajasthan" onclick="filterByState(this,'Rajasthan')">Rajasthan</button>
+        <button class="tab" data-state="Sikkim" onclick="filterByState(this,'Sikkim')">Sikkim</button>
+        <button class="tab" data-state="Tamil Nadu" onclick="filterByState(this,'Tamil Nadu')">Tamil Nadu</button>
+        <button class="tab" data-state="Telangana" onclick="filterByState(this,'Telangana')">Telangana</button>
+        <button class="tab" data-state="Tripura" onclick="filterByState(this,'Tripura')">Tripura</button>
+        <button class="tab" data-state="Uttar Pradesh" onclick="filterByState(this,'Uttar Pradesh')">Uttar Pradesh</button>
+        <button class="tab" data-state="Uttarakhand" onclick="filterByState(this,'Uttarakhand')">Uttarakhand</button>
+        <button class="tab" data-state="West Bengal" onclick="filterByState(this,'West Bengal')">West Bengal</button>
+
+        <!-- Union Territories -->
+        <button class="tab" data-state="Andaman and Nicobar Islands" onclick="filterByState(this,'Andaman and Nicobar Islands')">Andaman & Nicobar</button>
+        <button class="tab" data-state="Chandigarh" onclick="filterByState(this,'Chandigarh')">Chandigarh</button>
+        <button class="tab" data-state="Dadra and Nagar Haveli and Daman and Diu" onclick="filterByState(this,'Dadra and Nagar Haveli and Daman and Diu')">Dadra & Daman</button>
+        <button class="tab" data-state="Delhi" onclick="filterByState(this,'Delhi')">Delhi</button>
+        <button class="tab" data-state="Jammu and Kashmir" onclick="filterByState(this,'Jammu and Kashmir')">Jammu & Kashmir</button>
+        <button class="tab" data-state="Ladakh" onclick="filterByState(this,'Ladakh')">Ladakh</button>
+        <button class="tab" data-state="Lakshadweep" onclick="filterByState(this,'Lakshadweep')">Lakshadweep</button>
+        <button class="tab" data-state="Puducherry" onclick="filterByState(this,'Puducherry')">Puducherry</button>
+
+    </div>
+</div>
+      <div class="sort-wrap">
+        <select id="sortSelect" onchange="filterColleges()">
+          <option value="default">Sort: Default</option>
+          <option value="az">Name A–Z</option>
+          <option value="za">Name Z–A</option>
+          <option value="rating">Top Rated</option>
+          <option value="distance">Nearest First</option>
+          <option value="fees_low">Fees: Low–High</option>
+        </select>
+      </div>
+    </div>
+
+    <input type="text" id="searchInput" style="display:none;" oninput="filterColleges()"/>
+ 
+    <div class="results-bar">
+      <span id="resultCount">Showing 100 universities</span>
+      <span id="activeStateLabel" class="state-pill">All States</span>
+      <span id="nearbyPill" class="nearby-pill hidden">Near Me</span>
+      <button class="clear-filters" id="clearFiltersBtn" onclick="clearAllFilters()" style="display:none">✕ Clear Filters</button>
+    </div>
+ 
+    <div class="college-grid" id="collegeGrid"></div>
+  </div>
+ 
+  <div class="feedback-section" id="feedback-section">
+    <div class="feedback-container">
+      <div class="feedback-header">
+        <div class="feedback-icon">💬</div>
+        <h2>Share Your Feedback</h2>
+        <p>Help us improve SearchCollege. Your opinion matters to us!</p>
+      </div>
+      <div class="feedback-form-wrap">
+        <div id="feedbackSuccess" class="feedback-success hidden">
+          <div class="fs-icon">🎉</div>
+          <h3>Thank you for your feedback!</h3>
+          <p>We appreciate you taking the time to share your thoughts. This helps us improve for every student.</p>
+          <button onclick="resetFeedback()">Submit Another Response</button>
+        </div>
+        <div id="feedbackFormBody">
+          <div class="feedback-name-row">
+            <div class="fb-group">
+              <label>Your Name <span class="req">*</span></label>
+              <input type="text" id="fbName" placeholder="Enter your name"/>
+            </div>
+            <div class="fb-group">
+              <label>Email <span class="opt">(optional)</span></label>
+              <input type="email" id="fbEmail" placeholder="you@example.com"/>
+            </div>
+          </div>
+          <div class="fb-group">
+            <label>Overall Rating <span class="req">*</span></label>
+            <div class="star-rating-wrap">
+              <div class="star-rating" id="starRating">
+                <span class="star" data-val="1" onmouseover="hoverRating(1)" onmouseout="unhoverRating()" onclick="setRating(1)">★</span>
+                <span class="star" data-val="2" onmouseover="hoverRating(2)" onmouseout="unhoverRating()" onclick="setRating(2)">★</span>
+                <span class="star" data-val="3" onmouseover="hoverRating(3)" onmouseout="unhoverRating()" onclick="setRating(3)">★</span>
+                <span class="star" data-val="4" onmouseover="hoverRating(4)" onmouseout="unhoverRating()" onclick="setRating(4)">★</span>
+                <span class="star" data-val="5" onmouseover="hoverRating(5)" onmouseout="unhoverRating()" onclick="setRating(5)">★</span>
+              </div>
+              <span class="star-label" id="starLabel">Click to rate</span>
+            </div>
+          </div>
+          <div class="fb-group">
+            <label>What did you like most?</label>
+            <div class="fb-chips" id="fbLikeChips">
+              <span class="fb-chip" onclick="toggleChip(this)">Easy to use</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Good data</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Helpful filters</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Nice design</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Stream selection</span>
+              <span class="fb-chip" onclick="toggleChip(this)">Shortlist feature</span>
+              <span class="fb-chip" onclick="toggleChip(this)">IIT/NIT section</span>
+            </div>
+          </div>
+          <div class="fb-group">
+            <label>Your Message</label>
+            <textarea id="fbMessage" rows="4" placeholder="Tell us about your experience, suggestions, or anything we can improve…"></textarea>
+          </div>
+          <div class="fb-group">
+            <label>Would you recommend SearchCollege?</label>
+            <div class="fb-recommend">
+              <button class="fb-rec-btn" id="fbRecYes" onclick="setRecommend('yes')">👍 Yes, definitely!</button>
+              <button class="fb-rec-btn" id="fbRecMaybe" onclick="setRecommend('maybe')">🤔 Maybe</button>
+              <button class="fb-rec-btn" id="fbRecNo" onclick="setRecommend('no')">👎 Not really</button>
+            </div>
+          </div>
+          <div id="fbError" class="fb-error hidden">⚠️ Please enter your name and select a star rating.</div>
+          <button class="btn-submit-feedback" onclick="submitFeedback()">
+            <span>Submit Feedback</span><span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div id="shortlistModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>⭐ My Shortlisted Universities</h3>
+        <button onclick="closeShortlist()">✕</button>
+      </div>
+      <div class="modal-body" id="shortlistBody"><p class="empty-msg">No universities shortlisted yet.</p></div>
+      <div class="modal-footer">
+        <button class="btn-apply" onclick="applyAll()">Apply to All</button>
+        <button class="btn-clear" onclick="clearShortlist()">Clear All</button>
+      </div>
+    </div>
+  </div>
+ 
+  <div id="detailModal" class="modal-overlay hidden">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 id="detailTitle">University Details</h3>
+        <button onclick="closeDetail()">✕</button>
+      </div>
+      <div class="modal-body" id="detailBody"></div>
+    </div>
+  </div>
+ 
+  <footer class="footer">
+    <p>© 2026 SearchCollege – University Counselling Portal &nbsp;|&nbsp; Punjab • Haryana • Uttar Pradesh • Bihar</p>
+    <p>Powered by Central University of Punjab</p>
+  </footer>
+</div>
+<script src="./script.js"></script>
+</body>
+</html>

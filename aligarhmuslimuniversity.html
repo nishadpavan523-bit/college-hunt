@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aligarh Muslim University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+ 
+  /* ── NAV ── */
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+ 
+  /* Stream Dropdown */
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+ 
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+ 
+  /* ── HERO ── */
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac  { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-gold  { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-blue  { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-purple{ background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac  .value { color: var(--accent-green); }
+  .hb-gold  .value { color: var(--gold); }
+  .hb-blue  .value { color: #63b3ed; }
+  .hb-purple.value { color: #b794f4; }
+ 
+  /* ── TABS ── */
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; position: sticky; top: 60px; z-index: 90; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+ 
+  /* ── LAYOUT ── */
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+ 
+  /* ── CARDS ── */
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+ 
+  /* ── COURSE ROWS ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-med  { background: rgba(245,101,101,0.12); color: #fc8181; border: 1px solid rgba(245,101,101,0.25); }
+  .tag-law  { background: rgba(159,122,234,0.12); color: #b794f4; border: 1px solid rgba(159,122,234,0.25); }
+ 
+  /* ── GRIDS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+ 
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+ 
+  /* ── SIDEBAR ── */
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 60%; }
+  .v-gold { color: var(--gold) !important; }
+  .v-green { color: var(--accent-green) !important; }
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+  .exam-table tr:last-child td { border-bottom: none; }
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+ 
+  /* ── NOTE ── */
+  .note { background: rgba(245,166,35,0.07); border-left: 3px solid var(--gold); border-radius: 0 10px 10px 0; padding: 14px 18px; font-size: 0.83rem; color: var(--muted); line-height: 1.7; margin-bottom: 22px; }
+ 
+  /* ── PHD TAGS ── */
+  .phd-category { margin-bottom: 16px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+ 
+  /* ── SCHOLARSHIP ── */
+  .sc-card { background: rgba(72,187,120,0.08); border: 1px solid rgba(72,187,120,0.2); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .sc-card:last-child { margin-bottom: 0; }
+  .sc-title { font-size: 0.85rem; font-weight: 600; color: #48bb78; margin-bottom: 4px; }
+  .sc-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.6; }
+ 
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); line-height:1.65; }
+ 
+  /* ── PLACEMENTS ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  .recruiter-list { display:flex; flex-wrap:wrap; gap:10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+ 
+  /* ── CAMPUS LIFE ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:flex-start; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; line-height:1.55; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; margin-top:1px; }
+ 
+  /* ── DURATION TABLE ── */
+  .dur-table { width:100%; border-collapse:collapse; }
+  .dur-table th { text-align:left; padding:10px 14px; background:rgba(255,255,255,0.03); color:var(--muted); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; }
+  .dur-table td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.82rem; vertical-align:top; }
+  .dur-table tr:last-child td { border-bottom:none; }
+ 
+  /* ── FACULTY TABLE ── */
+  .fac-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .fac-table th { text-align:left; padding:8px 12px; background:rgba(255,255,255,0.04); color:var(--muted); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; }
+  .fac-table td { padding:9px 12px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; color:var(--white); }
+  .fac-table tr:last-child td { border-bottom:none; }
+  .fac-table td:first-child { font-weight:600; color:var(--gold); width:30px; }
+  .fac-table td:nth-child(2) { font-weight:600; }
+  .fac-table td:nth-child(3) { color:var(--muted); font-size:0.73rem; }
+ 
+  /* Logout modal */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+ 
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+        <div class="stream-opt" onclick="selectStream(this,'Medicine','🏥')">🏥 Medicine</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+ 
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Aligarh Muslim University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🕌</div>
+    <div class="uni-title">
+      <h1>Aligarh Muslim <span>University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Aligarh, Uttar Pradesh</strong></span>
+        <span class="meta-chip">🏛️ <strong>Central University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1920</strong></span>
+        <span class="meta-chip">⭐ <strong>Institution of National Importance</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.amu.ac.in/','_blank')" title="Open official website">🌐 <strong>amu.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC Grade</span>
+      <span class="value">A+</span>
+    </div>
+    <div class="hero-badge hb-gold">
+      <span class="label">NIRF 2025</span>
+      <span class="value">#10</span>
+    </div>
+    <div class="hero-badge hb-blue">
+      <span class="label">Campus Area</span>
+      <span class="value" style="color:#63b3ed;">1,155 Acres</span>
+    </div>
+    <div class="hero-badge hb-purple">
+      <span class="label">Students</span>
+      <span class="value" style="color:#b794f4;">37,000+</span>
+    </div>
+  </div>
+</div>
+ 
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Scholarships</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+ 
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+ 
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="note">
+        <strong style="color:var(--white);">Aligarh Muslim University (AMU)</strong> is a premier Central University and <strong style="color:var(--white);">Institution of National Importance</strong> established in 1920. Originally founded as MAO College in 1875 by <strong style="color:var(--white);">Sir Syed Ahmad Khan</strong>, AMU has grown into one of India's largest residential universities with 13 faculties, 117 departments, and 37,000+ students — including learners from 50+ countries. Accredited with <strong style="color:var(--white);">NAAC A+</strong> and ranked <strong style="color:var(--white);">#10 among Indian Universities (NIRF 2025)</strong>.
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1920 (AMU Act)</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Central University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Aligarh, UP</div></div>
+          <div class="info-chip"><div class="lbl">NAAC</div><div class="val">A+ (CGPA 3.35)</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">1,155 Acres</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Rank 2025</div><div class="val">#10 University</div></div>
+          <div class="info-chip"><div class="lbl">Faculties</div><div class="val">13 Faculties</div></div>
+          <div class="info-chip"><div class="lbl">Departments</div><div class="val">117 Teaching Depts</div></div>
+          <div class="info-chip"><div class="lbl">Total Courses</div><div class="val">300+ Courses</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>13 Faculties of AMU</div>
+        <table class="fac-table">
+          <thead><tr><th>#</th><th>Faculty</th><th>Key Areas</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Arts</td><td>English, Urdu, Hindi, Arabic, Persian, History, Islamic Studies, Philosophy, Fine Arts, Music</td></tr>
+            <tr><td>2</td><td>Social Sciences</td><td>Economics, Political Science, Sociology, Psychology, Education, Geography, Women's Studies</td></tr>
+            <tr><td>3</td><td>Science</td><td>Physics, Chemistry, Mathematics, Statistics, Botany, Zoology, Geology, Computer Science</td></tr>
+            <tr><td>4</td><td>Medicine (JNMC)</td><td>MBBS, MD, MS, MDS, Anatomy, Physiology, Pharmacology, Surgery, ENT</td></tr>
+            <tr><td>5</td><td>Engineering &amp; Technology</td><td>Civil, Mechanical, Electrical, Electronics, Chemical, Computer Engineering, Architecture</td></tr>
+            <tr><td>6</td><td>Law</td><td>BA LLB (5-yr), LLB (3-yr), LLM, PhD Law</td></tr>
+            <tr><td>7</td><td>Management Studies</td><td>MBA, MBA Executive, PhD Management</td></tr>
+            <tr><td>8</td><td>Commerce</td><td>B.Com (Hons.), M.Com, PhD Commerce</td></tr>
+            <tr><td>9</td><td>Agriculture</td><td>Agriculture, Soil Science, Plant Pathology, Horticulture, Food Science</td></tr>
+            <tr><td>10</td><td>Unani Medicine (IUMS)</td><td>BUMS, MD Unani – traditional Unani medicine</td></tr>
+            <tr><td>11</td><td>Life Sciences</td><td>Biotechnology, Bioinformatics, Microbiology, Wildlife Sciences, Biochemistry</td></tr>
+            <tr><td>12</td><td>Theology</td><td>Islamic Studies, Sunni &amp; Shia Theology, Arabic, Comparative Religion</td></tr>
+            <tr><td>13</td><td>International Studies</td><td>International Relations, Diplomacy, West Asian Studies</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Rankings &amp; Recognition</div>
+        <div class="grid-2">
+          <div class="info-chip"><div class="lbl">NIRF University Rank</div><div class="val">#10 (2025)</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Overall Rank</div><div class="val">#19 (2025)</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Engineering</div><div class="val">#34 (2025)</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Medical</div><div class="val">#28 (2025)</div></div>
+          <div class="info-chip"><div class="lbl">India Today 2025</div><div class="val">#3 Govt. University</div></div>
+          <div class="info-chip"><div class="lbl">QS World Rank 2026</div><div class="val">1001–1200</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Highlights</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Maulana Azad Library</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>JNMC Hospital (1,200+ beds)</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>LBS Stadium</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Bank Branches &amp; ATMs</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi Campus</div>
+          <div class="fac-item"><div class="fac-icon">💡</div>AMU Incubation Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏫</div>AMU Schools (KG–XII)</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>Botanical Garden</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ~₹2,000 per year (extremely subsidised) · Monthly dining ~₹1,400/month · 13,000+ hostel capacity</span>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">B.Tech / B.E. · 4 Years · AMUEEE</span>
+          <div class="course-row"><div class="course-name">B.Tech Computer Science &amp; Engineering</div><div class="course-meta"><strong>AMUEEE</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹76K–2.56L</span></div>
+          <div class="course-row"><div class="course-name">B.Tech Electronics &amp; Communication Engineering</div><div class="course-meta"><strong>AMUEEE</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹76K–2.56L</span></div>
+          <div class="course-row"><div class="course-name">B.Tech Electrical Engineering</div><div class="course-meta"><strong>AMUEEE</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹76K–2.56L</span></div>
+          <div class="course-row"><div class="course-name">B.Tech Mechanical Engineering</div><div class="course-meta"><strong>AMUEEE</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹76K–2.56L</span></div>
+          <div class="course-row"><div class="course-name">B.Tech Civil Engineering</div><div class="course-meta"><strong>AMUEEE</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹76K–2.56L</span></div>
+          <div class="course-row"><div class="course-name">B.Tech Chemical / Petroleum Engineering</div><div class="course-meta"><strong>AMUEEE</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹76K–2.56L</span></div>
+          <div class="course-row"><div class="course-name">B.Arch (Bachelor of Architecture)</div><div class="course-meta"><strong>AMUEEE+NATA</strong>Entrance</div><div class="course-meta"><strong>5 Yrs</strong>Duration</div><span class="tag tag-fees">₹1L–2.82L</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 12th with PCM, min. 50% · Age &lt; 24 years · Exam: AMUEEE (May)</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">Medicine &amp; Allied Health · NEET-UG</span>
+          <div class="course-row"><div class="course-name">MBBS – Jawaharlal Nehru Medical College</div><div class="course-meta"><strong>NEET-UG</strong>Entrance</div><div class="course-meta"><strong>5.5 Yrs</strong>Duration</div><span class="tag tag-med">~₹26K</span></div>
+          <div class="course-row"><div class="course-name">BDS (Bachelor of Dental Surgery)</div><div class="course-meta"><strong>NEET-UG</strong>Entrance</div><div class="course-meta"><strong>5 Yrs</strong>Duration</div><span class="tag tag-med">₹40–60K</span></div>
+          <div class="course-row"><div class="course-name">BUMS (Unani Medicine &amp; Surgery)</div><div class="course-meta"><strong>NEET-UG</strong>Entrance</div><div class="course-meta"><strong>5.5 Yrs</strong>Duration</div><span class="tag tag-med">₹30–50K</span></div>
+          <div class="course-row"><div class="course-name">B.Sc Nursing / B.Pharm / BPT / B.Optom</div><div class="course-meta"><strong>NEET-UG</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-med">Varies</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 12th with PCB, min. 50% + valid NEET-UG score + MCC / AYUSH counselling</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">Arts, Humanities &amp; Social Sciences · AMUEE / CUET-UG</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">BA (Hons.) English</span><span class="phd-tag">BA (Hons.) Urdu</span><span class="phd-tag">BA (Hons.) Hindi</span>
+            <span class="phd-tag">BA (Hons.) Arabic</span><span class="phd-tag">BA (Hons.) Persian</span><span class="phd-tag">BA (Hons.) History</span>
+            <span class="phd-tag">BA (Hons.) Islamic Studies</span><span class="phd-tag">BA (Hons.) Philosophy</span>
+            <span class="phd-tag">BA (Hons.) Fine Arts</span><span class="phd-tag">BA (Hons.) Music</span>
+            <span class="phd-tag">BA (Hons.) Economics</span><span class="phd-tag">BA (Hons.) Political Science</span>
+            <span class="phd-tag">BA (Hons.) Sociology</span><span class="phd-tag">BA (Hons.) Psychology</span>
+            <span class="phd-tag">BA (Hons.) Geography</span><span class="phd-tag">BA (Hons.) Mass Communication</span>
+            <span class="phd-tag">B.F.A.</span><span class="phd-tag">B.P.Ed.</span><span class="phd-tag">B.Lib.I.Sc.</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Approx. Fee: ₹17,400–35,000 (total 3 yrs) · Entrance: AMUEE or CUET-UG</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">Science &amp; Life Sciences · AMUEE / CUET-UG</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">B.Sc (Hons.) Physics</span><span class="phd-tag">B.Sc (Hons.) Chemistry</span>
+            <span class="phd-tag">B.Sc (Hons.) Mathematics</span><span class="phd-tag">B.Sc (Hons.) Statistics</span>
+            <span class="phd-tag">B.Sc (Hons.) Botany</span><span class="phd-tag">B.Sc (Hons.) Zoology</span>
+            <span class="phd-tag">B.Sc (Hons.) Computer Science</span><span class="phd-tag">B.Sc (Hons.) Geology</span>
+            <span class="phd-tag">B.Sc (Hons.) Biotechnology</span><span class="phd-tag">B.Sc (Hons.) Bioinformatics</span>
+            <span class="phd-tag">B.Sc (Hons.) Biochemistry</span><span class="phd-tag">B.Sc (Hons.) Microbiology</span>
+            <span class="phd-tag">B.Voc Production Technology</span><span class="phd-tag">B.Voc Fashion Design</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Approx. Fee: ₹17,400–35,000 (total 3 yrs)</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">Commerce, Management &amp; Law · AMUEE</span>
+          <div class="course-row"><div class="course-name">B.Com (Hons.) – 280 seats</div><div class="course-meta"><strong>AMUEE</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹17–35K</span></div>
+          <div class="course-row"><div class="course-name">BBA (Bachelor of Business Administration)</div><div class="course-meta"><strong>AMUEE</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹17–35K</span></div>
+          <div class="course-row"><div class="course-name">BCA (Bachelor of Computer Applications)</div><div class="course-meta"><strong>AMUEE</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹17–35K</span></div>
+          <div class="course-row"><div class="course-name">BA LLB (Hons.) – 5-Year Integrated Law</div><div class="course-meta"><strong>AMUEE</strong>Entrance</div><div class="course-meta"><strong>5 Yrs</strong>Duration</div><span class="tag tag-law">₹30–60K</span></div>
+          <div class="course-row"><div class="course-name">B.Sc Agriculture (Hons.)</div><div class="course-meta"><strong>AMUEE</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹20–40K</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">SC/ST get 5% marks relaxation · 50% seats reserved for Muslim candidates (Minority Institution)</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">M.A. · 2 Years · CUET-PG · ₹11K–40K</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">English</span><span class="phd-tag">Urdu</span><span class="phd-tag">Hindi</span>
+            <span class="phd-tag">Arabic</span><span class="phd-tag">Persian</span><span class="phd-tag">Linguistics</span>
+            <span class="phd-tag">History</span><span class="phd-tag">Islamic Studies</span><span class="phd-tag">Philosophy</span>
+            <span class="phd-tag">Fine Arts</span><span class="phd-tag">Music</span><span class="phd-tag">Economics</span>
+            <span class="phd-tag">Political Science</span><span class="phd-tag">Sociology</span><span class="phd-tag">Psychology</span>
+            <span class="phd-tag">Geography</span><span class="phd-tag">Mass Communication &amp; Journalism</span>
+            <span class="phd-tag">Education</span><span class="phd-tag">Women's Studies</span>
+            <span class="phd-tag">Social Work</span><span class="phd-tag">Library &amp; Information Science</span>
+            <span class="phd-tag">Physical Education</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Bachelor's in relevant subject, min. 50% · Entrance: CUET-PG + AMU OEPS counselling</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. · 2 Years · CUET-PG · ₹11K–40K</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span><span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Statistics</span><span class="phd-tag">Computer Science</span><span class="phd-tag">Geology</span>
+            <span class="phd-tag">Botany</span><span class="phd-tag">Zoology</span><span class="phd-tag">Biochemistry</span>
+            <span class="phd-tag">Biotechnology</span><span class="phd-tag">Bioinformatics</span><span class="phd-tag">Microbiology</span>
+            <span class="phd-tag">Environmental Science</span><span class="phd-tag">Wildlife Sciences</span>
+            <span class="phd-tag">Food Science &amp; Technology</span><span class="phd-tag">Agriculture (specialisations)</span>
+          </div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">M.Tech · 2 Years · GATE · ₹50K–1L</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">Computer Science &amp; Engineering</span>
+            <span class="phd-tag">Electronics &amp; Communication</span>
+            <span class="phd-tag">Electrical Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Chemical Engineering</span>
+            <span class="phd-tag">Artificial Intelligence &amp; ML</span>
+            <span class="phd-tag">M.Arch</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Tech/B.E. min. 55% + valid GATE score · Admission via GATE merit + AMU counselling</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">Management &amp; Commerce · 2 Years</span>
+          <div class="course-row"><div class="course-name">MBA – Faculty of Management Studies &amp; Research (209 seats)</div><div class="course-meta"><strong>AMU MBA / CAT</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹80K–2.51L</span></div>
+          <div class="course-row"><div class="course-name">MBA (Executive) – for working professionals</div><div class="course-meta"><strong>AMU Entrance</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">Varies</span></div>
+          <div class="course-row"><div class="course-name">M.Com (Master of Commerce)</div><div class="course-meta"><strong>CUET-PG</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹16–24K</span></div>
+          <div class="course-row"><div class="course-name">MCA (Master of Computer Applications)</div><div class="course-meta"><strong>CUET-PG</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹30–60K</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">MBA: AMU MBA Entrance Exam or CAT score + Group Discussion + Interview</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">Law &amp; Medicine · PG · AMUEE / NEET-PG</span>
+          <div class="course-row"><div class="course-name">LLM (Master of Laws) – 1 or 2 Years</div><div class="course-meta"><strong>AMUEE</strong>Entrance</div><div class="course-meta"><strong>1–2 Yrs</strong>Duration</div><span class="tag tag-law">₹10–50K</span></div>
+          <div class="course-row"><div class="course-name">LLB – 3 Years (for graduates)</div><div class="course-meta"><strong>AMUEE</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-law">₹30–60K</span></div>
+          <div class="course-row"><div class="course-name">MD / MS (various specialisations)</div><div class="course-meta"><strong>NEET-PG</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-med">₹60K–1.5L</span></div>
+          <div class="course-row"><div class="course-name">MDS (Master of Dental Surgery)</div><div class="course-meta"><strong>NEET-MDS</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-med">₹60K–1.5L</span></div>
+          <div class="course-row"><div class="course-name">MD Unani / M.Pharm / MPT / MPH</div><div class="course-meta"><strong>NEET-PG / GPAT</strong>Entrance</div><div class="course-meta"><strong>2–3 Yrs</strong>Duration</div><span class="tag tag-med">Varies</span></div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs (60+ Specialisations)</div>
+ 
+        <div class="phd-category">
+          <div class="phd-cat-label">Faculty of Arts</div>
+          <div class="phd-tags">
+            <span class="phd-tag">English</span><span class="phd-tag">Urdu</span><span class="phd-tag">Hindi</span>
+            <span class="phd-tag">Arabic</span><span class="phd-tag">Persian</span><span class="phd-tag">Linguistics</span>
+            <span class="phd-tag">History</span><span class="phd-tag">Islamic Studies</span>
+            <span class="phd-tag">Philosophy</span><span class="phd-tag">Fine Arts</span><span class="phd-tag">Music</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Faculty of Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Economics</span><span class="phd-tag">Political Science</span>
+            <span class="phd-tag">Sociology</span><span class="phd-tag">Psychology</span>
+            <span class="phd-tag">Geography</span><span class="phd-tag">Education</span>
+            <span class="phd-tag">Women's Studies</span><span class="phd-tag">Mass Communication</span>
+            <span class="phd-tag">Library &amp; Information Science</span><span class="phd-tag">Physical Education</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Faculty of Science</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span><span class="phd-tag">Statistics</span>
+            <span class="phd-tag">Botany</span><span class="phd-tag">Zoology</span>
+            <span class="phd-tag">Geology</span><span class="phd-tag">Computer Science</span>
+            <span class="phd-tag">Biochemistry</span><span class="phd-tag">Environmental Science</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Faculty of Life Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Biotechnology</span><span class="phd-tag">Microbiology</span>
+            <span class="phd-tag">Bioinformatics</span><span class="phd-tag">Wildlife Sciences</span>
+            <span class="phd-tag">Food Science &amp; Technology</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Faculty of Engineering &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">CS &amp; Engineering</span><span class="phd-tag">Electronics &amp; Communication</span>
+            <span class="phd-tag">Electrical Engineering</span><span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span><span class="phd-tag">Chemical Engineering</span>
+            <span class="phd-tag">Architecture</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Faculty of Medicine</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Anatomy</span><span class="phd-tag">Physiology</span>
+            <span class="phd-tag">Pharmacology</span><span class="phd-tag">Microbiology (Medical)</span>
+            <span class="phd-tag">Community Medicine</span><span class="phd-tag">Biochemistry (Medical)</span>
+            <span class="phd-tag">Surgery</span><span class="phd-tag">Paediatrics</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce, Law &amp; Management</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Commerce</span><span class="phd-tag">Management Studies</span><span class="phd-tag">Law</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Agriculture, Theology &amp; Unani Medicine</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Agriculture</span><span class="phd-tag">Soil Science</span>
+            <span class="phd-tag">Horticulture</span><span class="phd-tag">Theology (Sunni &amp; Shia)</span>
+            <span class="phd-tag">Unani Medicine</span>
+          </div>
+        </div>
+ 
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission (UGC 2022 Norms)</div>
+          <div class="key-val"><span class="k">General / OBC / EWS</span><span class="v">55% in relevant PG degree</span></div>
+          <div class="key-val"><span class="k">SC / ST / PwD</span><span class="v">50% in relevant PG degree</span></div>
+          <div class="key-val"><span class="k">UGC-NET / CSIR-NET / JRF</span><span class="v">Exempted from written test → Direct Interview</span></div>
+          <div class="key-val"><span class="k">GATE Qualified</span><span class="v">Merit-based (Engineering &amp; Technology)</span></div>
+          <div class="key-val"><span class="k">AMU PhD Entrance Test</span><span class="v">Written Test (70%) + Interview (30%)</span></div>
+          <div class="key-val"><span class="k">Duration</span><span class="v">Min. 3 Yrs – Max. 6 Yrs (Part-time available)</span></div>
+          <div class="key-val" style="border:none;"><span class="k">Research Proposal</span><span class="v">1,500–2,500 words at interview stage</span></div>
+        </div>
+ 
+        <div style="margin-top:14px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:#48bb78;margin-bottom:10px;">PhD Fees (2025-26)</div>
+          <div class="key-val"><span class="k">Humanities / Social Sciences (total)</span><span class="v v-green">~₹39,900</span></div>
+          <div class="key-val"><span class="k">Science / Engineering (total)</span><span class="v v-green">₹60K–1.54L</span></div>
+          <div class="key-val"><span class="k">Annual Hostel Fee</span><span class="v v-green">₹2,000/year</span></div>
+          <div class="key-val" style="border:none;"><span class="k">Monthly Dining</span><span class="v v-green">~₹1,400/month</span></div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Register for Entrance Exam</div>
+            <div class="tl-desc">Register for AMUEEE (B.Tech/B.Arch – May), AMUEE (BA/B.Com/Law), NEET-UG (medical), CUET-UG/PG, GATE (M.Tech), CAT (MBA), or NEET-PG as applicable. AMU portal: amucontrollerexams.com</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Fill AMU OEPS Application</div>
+            <div class="tl-desc">Register on the AMU Online Entrance &amp; Processing System (OEPS) at amucontrollerexams.com with your qualifying exam enrolment number. Pay application fee: ₹1,000–₹2,500 depending on course and category.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Appear for Exam / Wait for Score</div>
+            <div class="tl-desc">Sit for AMUEEE / AMUEE conducted by AMU directly. For NEET / CUET / GATE, use NTA / IIT scores. AMU OEPS processing begins after score declaration.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Merit List &amp; Counselling</div>
+            <div class="tl-desc">AMU releases subject-wise merit lists. Candidates are called for centralised counselling on the AMU portal for seat allotment based on rank, category, and preference.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Document Verification</div>
+            <div class="tl-desc">Submit originals: 10th &amp; 12th certificates, category certificate (SC/ST/OBC/EWS), transfer certificate, migration certificate, and two passport-size photographs at the respective faculty.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Fee Payment &amp; Enrolment</div>
+            <div class="tl-desc">Pay semester fees online via the AMU portal. Hostel allocation through the concerned Hall of Residence. Collect student ID and complete library/hostel registration.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">B.Tech / B.Arch</div><div></div><div></div><span class="tag tag-exam">AMUEEE (May)</span></div>
+        <div class="course-row"><div class="course-name">BA / BSc / BCom / BCA / BBA / BA LLB</div><div></div><div></div><span class="tag tag-exam">AMUEE / CUET-UG</span></div>
+        <div class="course-row"><div class="course-name">MBBS / BDS / BUMS</div><div></div><div></div><span class="tag tag-exam">NEET-UG</span></div>
+        <div class="course-row"><div class="course-name">M.A. / M.Sc. / M.Com / MCA</div><div></div><div></div><span class="tag tag-exam">CUET-PG</span></div>
+        <div class="course-row"><div class="course-name">M.Tech</div><div></div><div></div><span class="tag tag-exam">GATE Score</span></div>
+        <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">AMU MBA Exam / CAT</span></div>
+        <div class="course-row"><div class="course-name">LLM</div><div></div><div></div><span class="tag tag-exam">AMUEE</span></div>
+        <div class="course-row"><div class="course-name">MD / MS / MDS</div><div></div><div></div><span class="tag tag-exam">NEET-PG / NEET-MDS</span></div>
+        <div class="course-row"><div class="course-name">PhD</div><div></div><div></div><span class="tag tag-exam">UGC-NET / GATE / AMU Test</span></div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 5: SCHOLARSHIPS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Fellowships &amp; Scholarships</div>
+        <div class="sc-card">
+          <div class="sc-title">🏆 UGC-JRF / SRF Fellowship</div>
+          <div class="sc-desc">₹37,000/month (JRF, years 1–2) → ₹42,000/month (SRF, year 3+) + HRA. For PhD scholars qualifying UGC-NET JRF. One of the most competitive national fellowships.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">🔬 CSIR-JRF Fellowship (Science)</div>
+          <div class="sc-desc">₹37,000/month + HRA (revised 2025 rates) for science discipline PhD scholars qualifying CSIR-NET JRF. Covers all living expenses during PhD tenure.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">🌟 PM Research Fellowship (PMRF)</div>
+          <div class="sc-desc">₹70,000–80,000/month for meritorious PhD scholars from IITs, NITs, and top central universities. One of India's highest PhD stipends.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">💡 DST-INSPIRE PhD Fellowship</div>
+          <div class="sc-desc">₹31,000/month + ₹20,000 annual contingency grant from the Department of Science &amp; Technology for science stream PhD scholars.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">🕌 Maulana Azad National Fellowship (MANF)</div>
+          <div class="sc-desc">For students from minority communities (Muslim, Christian, Sikh, Buddhist, Jain, Parsi) pursuing M.Phil/PhD. Covers tuition, maintenance, HRA, and contingency.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">📘 National Fellowships for SC / ST Students</div>
+          <div class="sc-desc">NFSC (SC) and NFST (ST) fellowships: ₹31,000/month for PhD scholars from Scheduled Castes and Scheduled Tribes. Administered via the Ministry of Social Justice.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">🎓 AMU Merit-cum-Means Scholarship</div>
+          <div class="sc-desc">For financially weaker meritorious students at AMU. Covers partial to full tuition fee waiver based on academic performance and family income assessment.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">📋 UP State Scholarship</div>
+          <div class="sc-desc">80–90% fee waiver for eligible UP domicile students (SC/ST/OBC/Minority/General EWS) via the National Scholarship Portal (NSP). Applicable across UG, PG, and PhD levels.</div>
+        </div>
+        <div class="sc-card">
+          <div class="sc-title">🏛️ ICMR-JRF (Medical Research)</div>
+          <div class="sc-desc">₹37,000/month for PhD scholars in biomedical and health science research, funded by the Indian Council of Medical Research.</div>
+        </div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:6px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:8px;">Note</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.7;">Scholarship amounts and eligibility criteria are subject to revision by the funding agency. Students should verify current rates at <strong style="color:var(--white);">amu.ac.in</strong> and the National Scholarship Portal at <strong style="color:var(--white);">scholarships.gov.in</strong>.</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+ 
+        <div class="campus-section">
+          <div class="campus-section-title">🏠 Halls of Residence</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🏛️</span><div><strong>20 Halls of Residence</strong> with 80+ hostels across the 1,155-acre campus — 13,000+ hostel capacity for boys and girls separately</div></div>
+            <div class="event-item"><span class="event-icon">🌹</span><div><strong>Notable Halls:</strong> Abdullah Hall &amp; Fatima Hall (women), Sir Syed Hall, Mumtaz Hall, Hasan Hall — each with dining hall, reading rooms, prayer room &amp; indoor games</div></div>
+            <div class="event-item"><span class="event-icon">💸</span><div><strong>Extremely Subsidised:</strong> Annual hostel fee ~₹2,000/year · Monthly dining ~₹1,400/month · AC rooms available in select newer hostels</div></div>
+          </div>
+        </div>
+ 
+        <div class="campus-section">
+          <div class="campus-section-title">📚 Academic &amp; Research Facilities</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">📖</div>Maulana Azad Library (2.3M+ books)</div>
+            <div class="fac-item"><div class="fac-icon">🏥</div>JNMCH Hospital (1,200+ beds)</div>
+            <div class="fac-item"><div class="fac-icon">🔬</div>State-of-the-Art Research Labs</div>
+            <div class="fac-item"><div class="fac-icon">💻</div>Computer Centre (High-Speed Internet)</div>
+            <div class="fac-item"><div class="fac-icon">💡</div>AMU Incubation Centre</div>
+            <div class="fac-item"><div class="fac-icon">📜</div>Ibn Sina Academy (Rare Manuscripts)</div>
+          </div>
+        </div>
+ 
+        <div class="campus-section">
+          <div class="campus-section-title">🏅 Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football / Hockey Fields</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton / Squash Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Indoor Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🏟️</div>Lal Bahadur Shastri Stadium</div>
+          </div>
+        </div>
+ 
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Sir Syed Day</strong> — Annual celebration on 17th October honouring the founder Sir Syed Ahmad Khan with speeches, awards, and cultural programmes</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Annual Sports Meet</strong> — Inter-hall and inter-university competitions across cricket, football, hockey, athletics and indoor sports</div></div>
+            <div class="event-item"><span class="event-icon">🎓</span><div><strong>Convocation</strong> — Annual degree ceremony at Kennedy Auditorium / Strachey Hall for all graduating students across 13 faculties</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>AMU Science Congress</strong> — Annual research symposium with paper presentations, workshops and invited lectures from leading scientists</div></div>
+          </div>
+        </div>
+ 
+        <div class="campus-section" style="margin-bottom:0;">
+          <div class="campus-section-title">🌐 Other Campus Facilities</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Post Office</span>
+            <span class="phd-tag">Bank Branches &amp; ATMs</span>
+            <span class="phd-tag">Shopping Centre</span>
+            <span class="phd-tag">AMU Schools (KG–XII)</span>
+            <span class="phd-tag">Botanical Garden</span>
+            <span class="phd-tag">NCC &amp; Scouts Units</span>
+            <span class="phd-tag">Guest House</span>
+            <span class="phd-tag">University Health Centre</span>
+            <span class="phd-tag">Distance Education (CDOE)</span>
+            <span class="phd-tag">3 Off-Campus Centres</span>
+            <span class="phd-tag">Kennedy Auditorium</span>
+            <span class="phd-tag">170,000+ Alumni Network</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placements &amp; Alumni</div>
+        <div class="stat-row">
+          <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">₹5–12 LPA</div><div class="s-lbl">Avg Package (B.Tech)</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--gold);">170K+</div><div class="s-lbl">Alumni Worldwide</div></div>
+          <div class="stat-box"><div class="s-val" style="color:#63b3ed;">50+</div><div class="s-lbl">Foreign Student Nations</div></div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Wipro</span><span class="recruiter-tag">Tata Steel</span>
+          <span class="recruiter-tag">ICICI Bank</span><span class="recruiter-tag">Tech Mahindra</span>
+          <span class="recruiter-tag">Zoho</span><span class="recruiter-tag">Publicis Sapient</span>
+          <span class="recruiter-tag">EFS (Dubai)</span>
+        </div>
+        <div style="margin-top:14px;font-size:0.78rem;color:var(--muted);line-height:1.75;">
+          <strong style="color:var(--white);">Notable Alumni:</strong> Raghuram Rajan (former RBI Governor), Iftikhar Chaudhry (former Chief Justice of Pakistan), Shahid Afridi (cricketer), and many distinguished diplomats, scientists, judges, and public figures.
+        </div>
+      </div>
+    </div>
+ 
+  </div><!-- /left -->
+ 
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.amu.ac.in/','_blank')">🌐 Visit Official Website</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://amucontrollerexams.com/','_blank')">📋 Admission Portal</button>
+    </div>
+ 
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Facts</div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">Central University</span></div>
+      <div class="key-val"><span class="k">Status</span><span class="v">Institution of National Importance</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Aligarh, Uttar Pradesh</span></div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1920 (AMU Act)</span></div>
+      <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">A+ (CGPA 3.35)</span></div>
+      <div class="key-val"><span class="k">NIRF Rank 2025</span><span class="v v-gold">#10 University · #19 Overall</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">1,155 Acres (Residential)</span></div>
+      <div class="key-val"><span class="k">Total Students</span><span class="v">37,000+ (50+ countries)</span></div>
+      <div class="key-val"><span class="k">Faculties</span><span class="v">13 | 117 Departments</span></div>
+      <div class="key-val"><span class="k">Hostel Fee</span><span class="v v-gold">~₹2,000/year</span></div>
+      <div class="key-val"><span class="k">Off-Campus Centres</span><span class="v">Murshidabad · Malappuram · Kishanganj</span></div>
+    </div>
+ 
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.Tech / B.Arch</td><td><span class="tag tag-exam">AMUEEE</span></td></tr>
+        <tr><td>BA / B.Com / BCA / BA LLB</td><td><span class="tag tag-exam">AMUEE / CUET-UG</span></td></tr>
+        <tr><td>MBBS / BDS / BUMS</td><td><span class="tag tag-exam">NEET-UG</span></td></tr>
+        <tr><td>M.A. / M.Sc. / MCA</td><td><span class="tag tag-exam">CUET-PG</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">AMU / CAT</span></td></tr>
+        <tr><td>MD / MS / MDS</td><td><span class="tag tag-exam">NEET-PG</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">NET / GATE / AMU Test</span></td></tr>
+      </table>
+    </div>
+ 
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Total Course)</div>
+      <div class="key-val"><span class="k">B.Tech (4 Yrs)</span><span class="v v-gold">₹76K–2.56L</span></div>
+      <div class="key-val"><span class="k">B.Arch (5 Yrs)</span><span class="v v-gold">₹1L–2.82L</span></div>
+      <div class="key-val"><span class="k">MBBS (5.5 Yrs)</span><span class="v v-gold">~₹26,191</span></div>
+      <div class="key-val"><span class="k">BDS (5 Yrs)</span><span class="v v-gold">₹40K–60K</span></div>
+      <div class="key-val"><span class="k">BA / BSc / BCom (3 Yrs)</span><span class="v v-gold">₹17K–35K</span></div>
+      <div class="key-val"><span class="k">BA LLB (5 Yrs)</span><span class="v v-gold">₹30K–60K</span></div>
+      <div class="key-val"><span class="k">M.A. / M.Sc. (2 Yrs)</span><span class="v v-gold">₹11K–40K</span></div>
+      <div class="key-val"><span class="k">MBA (2 Yrs)</span><span class="v v-gold">₹80K–2.51L</span></div>
+      <div class="key-val"><span class="k">M.Tech (2 Yrs)</span><span class="v v-gold">₹50K–1L</span></div>
+      <div class="key-val"><span class="k">PhD (Humanities)</span><span class="v v-gold">~₹39,900</span></div>
+      <div class="key-val"><span class="k">Hostel / Year</span><span class="v v-gold">~₹2,000</span></div>
+    </div>
+ 
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Avg. Package (B.Tech)</span><span class="v" style="color:var(--accent-green);">₹5–12 LPA</span></div>
+      <div class="key-val"><span class="k">Top Recruiters</span><span class="v">Wipro, TCS, Zoho, Tech Mahindra</span></div>
+      <div class="key-val"><span class="k">Alumni Network</span><span class="v">170,000+ Worldwide</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+ 
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+ 
+<script>
+  let shortlisted = false;
+ 
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'Aligarh Muslim University added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+ 
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+ 
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+ 
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+ 
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+ 
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+ 
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

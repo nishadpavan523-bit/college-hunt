@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visva-Bharati University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  /* NAV */
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  /* TABS */
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* LAYOUT */
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* COURSE TABLE */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  /* GRID */
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* RECRUITERS */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* FACILITIES */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* SIDEBAR */
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* HOSTEL */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* PhD */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  /* ADMISSIONS */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* PLACEMENTS */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* CAMPUS LIFE */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* CUTOFF TABLE */
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.75rem; margin-top:10px; }
+  .cutoff-table th { background:rgba(245,166,35,0.1); color:var(--gold); padding:8px 10px; text-align:left; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid var(--border); }
+  .cutoff-table td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); }
+  .cutoff-table tr:last-child td { border-bottom:none; }
+  .cutoff-table td:first-child { color:var(--white); font-weight:500; }
+  .cutoff-table tr:hover td { background:rgba(245,166,35,0.04); }
+
+  /* MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    .cutoff-table { font-size:0.68rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Arts &amp; Humanities</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Visva-Bharati University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>Visva-<span>Bharati</span> University</h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Santiniketan, West Bengal</strong></span>
+        <span class="meta-chip">🏛️ <strong>Central University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1921</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://visvabharati.ac.in/','_blank')" title="Open official website">🌐 <strong>visvabharati.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC Grade</span>
+      <span class="value">A</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">1,129 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Courses</span>
+      <span class="value">200+</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Scholarships</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1921</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Central University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Santiniketan, WB</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC "A" Grade</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">1,129 Acres</div></div>
+          <div class="info-chip"><div class="lbl">Admission</div><div class="val">CUET-UG / CUET-PG</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About Visva-Bharati University</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Visva-Bharati University, founded by Nobel Laureate <strong style="color:var(--white);">Rabindranath Tagore</strong> in 1921, is one of India's oldest and most distinctive central universities located in Santiniketan, West Bengal. Accredited with <strong style="color:var(--white);">NAAC "A" Grade</strong>, the university is organized into 10 academic institutes called <strong style="color:var(--white);">Bhavanas</strong> with over 50 teaching departments offering 200+ courses across UG, PG, and PhD levels. Spanning a sprawling 1,129-acre campus, it is renowned globally for its unique open-air teaching tradition, rich cultural heritage, and excellence in arts, music, languages, sciences, and agriculture.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic Institutes (Bhavanas)</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📖</div>Vidya Bhavana<br><small style="color:var(--muted)">Humanities &amp; Social Sci.</small></div>
+          <div class="fac-item"><div class="fac-icon">🔤</div>Bhasha Bhavana<br><small style="color:var(--muted)">Languages &amp; Literature</small></div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Siksha Bhavana<br><small style="color:var(--muted)">Sciences</small></div>
+          <div class="fac-item"><div class="fac-icon">🌱</div>Palli Siksha Bhavana<br><small style="color:var(--muted)">Agricultural Sciences</small></div>
+          <div class="fac-item"><div class="fac-icon">🎨</div>Kala Bhavana<br><small style="color:var(--muted)">Fine Arts</small></div>
+          <div class="fac-item"><div class="fac-icon">🎵</div>Sangit Bhavana<br><small style="color:var(--muted)">Music, Dance &amp; Drama</small></div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>Vinaya Bhavana<br><small style="color:var(--muted)">Education</small></div>
+          <div class="fac-item"><div class="fac-icon">🏘️</div>Palli Samgathan Vibhaga<br><small style="color:var(--muted)">Rural Reconstruction</small></div>
+        </div>
+
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Labs</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Open-Air Theatre</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Centre</div>
+          <div class="fac-item"><div class="fac-icon">🌳</div>Open-Air Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🛡️</div>24×7 Security</div>
+        </div>
+
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostels (20+)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostels</div>
+          <div class="hostel-item"><span class="hostel-icon">🌍</span> International Accommodation</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Multi-kitchen Mess (4 meals)</div>
+          <div class="hostel-item"><span class="hostel-icon">📺</span> TV &amp; Recreation Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">💧</span> AquaGuard Drinking Water</div>
+          <div class="hostel-item"><span class="hostel-icon">👔</span> Laundry Services</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24/7 CCTV Surveillance</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Seat Rent:</span>
+          <span style="color:var(--muted);"> ₹1,200 (4-seater) to ₹3,600 (single) per semester · Mess: ₹990–₹2,100/month · SC/ST exempted from seat rent</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.A. (Honours) · 3 Years · CUET-UG · Vidya Bhavana</span>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) Bengali</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) English</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) Hindi</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) Economics</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) History</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) Philosophy, Geography, Odia, Sanskrit, Comparative Religion, A.I.H.C. &amp; A.</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with 60% (General) · 54% (OBC) · Pass (SC/ST)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Sc. (Honours) · 3 Years · CUET-UG · Siksha Bhavana</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Mathematics</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹13,670+</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Physics, Chemistry, Zoology, Botany, Statistics, Computer Science</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹13,670+</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Agriculture — Palli Siksha Bhavana</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹25,215</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Fine Arts &amp; Performing Arts · CUET-UG + Aptitude Test</span>
+          <div class="course-row">
+            <div class="course-name">B.F.A. — Painting, Sculpture, Graphic Art (Printmaking), Ceramics &amp; Glass, Textile Design, History of Art</div>
+            <div class="course-meta"><strong>CUET + Aptitude</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Mus. — Rabindra Sangit, Hindustani Vocal, Sitar, Esraj, Tabla, Pakhawaj, Kathakali &amp; Manipuri Dance</div>
+            <div class="course-meta"><strong>CUET + Practical</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">Music</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Professional UG · CUET-UG</span>
+          <div class="course-row">
+            <div class="course-name">B.S.W. (Bachelor of Social Work) — Palli Sangana Vibhaga</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,270</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Ed. (Bachelor of Education) — Vinaya Bhavana</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,070</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.P.Ed. (Bachelor of Physical Education) — Vinaya Bhavana</div>
+            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">Sports</span>
+          </div>
+        </div>
+
+        <div style="margin-top:18px;">
+          <div class="card-title" style="margin-bottom:12px;"><span class="dot"></span>CUET-UG Expected Cutoffs</div>
+          <table class="cutoff-table">
+            <tr><th>Course</th><th>General</th><th>OBC</th><th>SC</th><th>ST</th><th>EWS</th></tr>
+            <tr><td>B.A. Hons. Economics</td><td>465–469</td><td>385–400</td><td>310–330</td><td>280–300</td><td>400–420</td></tr>
+            <tr><td>B.A. Hons. History</td><td>555–559</td><td>470–490</td><td>390–420</td><td>360–380</td><td>470–500</td></tr>
+            <tr><td>B.A. Hons. Bengali</td><td>389–400</td><td>310–330</td><td>250–280</td><td>220–250</td><td>330–360</td></tr>
+            <tr><td>B.Sc. Hons. Chemistry</td><td>345–349</td><td>280–300</td><td>220–240</td><td>200–220</td><td>300–320</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.A. · 2 Years · CUET-PG · ₹10,120–₹12,070</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Bengali</span><span class="phd-tag">Hindi</span><span class="phd-tag">Odia</span>
+            <span class="phd-tag">English</span><span class="phd-tag">Sanskrit</span><span class="phd-tag">Persian</span>
+            <span class="phd-tag">Chinese</span><span class="phd-tag">Japanese</span><span class="phd-tag">Santali</span>
+            <span class="phd-tag">Indo-Tibetan</span><span class="phd-tag">Linguistics</span>
+            <span class="phd-tag">Ancient Indian History</span><span class="phd-tag">Philosophy</span>
+            <span class="phd-tag">Comparative Religion</span><span class="phd-tag">Economics</span>
+            <span class="phd-tag">Political Science</span><span class="phd-tag">History</span>
+            <span class="phd-tag">Anthropology</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Bhasha Bhavana &amp; Vidya Bhavana · Min. 45–55% in UG</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. · 2 Years · CUET-PG · ₹12,070–₹26,240</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Mathematics</span><span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span><span class="phd-tag">Botany</span>
+            <span class="phd-tag">Zoology</span><span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Computer Science</span><span class="phd-tag">Environmental Science</span>
+            <span class="phd-tag">Statistics</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Siksha Bhavana · Biotechnology fee: ₹26,240</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. Agriculture · 2 Years · CUET-PG · Palli Siksha Bhavana</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Agronomy</span><span class="phd-tag">Soil Science &amp; Agri. Chemistry</span>
+            <span class="phd-tag">Agricultural Extension</span><span class="phd-tag">Horticulture</span>
+            <span class="phd-tag">Plant Pathology</span><span class="phd-tag">Agricultural Entomology</span>
+            <span class="phd-tag">Animal Science (Poultry)</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Fine Arts, Music &amp; Drama · CUET-PG + Practical</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.F.A. Painting</span><span class="phd-tag">M.F.A. Sculpture</span>
+            <span class="phd-tag">M.F.A. Graphic Art</span><span class="phd-tag">M.F.A. Ceramics/Textile Design</span>
+            <span class="phd-tag">M.F.A. History of Art</span><span class="phd-tag">M.Des.</span>
+            <span class="phd-tag">M.A. Rabindra Sangit</span><span class="phd-tag">M.A. Hindustani Music</span>
+            <span class="phd-tag">M.A. Manipuri Dance</span><span class="phd-tag">M.A. Kathak Dance</span>
+            <span class="phd-tag">M.A. Drama &amp; Theatre Arts</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Kala Bhavana &amp; Sangit Bhavana · Practical/aptitude test required</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Other PG Programs · CUET-PG · ₹10,120–₹19,580</span>
+          <div class="phd-tags">
+            <span class="phd-tag">M.S.W. (Social Work)</span>
+            <span class="phd-tag">M.Ed.</span>
+            <span class="phd-tag">M.P.Ed.</span>
+            <span class="phd-tag">M.Sc. Yoga</span>
+          </div>
+        </div>
+
+        <div style="margin-top:18px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">CUET-PG Expected Score Range</div>
+          <div class="key-val"><span class="k">General</span><span class="v">50 – 145 Marks</span></div>
+          <div class="key-val" style="border:none"><span class="k">Reserved (OBC/SC/ST/EWS)</span><span class="v">Relaxation as per Govt. norms</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Bhasha Bhavana — Languages, Literature &amp; Culture</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Bengali</span><span class="phd-tag">English</span><span class="phd-tag">Hindi</span>
+            <span class="phd-tag">Odia</span><span class="phd-tag">Sanskrit</span><span class="phd-tag">Santali</span>
+            <span class="phd-tag">Chinese</span><span class="phd-tag">Japanese</span><span class="phd-tag">Arabic</span>
+            <span class="phd-tag">Persian</span><span class="phd-tag">Urdu</span>
+            <span class="phd-tag">Comparative Literature</span><span class="phd-tag">Indo-Tibetan Studies</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Siksha Bhavana — Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span><span class="phd-tag">Statistics</span>
+            <span class="phd-tag">Computer Science</span><span class="phd-tag">Botany</span>
+            <span class="phd-tag">Zoology</span><span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Environmental Science</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Vidya Bhavana — Humanities &amp; Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Ancient Indian History</span><span class="phd-tag">Philosophy</span>
+            <span class="phd-tag">Journalism &amp; Mass Communication</span>
+            <span class="phd-tag">Economics</span><span class="phd-tag">Social Work</span><span class="phd-tag">History</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Palli Siksha Bhavana — Agricultural Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Agronomy</span><span class="phd-tag">Soil Science</span>
+            <span class="phd-tag">Plant Pathology</span><span class="phd-tag">Agricultural Entomology</span>
+            <span class="phd-tag">Genetics &amp; Plant Breeding</span><span class="phd-tag">Horticulture</span>
+            <span class="phd-tag">Agricultural Economics</span><span class="phd-tag">Agricultural Engineering</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Sangit Bhavana — Music, Dance &amp; Drama</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Rabindra Sangit</span><span class="phd-tag">Hindustani Classical Music</span>
+            <span class="phd-tag">Manipuri Dance</span><span class="phd-tag">Rabindra Nritya</span>
+            <span class="phd-tag">Drama &amp; Theatre Arts</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Kala Bhavana — Fine Arts &amp; Vinaya Bhavana — Education</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Painting</span><span class="phd-tag">Sculpture</span>
+            <span class="phd-tag">Textile/Ceramics Design</span><span class="phd-tag">History of Art</span>
+            <span class="phd-tag">Education</span><span class="phd-tag">Physical Education</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree with 55% (General) / 50% (Reserved)</span></div>
+          <div class="key-val"><span class="k">Entrance Tests</span><span class="v">UGC-NET / CSIR-NET / SLET / GATE / VBRET</span></div>
+          <div class="key-val"><span class="k">Fellowships Accepted</span><span class="v">UGC Teacher Fellowship · DST-INSPIRE · Rajiv Gandhi / Maulana Azad</span></div>
+          <div class="key-val" style="border:none"><span class="k">PhD Fees (Approx.)</span><span class="v">₹840–₹1,200/yr tuition + ₹1,000–₹5,000 registration</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear for CUET (UG / PG)</div>
+            <div class="tl-desc">Register for and appear in CUET-UG (for undergraduate) or CUET-PG (for postgraduate) conducted by NTA. Fine Arts and Music programs additionally require an aptitude/practical test by the respective Bhavana.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register on VBU Admissions Portal</div>
+            <div class="tl-desc">Fill the application form on the official Visva-Bharati Admissions Portal with your CUET score, academic records, and personal details.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Wait for Merit / Rank List</div>
+            <div class="tl-desc">Subject-specific merit/rank lists are published on the official website. Check your rank and the cut-offs for your chosen program.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Counselling &amp; Document Verification</div>
+            <div class="tl-desc">Participate in the university counselling process. Submit original documents: 10th &amp; 12th marksheets, category certificate, CUET scorecard, and photographs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; Seat Confirmation</div>
+            <div class="tl-desc">Pay admission fees online through the university portal to confirm your seat. Hostel allotment is applied separately.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Mode Summary</div>
+        <div class="course-row">
+          <div class="course-name">UG Programs (B.A. / B.Sc. / B.S.W. / B.F.A.)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET-UG</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Fine Arts / Music / Dance (B.F.A. / B.Mus.)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET + Aptitude</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PG Programs (M.A. / M.Sc. / M.Ed. / MSW)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET-PG</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PG Fine Arts / Music / Yoga</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET-PG + DET</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NET / GATE / VBRET</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>General Eligibility</div>
+        <div class="key-val"><span class="k">UG — General</span><span class="v">60% in 10+2</span></div>
+        <div class="key-val"><span class="k">UG — OBC</span><span class="v">54% in 10+2</span></div>
+        <div class="key-val"><span class="k">UG — SC/ST</span><span class="v">Pass in 10+2</span></div>
+        <div class="key-val"><span class="k">PG — General</span><span class="v">45–55% in UG (Honours preferred)</span></div>
+        <div class="key-val"><span class="k">PG — Reserved</span><span class="v">5% relaxation from PG criteria</span></div>
+        <div class="key-val" style="border:none"><span class="k">PhD — General</span><span class="v">55% in Master's (50% for reserved)</span></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: SCHOLARSHIPS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Research Fellowships (PhD &amp; Post-Doctoral)</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🏅</span><div><strong>UGC-NET JRF/SRF</strong> — Awarded to candidates clearing UGC-NET/JRF exams. Covers stipend for doctoral research.</div></div>
+          <div class="event-item"><span class="event-icon">🔬</span><div><strong>DST INSPIRE Fellowship</strong> — For top-ranking students pursuing doctoral research in basic and applied sciences.</div></div>
+          <div class="event-item"><span class="event-icon">📋</span><div><strong>National Fellowship for ST/SC Candidates</strong> — Replaces the former Rajiv Gandhi National Fellowship for higher education.</div></div>
+          <div class="event-item"><span class="event-icon">👩‍🔬</span><div><strong>Post-Doctoral Fellowship for Women</strong> — UGC financial support for women pursuing post-doctoral studies.</div></div>
+          <div class="event-item"><span class="event-icon">⭐</span><div><strong>Dr. D.S. Kothari Post-Doctoral Fellowship</strong> — Highly sought-after fellowship for science and technology researchers.</div></div>
+          <div class="event-item"><span class="event-icon">📚</span><div><strong>Non-NET Fellowship</strong> — Monthly stipend for PhD/M.Phil scholars not receiving UGC-JRF.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Scholarships</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">👧</span><div><strong>PG Indira Gandhi Scholarship for Single Girl Child</strong> — Monthly stipend for female students who are the only child in their family.</div></div>
+          <div class="event-item"><span class="event-icon">🥇</span><div><strong>PG Merit Scholarship for University Rank Holders</strong> — Awarded to students securing 1st or 2nd rank across UGC-affiliated universities.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate &amp; General Scholarships</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🎓</span><div><strong>Merit &amp; Merit-cum-Means Scholarship</strong> — Awarded by Visva-Bharati to top 5–10 students per department based on academics and family income.</div></div>
+          <div class="event-item"><span class="event-icon">🌟</span><div><strong>Swami Vivekananda Merit Cum Means Scholarship</strong> — Prominent West Bengal state government scheme for meritorious students.</div></div>
+          <div class="event-item"><span class="event-icon">📝</span><div><strong>Post-Matric Scholarships</strong> — Available for SC, ST, OBC, EWS, and PwD category students.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Cultural Fests</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🌸</span><div><strong>Poush Mela</strong> — The famous annual fair held in December at Santiniketan, rooted in Tagore's tradition of celebrating community through art and music</div></div>
+            <div class="event-item"><span class="event-icon">🌺</span><div><strong>Basanta Utsav (Holi)</strong> — Celebrated uniquely at Santiniketan with songs, dances, and flower offerings in Tagore's style</div></div>
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Cultural Programmes</strong> — Regular musical evenings, dance recitals, drama performances, and art exhibitions by various Bhavanas</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony for graduating students across all programs and Bhavanas</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🌳</div>Open-Air Spaces</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Activities</div>
+          <div class="phd-tags">
+            <span class="phd-tag">NSS</span>
+            <span class="phd-tag">NCC</span>
+            <span class="phd-tag">Literary Society</span>
+            <span class="phd-tag">Fine Arts Club</span>
+            <span class="phd-tag">Music Society</span>
+            <span class="phd-tag">Dance Troupe</span>
+            <span class="phd-tag">Environmental Club</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Drama &amp; Theatre Club</span>
+            <span class="phd-tag">Agriculture Society</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏅 Recognition &amp; Heritage</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">⭐</span><div><strong>NAAC A Grade Accreditation</strong> — Recognized for academic quality and research excellence</div></div>
+            <div class="event-item"><span class="event-icon">🌍</span><div><strong>UNESCO Recognition</strong> — Santiniketan, the home of Visva-Bharati, is recognized as a World Heritage Site</div></div>
+            <div class="event-item"><span class="event-icon">🏛️</span><div><strong>Founded by Rabindranath Tagore</strong> — One of the oldest central universities in India with a legacy of over 100 years</div></div>
+            <div class="event-item"><span class="event-icon">🎨</span><div><strong>Unique Open-Air Learning</strong> — Tagore's philosophy of nature-based, open-classroom education continues as the university's identity</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://visvabharati.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1921</span></div>
+      <div class="key-val"><span class="k">Founded By</span><span class="v">Rabindranath Tagore</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">Central University</span></div>
+      <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">A Grade</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">1,129 Acres</span></div>
+      <div class="key-val"><span class="k">Total Courses</span><span class="v">200+</span></div>
+      <div class="key-val"><span class="k">Bhavanas</span><span class="v">10 Institutes · 50+ Depts.</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Santiniketan, WB</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course Type</th><th>Exam</th></tr>
+        <tr><td>UG Programs</td><td><span class="tag tag-exam">CUET-UG</span></td></tr>
+        <tr><td>Fine Arts / Music</td><td><span class="tag tag-exam">CUET + Aptitude</span></td></tr>
+        <tr><td>PG Programs</td><td><span class="tag tag-exam">CUET-PG</span></td></tr>
+        <tr><td>Yoga M.Sc.</td><td><span class="tag tag-exam">CUET-PG + DET</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">NET/GATE/VBRET</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Total)</div>
+      <div class="key-val"><span class="k">B.A. / B.F.A. / B.S.W.</span><span class="v v-gold">₹12,270</span></div>
+      <div class="key-val"><span class="k">B.Ed.</span><span class="v v-gold">₹12,070</span></div>
+      <div class="key-val"><span class="k">B.Sc. (Science)</span><span class="v v-gold">₹13,670–₹25,215</span></div>
+      <div class="key-val"><span class="k">M.A. / M.P.Ed.</span><span class="v v-gold">₹10,120–₹12,070</span></div>
+      <div class="key-val"><span class="k">M.Sc. / M.Ed.</span><span class="v v-gold">₹12,070–₹19,580</span></div>
+      <div class="key-val"><span class="k">M.Sc. Biotechnology</span><span class="v v-gold">₹26,240</span></div>
+      <div class="key-val"><span class="k">PhD (Tuition/yr)</span><span class="v v-gold">₹840–₹1,200</span></div>
+      <div class="key-val"><span class="k">Hostel Seat Rent/sem</span><span class="v v-gold">₹1,200–₹3,600</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Hostel Details</div>
+      <div class="key-val"><span class="k">Residences</span><span class="v">20+ Hostels</span></div>
+      <div class="key-val"><span class="k">Capacity</span><span class="v">1,800+ students</span></div>
+      <div class="key-val"><span class="k">Meals</span><span class="v">4 meals/day</span></div>
+      <div class="key-val"><span class="k">Mess Fee/month</span><span class="v v-gold">₹990–₹2,100</span></div>
+      <div class="key-val"><span class="k">SC/ST Seat Rent</span><span class="v">Exempted</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'Visva-Bharati University added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

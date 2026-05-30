@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GADVASU – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0f1535;--navy-mid:#1a2250;--navy-card:#1e2a5e;--gold:#f5a623;--gold-light:#ffc152;--white:#ffffff;--muted:#a0aec0;--accent-green:#48bb78;--card-bg:#1b2454;--border:rgba(245,166,35,0.2);--tag-bg:rgba(245,166,35,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+nav{background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Raleway',sans-serif;font-size:1.3rem;color:var(--gold);display:flex;align-items:center;gap:8px;}
+.nav-logo span{color:var(--white);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;transition:all 0.18s;}
+.btn-shortlist{background:var(--gold);color:var(--navy);}
+.btn-shortlist:hover{background:var(--gold-light);}
+.btn-shortlist.added{background:var(--accent-green);color:var(--white);}
+.btn-logout{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.25);}
+.btn-logout:hover{border-color:#f56565;color:#f56565;}
+.badge{background:var(--navy);color:var(--gold);border-radius:50%;width:18px;height:18px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:0.82rem;font-weight:500;color:var(--white);z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.hero{background:linear-gradient(135deg,#1a2462 0%,#2d3a8c 50%,#1a2462 100%);padding:40px 48px 36px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:80px;top:50%;transform:translateY(-50%);width:260px;height:260px;border-radius:50%;border:2px solid rgba(245,166,35,0.2);}
+.hero::after{content:'';position:absolute;right:110px;top:50%;transform:translateY(-50%);width:190px;height:190px;border-radius:50%;border:1px solid rgba(245,166,35,0.1);}
+.breadcrumb{font-size:0.75rem;color:var(--muted);margin-bottom:14px;}
+.breadcrumb a{color:var(--gold);text-decoration:none;cursor:pointer;}
+.uni-header{display:flex;align-items:flex-start;gap:22px;margin-bottom:22px;}
+.uni-logo{width:70px;height:70px;background:var(--white);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.uni-title h1{font-family:'Raleway',sans-serif;font-size:1.7rem;font-weight:800;line-height:1.2;margin-bottom:6px;}
+.uni-title h1 span{color:var(--gold);}
+.uni-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+.meta-chip{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 14px;font-size:0.72rem;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.meta-chip strong{color:var(--white);}
+.meta-chip.clickable{cursor:pointer;transition:all 0.18s;}
+.meta-chip.clickable:hover{border-color:var(--gold);color:var(--gold);}
+.hero-badges{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-badge{border-radius:10px;padding:10px 20px;display:flex;flex-direction:column;align-items:center;min-width:100px;}
+.hb-naac{background:rgba(72,187,120,0.15);border:1px solid rgba(72,187,120,0.3);}
+.hb-central{background:rgba(245,166,35,0.12);border:1px solid var(--border);}
+.hb-campus{background:rgba(99,179,237,0.12);border:1px solid rgba(99,179,237,0.3);}
+.hero-badge .label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.hero-badge .value{font-size:1rem;font-weight:700;margin-top:2px;}
+.hb-naac .value{color:var(--accent-green);}
+.hb-central .value{color:var(--gold);}
+.hb-campus .value{color:#63b3ed;}
+.tabs-bar{background:var(--navy-mid);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;padding:0 48px;gap:4px;overflow-x:auto;}
+.tab{padding:14px 20px;font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all 0.2s;user-select:none;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab:hover:not(.active){color:var(--white);}
+.content-wrap{max-width:1200px;margin:0 auto;padding:36px 32px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:24px;margin-bottom:22px;}
+.card-title{font-size:0.95rem;font-weight:700;color:var(--white);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.card-title .dot{width:4px;height:18px;background:var(--gold);border-radius:2px;}
+.course-type-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:var(--tag-bg);border:1px solid var(--border);border-radius:6px;padding:3px 10px;display:inline-block;margin-bottom:14px;}
+.course-row{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:11px 14px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);margin-bottom:8px;transition:background 0.2s;}
+.course-row:hover{background:rgba(245,166,35,0.06);border-color:var(--border);}
+.course-name{font-size:0.82rem;font-weight:500;}
+.course-meta{font-size:0.72rem;color:var(--muted);text-align:center;}
+.course-meta strong{display:block;color:var(--white);font-size:0.8rem;}
+.tag{border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-exam{background:rgba(99,179,237,0.15);color:#63b3ed;border:1px solid rgba(99,179,237,0.25);}
+.tag-fees{background:rgba(72,187,120,0.12);color:#68d391;border:1px solid rgba(72,187,120,0.25);}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.info-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 14px;font-size:0.78rem;}
+.info-chip .lbl{color:var(--muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.info-chip .val{font-weight:600;color:var(--white);}
+.recruiter-list{display:flex;flex-wrap:wrap;gap:10px;}
+.recruiter-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 16px;font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:default;}
+.recruiter-tag:hover{background:var(--tag-bg);border-color:var(--border);color:var(--gold);}
+.facility-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.fac-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;text-align:center;font-size:0.78rem;transition:all 0.2s;cursor:default;}
+.fac-item:hover{border-color:var(--border);background:var(--tag-bg);}
+.fac-icon{font-size:1.4rem;margin-bottom:5px;}
+.sidebar-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:22px;margin-bottom:20px;}
+.sidebar-title{font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.05em;}
+.key-val{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem;}
+.key-val:last-child{border-bottom:none;}
+.key-val .k{color:var(--muted);}
+.key-val .v{font-weight:600;color:var(--white);text-align:right;max-width:55%;}
+.v-gold{color:var(--gold)!important;}
+.exam-table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+.exam-table th{color:var(--muted);text-align:left;padding:6px 0;font-weight:500;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;}
+.exam-table td{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;}
+.exam-table tr:last-child td{border-bottom:none;}
+.cta-btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:0.85rem;font-weight:700;cursor:pointer;margin-bottom:10px;transition:all 0.2s;font-family:'Poppins',sans-serif;}
+.cta-primary{background:var(--gold);color:var(--navy);}
+.cta-primary:hover{background:var(--gold-light);}
+.cta-primary.added{background:var(--accent-green);color:var(--white);}
+.cta-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2);}
+.cta-outline:hover{border-color:var(--gold);color:var(--gold);}
+.hostel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hostel-item{display:flex;align-items:center;gap:8px;font-size:0.8rem;}
+.hostel-icon{font-size:1.1rem;}
+.phd-category{margin-bottom:14px;}
+.phd-cat-label{font-size:0.72rem;font-weight:600;color:var(--gold);margin-bottom:8px;}
+.phd-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.phd-tag{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 10px;font-size:0.72rem;color:var(--muted);}
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border);border-radius:2px;}
+.tl-item{position:relative;margin-bottom:20px;}
+.tl-item::before{content:'';position:absolute;left:-24px;top:4px;width:10px;height:10px;background:var(--gold);border-radius:50%;border:2px solid var(--navy-card);}
+.tl-title{font-size:0.82rem;font-weight:600;color:var(--white);margin-bottom:3px;}
+.tl-desc{font-size:0.75rem;color:var(--muted);}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.stat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;text-align:center;}
+.stat-box .s-val{font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.stat-box .s-lbl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.cutoff-table{width:100%;border-collapse:collapse;font-size:0.75rem;}
+.cutoff-table th{color:var(--gold);text-align:left;padding:7px 8px;font-weight:600;font-size:0.68rem;text-transform:uppercase;background:rgba(245,166,35,0.07);border-bottom:1px solid var(--border);}
+.cutoff-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.cutoff-table tr:last-child td{border-bottom:none;}
+.cutoff-table tr:hover td{background:rgba(245,166,35,0.04);}
+.fee-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px;}
+.fee-table th{color:var(--muted);text-align:left;padding:6px 8px;font-weight:500;font-size:0.7rem;text-transform:uppercase;background:rgba(255,255,255,0.03);}
+.fee-table td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;}
+.fee-table tr:last-child td{border-bottom:none;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--navy-card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:360px;width:90%;text-align:center;}
+.modal h3{font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+.modal p{font-size:0.82rem;color:var(--muted);margin-bottom:22px;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btns button{flex:1;padding:10px;border-radius:10px;border:none;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.modal-cancel{background:rgba(255,255,255,0.08);color:var(--white);}
+.modal-confirm{background:#f56565;color:var(--white);}
+@media(max-width:768px){.content-wrap{grid-template-columns:1fr;}.hero{padding:24px 20px;}.tabs-bar{padding:0 16px;}.facility-grid{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:1fr 1fr;}.stat-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">⭐ Shortlist <span class="badge" id="shortlistBadge">0</span></button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb"><a>Home</a> › <a>Universities</a> › GADVASU</div>
+  <div class="uni-header">
+    <div class="uni-logo">🐄</div>
+    <div class="uni-title">
+      <h1>Guru Angad Dev Veterinary &amp; Animal Sciences <span>University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Ludhiana, Punjab</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Veterinary University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2005</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.gadvasu.in/','_blank')">🌐 <strong>gadvasu.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac"><span class="label">Recognition</span><span class="value">UGC+ICAR</span></div>
+    <div class="hero-badge hb-central"><span class="label">Type</span><span class="value">Veterinary</span></div>
+    <div class="hero-badge hb-campus"><span class="label">Established</span><span class="value">2005</span></div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Fees & Hostel</div>
+  <div class="tab" onclick="switchTab(6,this)">Scholarships</div>
+</div>
+
+<div class="content-wrap">
+  <div>
+
+    <!-- OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2005</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Veterinary University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Ludhiana, Punjab</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC, ICAR, VCI</div></div>
+          <div class="info-chip"><div class="lbl">Short Name</div><div class="val">GADVASU</div></div>
+          <div class="info-chip"><div class="lbl">Campuses</div><div class="val">Multiple across Punjab</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About GADVASU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">Guru Angad Dev Veterinary and Animal Sciences University (GADVASU) is a specialized state university established in 2005, located in Ludhiana, Punjab. Recognized by UGC, ICAR and the Veterinary Council of India, it specializes in Veterinary Sciences, Dairy Technology, Fisheries, Animal Biotechnology and Allied Sciences. The main campus is at Ludhiana with constituent colleges at Rampura Phul, Kaljharani, Amritsar and other locations across Punjab.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🐄</div>Veterinary Clinic</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Facilities</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+        <div style="margin-bottom:20px;">
+          <span class="course-type-label">Veterinary &amp; Animal Sciences</span>
+          <div class="course-row"><div class="course-name">B.V.Sc. &amp; A.H.</div><div class="course-meta"><strong>NEET-UG</strong>Entrance</div><div class="course-meta"><strong>5 Yrs</strong>Duration</div><span class="tag tag-fees">₹76K–5L+</span></div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <span class="course-type-label">Dairy &amp; Food Technology</span>
+          <div class="course-row"><div class="course-name">B.Tech Dairy Technology</div><div class="course-meta"><strong>Entrance/Merit</strong>Admission</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹60–90K/yr</span></div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <span class="course-type-label">Fisheries Science</span>
+          <div class="course-row"><div class="course-name">B.F.Sc. (Bachelor of Fisheries Science)</div><div class="course-meta"><strong>Entrance/Merit</strong>Admission</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹55–85K/yr</span></div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <span class="course-type-label">Biotechnology &amp; Allied Sciences</span>
+          <div class="course-row"><div class="course-name">B.Tech Biotechnology</div><div class="course-meta"><strong>Entrance/Merit</strong>Admission</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹80K–1L/yr</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Programs (Allied Sciences)</div><div class="course-meta"><strong>Merit</strong>Admission</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-exam">Merit</span></div>
+        </div>
+        <div>
+          <span class="course-type-label">Diploma &amp; Certificate</span>
+          <div class="course-row"><div class="course-name">Veterinary Polytechnic Diploma</div><div class="course-meta"><strong>Merit</strong>Admission</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹20–45K/yr</span></div>
+          <div class="course-row"><div class="course-name">Livestock Assistant Training</div><div class="course-meta"><strong>Merit</strong>Admission</div><div class="course-meta"><strong>1 Yr</strong>Duration</div><span class="tag tag-exam">Certificate</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+        <div class="phd-category"><div class="phd-cat-label">Veterinary Sciences · M.V.Sc. · ₹60K–1.5L</div>
+          <div class="phd-tags"><span class="phd-tag">Veterinary Surgery</span><span class="phd-tag">Veterinary Medicine</span><span class="phd-tag">Veterinary Pathology</span><span class="phd-tag">Microbiology</span><span class="phd-tag">Gynecology</span></div>
+        </div>
+        <div class="phd-category"><div class="phd-cat-label">Dairy &amp; Food Technology · ₹80K–1.8L</div>
+          <div class="phd-tags"><span class="phd-tag">M.Tech Dairy Technology</span><span class="phd-tag">M.Sc. Dairy Chemistry</span><span class="phd-tag">M.Sc. Dairy Microbiology</span></div>
+        </div>
+        <div class="phd-category"><div class="phd-cat-label">Fisheries &amp; Biotechnology · ₹50K–1.5L</div>
+          <div class="phd-tags"><span class="phd-tag">M.F.Sc.</span><span class="phd-tag">M.Sc. Biotechnology</span><span class="phd-tag">M.Sc. Animal Biotechnology</span></div>
+        </div>
+        <div class="phd-category"><div class="phd-cat-label">Management &amp; Allied · ₹25–60K</div>
+          <div class="phd-tags"><span class="phd-tag">MBA (Agri-Business)</span><span class="phd-tag">PG Diploma Programs</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+        <div class="phd-category"><div class="phd-cat-label">Veterinary &amp; Animal Sciences</div>
+          <div class="phd-tags"><span class="phd-tag">Veterinary Medicine</span><span class="phd-tag">Veterinary Surgery</span><span class="phd-tag">Veterinary Pathology</span><span class="phd-tag">Animal Genetics &amp; Breeding</span><span class="phd-tag">Animal Nutrition</span></div>
+        </div>
+        <div class="phd-category"><div class="phd-cat-label">Dairy Technology &amp; Fisheries</div>
+          <div class="phd-tags"><span class="phd-tag">Dairy Technology</span><span class="phd-tag">Dairy Chemistry</span><span class="phd-tag">Fisheries Science</span></div>
+        </div>
+        <div class="phd-category"><div class="phd-cat-label">Biotechnology &amp; Basic Sciences</div>
+          <div class="phd-tags"><span class="phd-tag">Biotechnology</span><span class="phd-tag">Microbiology</span><span class="phd-tag">Biochemistry</span></div>
+        </div>
+        <div style="margin-top:16px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">PhD Eligibility</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's in relevant discipline</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">University Test / ICAR / NET</span></div>
+          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">Written Test + Interview</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-title">Step 1 — Apply Online</div><div class="tl-desc">Apply through official GADVASU admission portal with required documents.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 2 — Entrance Examination</div><div class="tl-desc">Appear in NEET-UG (for B.V.Sc.) or respective entrance examination as applicable.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 3 — Merit List</div><div class="tl-desc">Check merit lists and counselling schedule on official portal.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 4 — Counselling &amp; Document Verification</div><div class="tl-desc">Attend counselling with original academic and category documents.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 5 — Fee Payment</div><div class="tl-desc">Pay admission fees online to confirm seat.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Cutoff Trends (UG)</div>
+        <table class="cutoff-table">
+          <tr><th>Course</th><th>Cutoff / Requirement</th></tr>
+          <tr><td>B.V.Sc. &amp; A.H.</td><td>Based on NEET-UG merit</td></tr>
+          <tr><td>B.Tech Dairy Technology</td><td>Moderate merit-based cutoff</td></tr>
+          <tr><td>B.F.Sc.</td><td>Moderate science stream cutoff</td></tr>
+          <tr><td>B.Tech Biotechnology</td><td>Competitive science merit</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- FEES & HOSTEL -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Fee Structure</div>
+        <table class="fee-table">
+          <tr><th>Course</th><th>Approx. Fee</th><th>Notes</th></tr>
+          <tr><td>B.V.Sc. &amp; A.H. (State Quota)</td><td>₹76,130 initially</td><td>Excl. hostel</td></tr>
+          <tr><td>B.V.Sc. &amp; A.H. (Self-Financed)</td><td>₹5 lakh+</td><td>Higher tuition</td></tr>
+          <tr><td>B.Tech Dairy Technology</td><td>₹60,000–₹90,000/yr</td><td>By category</td></tr>
+          <tr><td>B.F.Sc.</td><td>₹55,000–₹85,000/yr</td><td>Lab charges incl.</td></tr>
+          <tr><td>B.Tech Biotechnology</td><td>₹80,000–₹1L/yr</td><td>Practical fees incl.</td></tr>
+          <tr><td>Diploma Programs</td><td>₹20,000–₹45,000/yr</td><td>Per specialization</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Hostel Fees</div>
+        <table class="fee-table">
+          <tr><th>Component</th><th>Charges</th></tr>
+          <tr><td>Non-AC Cubical Room</td><td>₹9,900 (six-monthly)</td></tr>
+          <tr><td>Non-AC Double Sharing</td><td>₹6,600</td></tr>
+          <tr><td>Non-AC Triple Sharing</td><td>₹4,400</td></tr>
+          <tr><td>AC Cubical Room</td><td>₹33,000</td></tr>
+          <tr><td>AC Double Sharing</td><td>₹19,250</td></tr>
+          <tr><td>Multi-Storey Hostel</td><td>₹55,000–₹60,000</td></tr>
+          <tr><td>Hostel Security (Refundable)</td><td>₹8,250</td></tr>
+        </table>
+        <div class="card-title" style="margin-top:20px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span>Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span>Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span>Wi-Fi Enabled</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span>Mess &amp; Cafeteria</div>
+          <div class="hostel-item"><span class="hostel-icon">⚽</span>Sports Facilities</div>
+          <div class="hostel-item"><span class="hostel-icon">🏋️</span>Gymnasium</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span>Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span>24×7 Security</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHOLARSHIPS -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Fellowships</div>
+        <div style="margin-bottom:20px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;text-transform:uppercase;">UG &amp; PG Scholarships</div>
+          <div class="phd-tags"><span class="phd-tag">ICAR Scholarship Programs</span><span class="phd-tag">Merit Scholarships</span><span class="phd-tag">SC/ST/OBC Financial Assistance</span><span class="phd-tag">Punjab Government Scholarships</span><span class="phd-tag">Sports Scholarships</span></div>
+        </div>
+        <div>
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;text-transform:uppercase;">Research Fellowships</div>
+          <div class="phd-tags"><span class="phd-tag">ICAR Junior Research Fellowship</span><span class="phd-tag">UGC-NET JRF</span><span class="phd-tag">DST INSPIRE Fellowship</span><span class="phd-tag">University Research Fellowships</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.gadvasu.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2005</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State Veterinary University</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v v-gold">UGC, ICAR, VCI</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Ludhiana, Punjab</span></div>
+      <div class="key-val"><span class="k">Specialization</span><span class="v">Veterinary &amp; Animal Sciences</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.V.Sc. &amp; A.H.</td><td><span class="tag tag-exam">NEET-UG</span></td></tr>
+        <tr><td>B.Tech Programs</td><td><span class="tag tag-exam">Entrance/Merit</span></td></tr>
+        <tr><td>PG Programs</td><td><span class="tag tag-exam">Entrance/Merit</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">ICAR/NET/Test</span></td></tr>
+      </table>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">B.V.Sc. (State)</span><span class="v v-gold">₹76,130 initial</span></div>
+      <div class="key-val"><span class="k">B.Tech Dairy Tech</span><span class="v v-gold">₹60–90K/yr</span></div>
+      <div class="key-val"><span class="k">B.F.Sc.</span><span class="v v-gold">₹55–85K/yr</span></div>
+      <div class="key-val"><span class="k">M.V.Sc.</span><span class="v v-gold">₹60K–1.5L</span></div>
+      <div class="key-val"><span class="k">Hostel</span><span class="v v-gold">₹4,400–₹60K</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+<script>
+let shortlisted=false;
+function toggleShortlist(){shortlisted=!shortlisted;const b=document.getElementById('shortlistBadge');const nb=document.getElementById('navShortlistBtn');const sb=document.getElementById('sidebarShortlistBtn');b.textContent=shortlisted?'1':'0';if(shortlisted){nb.classList.add('added');nb.innerHTML='✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';sb.classList.add('added');sb.textContent='✅ Shortlisted';showToast('⭐','GADVASU added to shortlist!');}else{nb.classList.remove('added');nb.innerHTML='⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';sb.classList.remove('added');sb.textContent='⭐ Add to Shortlist';showToast('🗑️','Removed from shortlist.');}}
+function switchTab(i,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('panel-'+i).classList.add('active');window.scrollTo({top:document.querySelector('.tabs-bar').offsetTop-62,behavior:'smooth'});}
+function openLogout(){document.getElementById('logoutModal').classList.add('open');}
+function closeLogout(){document.getElementById('logoutModal').classList.remove('open');}
+let tt;function showToast(icon,msg){const t=document.getElementById('toast');document.getElementById('toastIcon').textContent=icon;document.getElementById('toastMsg').textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+</body>
+</html>

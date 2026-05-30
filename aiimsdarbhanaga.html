@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AIIMS Darbhanga – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --accent-red: #f56565;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+ 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+ 
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+ 
+  /* Stream Dropdown */
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+ 
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+ 
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+ 
+  /* Status Banner */
+  .status-banner {
+    background: rgba(245, 101, 101, 0.15);
+    border: 1px solid rgba(245, 101, 101, 0.4);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 0.8rem;
+    color: #fc8181;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    font-weight: 600;
+  }
+ 
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-red { background: rgba(245,101,101,0.12); border: 1px solid rgba(245,101,101,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-red .value { color: #fc8181; }
+ 
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+ 
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+ 
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+ 
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+ 
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-future { background: rgba(245,166,35,0.1); color: var(--gold); border: 1px solid var(--border); }
+  .tag-red { background: rgba(245,101,101,0.12); color: #fc8181; border: 1px solid rgba(245,101,101,0.25); }
+ 
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+ 
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+ 
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+  .v-red { color: #fc8181 !important; }
+  .v-green { color: var(--accent-green) !important; }
+ 
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+ 
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+ 
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+ 
+  /* ── DEPT LIST ── */
+  .dept-category { margin-bottom: 14px; }
+  .dept-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .dept-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .dept-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+ 
+  /* ── ADMISSIONS TAB ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+ 
+  /* ── UPDATES TAB ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+ 
+  /* ── COMPARISON TABLE ── */
+  .comp-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .comp-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:600; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; background:rgba(255,255,255,0.03); }
+  .comp-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:middle; }
+  .comp-table tr:last-child td { border-bottom:none; }
+  .comp-table tr.highlight-row td { background:rgba(245,166,35,0.07); color:var(--gold); font-weight:600; }
+  .comp-table tr:hover td { background:rgba(255,255,255,0.03); }
+ 
+  /* Scholarship table */
+  .schol-tag {
+    background: rgba(99,179,237,0.1);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: #63b3ed;
+    display: inline-block;
+    margin: 3px;
+  }
+ 
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+ 
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+ 
+    <!-- Stream selector with 
+     dropdown -->
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        🩺 <span id="streamLabel">Medical</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Medical','🩺')">🩺 Medical</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+ 
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+ 
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+ 
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    AIIMS Darbhanga
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏥</div>
+    <div class="uni-title">
+      <h1>AIIMS <span>Darbhanga</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Darbhanga, Bihar</strong></span>
+        <span class="meta-chip">🏛️ <strong>Institution of National Importance</strong></span>
+        <span class="meta-chip">📅 Approved <strong>2020</strong></span>
+        <span class="meta-chip">🪨 Foundation Stone <strong>13 Nov 2024</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://pmssy.mohfw.gov.in/','_blank')" title="Open PMSSY website">🌐 <strong>pmssy.mohfw.gov.in ↗</strong></span>
+      </div>
+      <div class="status-banner">
+        🚧 &nbsp;IMPORTANT: AIIMS Darbhanga is currently UNDER CONSTRUCTION and is NOT yet operational. No admissions are being conducted as of May 2026. Expected operational year: 2027–2028.
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-red">
+      <span class="label">Current Status</span>
+      <span class="value">Under Construction</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Project Cost</span>
+      <span class="value">₹1,264 Cr</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Campus Area</span>
+      <span class="value">~187 Acres</span>
+    </div>
+    <div class="hero-badge hb-naac">
+      <span class="label">Planned Beds</span>
+      <span class="value">750 Beds</span>
+    </div>
+  </div>
+</div>
+ 
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG &amp; Super-Specialty</div>
+  <div class="tab" onclick="switchTab(3,this)">Departments</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Scholarships</div>
+  <div class="tab" onclick="switchTab(6,this)">Latest Updates</div>
+</div>
+ 
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <!-- LEFT COLUMN -->
+  <div>
+ 
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+ 
+      <div class="card" style="background:rgba(245,101,101,0.07);border-color:rgba(245,101,101,0.3);">
+        <div class="card-title"><span class="dot" style="background:#fc8181;"></span>⚠️ Important Notice (May 2026)</div>
+        <p style="font-size:0.82rem;color:#fc8181;line-height:1.75;">
+          AIIMS Darbhanga is <strong>NOT yet operational</strong>. The foundation stone was laid on <strong>13 November 2024</strong> by PM Narendra Modi. Construction is currently underway with a target of <strong>48 months from Cabinet approval (~2027)</strong>. Clinical courses are expected to scale by <strong>2027–2028</strong> subject to NMC inspection and approval. No MBBS or B.Sc. Nursing admissions have been announced. Students currently aspiring for AIIMS in Bihar should apply to <strong>AIIMS Patna (aiimspatna.edu.in)</strong>.
+        </p>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Full Name</div><div class="val">All India Institute of Medical Sciences, Darbhanga</div></div>
+          <div class="info-chip"><div class="lbl">Cabinet Approval</div><div class="val">16 September 2020</div></div>
+          <div class="info-chip"><div class="lbl">Foundation Stone</div><div class="val">13 November 2024</div></div>
+          <div class="info-chip"><div class="lbl">Scheme</div><div class="val">PMSSY – Phase IV</div></div>
+          <div class="info-chip"><div class="lbl">Project Cost</div><div class="val">₹1,264 Crore (Central Govt.)</div></div>
+          <div class="info-chip"><div class="lbl">Campus Area</div><div class="val">~187 Acres (Planned)</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Shobhan-Ekmi Bypass Road, Darbhanga, Bihar</div></div>
+          <div class="info-chip"><div class="lbl">Hospital Capacity</div><div class="val">750 Beds (Planned)</div></div>
+          <div class="info-chip"><div class="lbl">Employment (On Ops)</div><div class="val">~3,000 Posts</div></div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Why AIIMS Darbhanga? – Significance</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;margin-bottom:14px;">
+          AIIMS Darbhanga is a landmark step for <strong style="color:var(--white);">North Bihar and the entire Mithilanchal region</strong>. Darbhanga is the cultural and educational capital of Mithilanchal, serving a population of <strong style="color:var(--white);">40+ million in North Bihar</strong>. The region historically lacked tertiary healthcare infrastructure, forcing patients to travel to Patna, Delhi or Kolkata for advanced treatment. AIIMS Darbhanga will be the <strong style="color:var(--white);">FIRST AIIMS in North Bihar</strong> (AIIMS Patna currently serves South Bihar).
+        </p>
+        <div class="dept-tags">
+          <span class="dept-tag">First AIIMS in North Bihar</span>
+          <span class="dept-tag">Serves 40+ million people in Mithilanchal</span>
+          <span class="dept-tag">Reduces burden on AIIMS Patna</span>
+          <span class="dept-tag">Serves Bihar, Nepal border, Jharkhand</span>
+          <span class="dept-tag">2,000+ OPD patients/day (planned)</span>
+          <span class="dept-tag">1,000+ IPD patients/month (planned)</span>
+          <span class="dept-tag">~3,000 Employment positions</span>
+          <span class="dept-tag">Part of PMSSY for underserved regions</span>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Planned Infrastructure & Facilities</div>
+        <div class="card-title" style="font-size:0.8rem;color:var(--gold);margin-bottom:12px;margin-top:0;">Hospital & Clinical Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">🏥</div>750-Bed Teaching Hospital</div>
+          <div class="fac-item"><div class="fac-icon">🚨</div>Trauma &amp; Emergency Centre</div>
+          <div class="fac-item"><div class="fac-icon">🧬</div>Advanced Diagnostic Labs</div>
+          <div class="fac-item"><div class="fac-icon">🩻</div>MRI, CT Scan, PET Scan</div>
+          <div class="fac-item"><div class="fac-icon">💉</div>Cath Lab</div>
+          <div class="fac-item"><div class="fac-icon">🎗️</div>Cancer / Radiotherapy Centre</div>
+          <div class="fac-item"><div class="fac-icon">🩸</div>Blood Bank &amp; Transfusion</div>
+          <div class="fac-item"><div class="fac-icon">🏨</div>ICU / ICCU / PICU / NICU</div>
+          <div class="fac-item"><div class="fac-icon">🔪</div>Modular Operation Theatres</div>
+        </div>
+        <div class="card-title" style="font-size:0.8rem;color:var(--gold);margin-top:20px;margin-bottom:12px;">Academic & Research Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Medical Library (Digital)</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Laboratories</div>
+          <div class="fac-item"><div class="fac-icon">🧠</div>Simulation &amp; Skills Lab</div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>Modern Lecture Halls</div>
+          <div class="fac-item"><div class="fac-icon">🦷</div>Anatomy Museum &amp; Dissection</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centre &amp; e-Learning</div>
+          <div class="fac-item"><div class="fac-icon">🏛️</div>Auditorium (CMEs)</div>
+          <div class="fac-item"><div class="fac-icon">📋</div>OSCE Examination Facilities</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi Enabled Campus</div>
+        </div>
+        <div class="card-title" style="font-size:0.8rem;color:var(--gold);margin-top:20px;margin-bottom:12px;">Residential & Campus Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys' Hostel (MBBS &amp; Nursing)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls' Hostel (Separate)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏘️</span> Faculty &amp; Staff Residential</div>
+          <div class="hostel-item"><span class="hostel-icon">🏨</span> Guest House for Visiting Faculty</div>
+          <div class="hostel-item"><span class="hostel-icon">🏋️</span> Sports Complex (Cricket, Football, Basketball, Volleyball, Badminton)</div>
+          <div class="hostel-item"><span class="hostel-icon">💪</span> Gymnasium &amp; Fitness Centre</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Cafeteria / Mess / Canteen</div>
+          <div class="hostel-item"><span class="hostel-icon">🏦</span> Bank Branch &amp; ATM</div>
+          <div class="hostel-item"><span class="hostel-icon">📮</span> Post Office within Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24-hour Security &amp; CCTV</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Expected Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹1,000 – ₹2,500 per year (nominal, fully subsidised) · Mess/Dining extra ₹2,000–3,000/month · Eco-friendly campus layout on ~187 acres</span>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate Courses (Planned)</div>
+        <div style="margin-bottom:14px;background:rgba(245,101,101,0.07);border:1px solid rgba(245,101,101,0.3);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:#fc8181;font-weight:600;">🚧 Status:</span>
+          <span style="color:var(--muted);"> These courses are <strong style="color:var(--white);">planned and Cabinet-approved</strong> but will only be offered after AIIMS Darbhanga becomes operational (expected 2027–2028). No admissions are currently open.</span>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">MBBS · 5.5 Years · NEET-UG · Highly Subsidised Fees</span>
+          <div class="course-row">
+            <div class="course-name">MBBS (Bachelor of Medicine &amp; Bachelor of Surgery)</div>
+            <div class="course-meta"><strong>NEET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Years</strong>(4.5 yr + 1 yr internship)</div>
+            <span class="tag tag-fees">~₹9,000–40,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            <strong style="color:var(--white);">Planned Seats:</strong> 100 seats (Cabinet-approved) · Entrance: NEET-UG (NTA) · Counselling: MCC All India Quota (AIQ) · Reservation: 15% SC | 7.5% ST | 27% OBC-NCL | 10% EWS | 5% PwBD<br>
+            <strong style="color:var(--white);">Eligibility:</strong> 10+2 with Physics, Chemistry, Biology/Biotechnology + English; min. 60% (General/OBC/EWS); 50% (SC/ST/PwD); NEET-UG qualified<br>
+            <strong style="color:var(--white);">Expected NEET Score:</strong> General: 600–650+ | OBC: 580–620+ | SC/ST: 500–550+ (based on pattern of newer AIIMS like Rajkot, Gorakhpur)
+          </div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">B.Sc. Nursing · 4 Years · AIIMS Nursing Entrance · Highly Subsidised Fees</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. Nursing</div>
+            <div class="course-meta"><strong>AIIMS B.Sc. Nursing Entrance</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Years</strong>Duration</div>
+            <span class="tag tag-fees">~₹4,000–12,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            <strong style="color:var(--white);">Planned Seats:</strong> 60 seats (Cabinet-approved) · Entrance: AIIMS B.Sc. Nursing Entrance Exam (conducted by AIIMS Delhi on behalf of all AIIMS) · Centralised counselling<br>
+            <strong style="color:var(--white);">Eligibility:</strong> 10+2 with PCB + English; min. 60% (General/OBC); 55% (SC/ST/PwBD); Age: 17–25 years; Female candidates also eligible
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 2: PG & SUPER-SPECIALTY ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG &amp; Super-Specialty Courses (Future Plans)</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.07);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">ℹ️ Future Phase:</span>
+          <span style="color:var(--muted);"> PG and Super-Specialty programmes will be introduced <strong style="color:var(--white);">3–5 years after UG operations begin</strong>, as per Cabinet approval and PM's Office statement. These courses follow the pattern of other new AIIMS (Patna, Jodhpur, Bhopal, Rishikesh, Gorakhpur).</span>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">MD (Doctor of Medicine) · 3 Years · INI CET · After 3–5 yrs of UG ops</span>
+          <div class="course-row"><div class="course-name">MD – General Medicine</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MD – Paediatrics</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MD – Psychiatry</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MD – Radiodiagnosis / Radiology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MD – Pathology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">MS (Master of Surgery) · 3 Years · INI CET · After 3–5 yrs of UG ops</span>
+          <div class="course-row"><div class="course-name">MS – General Surgery</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MS – Orthopaedics</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MS – ENT (Ear, Nose &amp; Throat)</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MS – Ophthalmology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+          <div class="course-row"><div class="course-name">MS – Obstetrics &amp; Gynaecology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-future">Future Phase</span></div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">DM / M.Ch. (Super-Specialty) · Later Phase · 15–20 Departments Planned</span>
+          <div class="course-row"><div class="course-name">DM – Cardiology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+          <div class="course-row"><div class="course-name">DM – Nephrology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+          <div class="course-row"><div class="course-name">DM – Neurology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+          <div class="course-row"><div class="course-name">M.Ch – Cardiothoracic Surgery</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+          <div class="course-row"><div class="course-name">M.Ch – Neurosurgery</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+          <div class="course-row"><div class="course-name">M.Ch – Urology</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+          <div class="course-row"><div class="course-name">M.Ch – Paediatric Surgery</div><div></div><div class="course-meta"><strong>3 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;"><strong style="color:var(--white);">Entrance for MD/MS:</strong> INI CET (conducted by AIIMS Delhi for all INIs) · January and July sessions · Eligibility: MBBS from NMC-recognised college + 1-year internship completed + min. 55% (General) / 50% (SC/ST/PwD)</div>
+        </div>
+ 
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. Nursing &amp; PhD · Later Phase</span>
+          <div class="course-row"><div class="course-name">M.Sc. Nursing (Advanced Specialisations)</div><div></div><div class="course-meta"><strong>2 Years</strong></div><span class="tag tag-future">After B.Sc. Ops</span></div>
+          <div class="course-row"><div class="course-name">PhD – Medical Sciences (Research)</div><div></div><div class="course-meta"><strong>3–5 Years</strong></div><span class="tag tag-red">Later Phase</span></div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 3: DEPARTMENTS ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Planned Departments</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:18px;">Based on Cabinet approval and PMSSY guidelines, AIIMS Darbhanga will have the following departments across Pre-clinical, Para-clinical and Clinical disciplines — modelled on AIIMS Patna
+            </div>
+        </div>
+ 
+        <div class="dept-category">
+          <div class="dept-cat-label">Nursing &amp; Allied Health</div>
+          <div class="dept-tags">
+            <span class="dept-tag">College of Nursing – B.Sc. Nursing (60 seats)</span>
+            <span class="dept-tag">Physiotherapy (future phases)</span>
+            <span class="dept-tag">Occupational Therapy (future phases)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process – MBBS (Once Operational)</div>
+        <div style="margin-bottom:16px;background:rgba(245,101,101,0.07);border:1px solid rgba(245,101,101,0.3);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#fc8181;font-weight:600;">🚧 Not Open Yet:</span>
+          <span style="color:var(--muted);"> MBBS admissions will open only after NMC approval and operationalisation (expected 2027–2028). The process below is based on the standard AIIMS admission pattern.</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Qualify NEET-UG (NTA)</div>
+            <div class="tl-desc">Appear in NEET-UG conducted by NTA (usually in May each year). Minimum qualifying score required: General/OBC/EWS: 600–650+; SC/ST: 500–550+ (based on newer AIIMS pattern).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — MCC All India Quota (AIQ) Counselling Registration</div>
+            <div class="tl-desc">Register on the Medical Counselling Committee (MCC) portal for AIQ counselling. All AIIMS seats (including AIIMS Darbhanga) fall under 100% All India Quota — open to candidates from all states.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Participate in Counselling Rounds</div>
+            <div class="tl-desc">Round 1 → Round 2 → Mop-Up Round → Stray Vacancy Round. Fill in choices as per preference on MCC portal during the choice-filling window.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Seat Allotment &amp; Document Verification</div>
+            <div class="tl-desc">Documents required: NEET scorecard, 10th &amp; 12th marksheets, ID proof, category certificate (if applicable), medical fitness certificate, domicile certificate. Report to AIIMS Darbhanga upon seat allotment.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; Enrolment</div>
+            <div class="tl-desc">Pay the extremely subsidised AIIMS fee (expected ₹1,628–₹6,500/year). AIIMS Darbhanga is a Central Govt. Institution of National Importance — among the lowest fees in India for MBBS.</div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process – B.Sc. Nursing (Once Operational)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear in AIIMS B.Sc. Nursing Entrance Exam</div>
+            <div class="tl-desc">Conducted by AIIMS Delhi on behalf of all AIIMS. Eligibility: 10+2 with PCB + English; min. 60% (General/OBC); 55% (SC/ST/PwBD); Age: 17–25 years.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Centralised Counselling for All AIIMS</div>
+            <div class="tl-desc">Centralised counselling is held for all AIIMS B.Sc. Nursing seats. Participate in rounds and fill choices as per preference.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Reporting &amp; Enrolment</div>
+            <div class="tl-desc">Report with verified documents. Fee: expected ₹1,000–₹3,000/year (fully subsidised as a Central Govt. institution).</div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process – MD/MS (Future, Once Introduced)</div>
+        <div class="course-row">
+          <div class="course-name">MD / MS Programmes</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">INI CET (AIIMS Delhi)</span>
+        </div>
+        <div style="font-size:0.73rem;color:var(--muted);margin-top:10px;">
+          <strong style="color:var(--white);">INI CET:</strong> Institute of National Importance Combined Entrance Test · Conducted by AIIMS Delhi for all AIIMS, JIPMER, PGI Chandigarh, NIMHANS · January &amp; July sessions ·
+          <strong style="color:var(--white);">Eligibility:</strong> MBBS from NMC-recognised college + completion of 1-year internship · min. 55% (General/OBC/EWS) / 50% (SC/ST/PwD) ·
+          <strong style="color:var(--white);">Reservation:</strong> 15% SC | 7.5% ST | 27% OBC-NCL | 10% EWS | 5% PwBD
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Eligibility Criteria Summary</div>
+        <div class="course-row">
+          <div class="course-name">MBBS</div>
+          <div class="course-meta"><strong>General/OBC/EWS</strong>Category</div>
+          <div class="course-meta"><strong>min. 60% PCB</strong>10+2</div>
+          <span class="tag tag-exam">NEET-UG</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBBS</div>
+          <div class="course-meta"><strong>SC/ST/PwD</strong>Category</div>
+          <div class="course-meta"><strong>min. 50% PCB</strong>10+2</div>
+          <span class="tag tag-exam">NEET-UG</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Sc. Nursing</div>
+          <div class="course-meta"><strong>General/OBC</strong>Category</div>
+          <div class="course-meta"><strong>min. 60% PCB</strong>10+2</div>
+          <span class="tag tag-exam">AIIMS Nursing Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Sc. Nursing</div>
+          <div class="course-meta"><strong>SC/ST/PwBD</strong>Category</div>
+          <div class="course-meta"><strong>min. 55% PCB</strong>10+2</div>
+          <span class="tag tag-exam">AIIMS Nursing Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MD / MS (future)</div>
+          <div class="course-meta"><strong>General/OBC/EWS</strong>Category</div>
+          <div class="course-meta"><strong>MBBS + Internship</strong>min. 55%</div>
+          <span class="tag tag-future">INI CET</span>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 5: SCHOLARSHIPS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Aid</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:18px;">As per the AIIMS pattern (Central Govt. Institution of National Importance), the following scholarships and financial assistance will be available at AIIMS Darbhanga once operational.</p>
+ 
+        <div class="dept-category">
+          <div class="dept-cat-label">Central Government Scholarships</div>
+          <div>
+            <span class="schol-tag">Central Govt. Merit Scholarship (AIIMS)</span>
+            <span class="schol-tag">SC/ST Scholarship – Full Fee Waiver + Stipend</span>
+            <span class="schol-tag">Post-Matric Scholarship (OBC/SC/ST/EBC)</span>
+            <span class="schol-tag">PM Yasasvi Scholarship (OBC/EBC/DNT)</span>
+            <span class="schol-tag">EWS Scholarship (Economically Weaker Section)</span>
+            <span class="schol-tag">AIIMS Internal Financial Assistance</span>
+          </div>
+        </div>
+ 
+        <div class="dept-category" style="margin-top:14px;">
+          <div class="dept-cat-label">Research &amp; PhD Fellowships (Once Research Programmes Start)</div>
+          <div>
+            <span class="schol-tag">UGC Scholarship / JRF</span>
+            <span class="schol-tag">DST-INSPIRE Fellowship (Science &amp; Medical Research)</span>
+            <span class="schol-tag">ICMR Research Fellowships</span>
+          </div>
+        </div>
+ 
+        <div class="dept-category" style="margin-top:14px;">
+          <div class="dept-cat-label">State Government Scholarships (Bihar)</div>
+          <div>
+            <span class="schol-tag">Bihar State Scholarship (E-Kalyan)</span>
+            <span class="schol-tag">Bihar Student Credit Card</span>
+          </div>
+        </div>
+ 
+        <div style="margin-top:16px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:10px;">💡 Key Advantage of AIIMS – Extremely Subsidised Fees</div>
+          <div class="key-val"><span class="k">MBBS Annual Fee (Expected)</span><span class="v v-green">₹1,628 – ₹6,500/year</span></div>
+          <div class="key-val"><span class="k">MBBS Total Course Fee (Expected)</span><span class="v v-green">₹9,000 – ₹40,000 (5.5 years)</span></div>
+          <div class="key-val"><span class="k">B.Sc. Nursing Annual Fee (Expected)</span><span class="v v-green">₹1,000 – ₹3,000/year</span></div>
+          <div class="key-val"><span class="k">Hostel (Per Year, Expected)</span><span class="v v-green">₹1,000 – ₹2,500 (nominal)</span></div>
+          <div class="key-val" style="border:none"><span class="k">SC/ST Scholarship</span><span class="v v-green">Full Fee Waiver + Monthly Stipend</span></div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ── TAB 6: LATEST UPDATES ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Current Status &amp; Timeline</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:#fc8181;">Under Construction</div>
+            <div class="s-lbl">Current Status (May 2026)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹1,264 Cr</div>
+            <div class="s-lbl">Total Project Cost</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">2027–28</div>
+            <div class="s-lbl">Expected Operational Year</div>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">16 September 2020 — Cabinet Approval</div>
+            <div class="tl-desc">Union Cabinet chaired by PM Narendra Modi approved the establishment of AIIMS Darbhanga under PMSSY Phase IV at a total cost of ₹1,264 crore.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">2020–2024 — Land Acquisition &amp; Site Selection</div>
+            <div class="tl-desc">Land acquisition, site selection and preliminary processes underway at Shobhan-Ekmi Bypass Road, Darbhanga, Bihar.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">13 November 2024 — Foundation Stone Laid</div>
+            <div class="tl-desc">Foundation stone officially laid by Prime Minister Narendra Modi — construction officially begins. Target: 48 months from Cabinet approval.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">2024–2025 — Civil Construction Phase</div>
+            <div class="tl-desc">Civil construction underway. Note: Parliamentary reply (Rajya Sabha, by MoS Health Bharati Pravin Pawar) stated no funds had been released for AIIMS Darbhanga as of 2025.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">2025–2026 — Active Construction Phase</div>
+            <div class="tl-desc">Active construction phase ongoing; infrastructure milestones expected as per PMSSY schedule.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">2027 (Expected) — Clinical Courses Scaling</div>
+            <div class="tl-desc">Clinical courses expected to scale as per PMSSY next phase timeline. MBBS admissions will open only after NMC/MCI inspection and approval.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">2027–2028 (Tentative) — Full Operational Target</div>
+            <div class="tl-desc">Tentative operational year, subject to construction progress and NMC inspection. Admissions NOT yet started.</div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>AIIMS Darbhanga vs Other New AIIMS</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;">Data sourced from Ministry of Health &amp; Family Welfare, Government of India (2025).</p>
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>AIIMS</th>
+              <th>Year Sanctioned</th>
+              <th>MBBS Seats</th>
+              <th>Status</th>
+              <th>Hospital Beds</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>AIIMS Patna</td><td>2012</td><td>125</td><td style="color:var(--accent-green);">Fully Operational</td><td>860</td></tr>
+            <tr><td>AIIMS Gorakhpur</td><td>2015</td><td>100</td><td style="color:var(--accent-green);">Fully Operational</td><td>750</td></tr>
+            <tr><td>AIIMS Kalyani (WB)</td><td>2014</td><td>100</td><td style="color:var(--accent-green);">Fully Operational</td><td>750</td></tr>
+            <tr><td>AIIMS Rae Bareli</td><td>2016</td><td>100</td><td style="color:var(--accent-green);">Fully Operational (2024)</td><td>750</td></tr>
+            <tr><td>AIIMS Rajkot</td><td>2018</td><td>50</td><td style="color:var(--gold);">Partially Operational</td><td>750</td></tr>
+            <tr class="highlight-row"><td>AIIMS Darbhanga</td><td>2020</td><td>100 (planned)</td><td>UNDER CONSTRUCTION</td><td>750 (planned)</td></tr>
+            <tr><td>AIIMS Awantipora (J&amp;K)</td><td>2021</td><td>100 (planned)</td><td style="color:#fc8181;">Under Construction</td><td>750 (planned)</td></tr>
+            <tr><td>AIIMS Manethi (Haryana)</td><td>2021</td><td>100 (planned)</td><td style="color:#fc8181;">Under Construction</td><td>750 (planned)</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.73rem;color:var(--muted);margin-top:12px;">AIIMS Darbhanga is one of the newest sanctioned AIIMS and is among the last to start construction.</p>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Current AIIMS Options for Bihar Students</div>
+        <div style="margin-bottom:14px;background:rgba(99,179,237,0.07);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:14px;font-size:0.78rem;">
+          <span style="color:#63b3ed;font-weight:600;">📌 For Students Aspiring for Medical Education Now:</span>
+          <span style="color:var(--muted);"> Since AIIMS Darbhanga is NOT yet operational, students from Bihar and North Bihar should currently apply to <strong style="color:var(--white);">AIIMS Patna</strong> for MBBS admissions.</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">AIIMS Patna, Phulwari Sharif, Patna, Bihar</div>
+          <div class="course-meta"><strong>125 Seats</strong>MBBS</div>
+          <div></div>
+          <span class="tag" style="background:rgba(72,187,120,0.15);color:#68d391;border:1px solid rgba(72,187,120,0.3);">Fully Operational</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">AIIMS Darbhanga, Darbhanga, Bihar</div>
+          <div class="course-meta"><strong>100 Seats</strong>Planned</div>
+          <div></div>
+          <span class="tag tag-red">Under Construction</span>
+        </div>
+        <div style="margin-top:12px;font-size:0.73rem;color:var(--muted);">For AIIMS Patna admissions and reference, visit: <span style="color:var(--gold);">aiimspatna.edu.in</span> &nbsp;|&nbsp; For updates on AIIMS Darbhanga: <span style="color:var(--gold);">pmssy.mohfw.gov.in</span> &nbsp;|&nbsp; <span style="color:var(--gold);">pib.gov.in</span></div>
+      </div>
+    </div>
+ 
+  </div><!-- /left -->
+ 
+  <!-- SIDEBAR -->
+  <div>
+    <!-- Quick Action -->
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://pmssy.mohfw.gov.in/','_blank')">🌐 Visit PMSSY Website</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://aiimspatna.edu.in/','_blank')">🏥 AIIMS Patna (Operational)</button>
+    </div>
+ 
+    <!-- Status Alert -->
+    <div class="sidebar-card" style="background:rgba(245,101,101,0.08);border-color:rgba(245,101,101,0.3);">
+      <div class="sidebar-title" style="color:#fc8181;">⚠️ Current Status</div>
+      <div class="key-val"><span class="k">Status</span><span class="v v-red">Under Construction</span></div>
+      <div class="key-val"><span class="k">Foundation Stone</span><span class="v">13 Nov 2024</span></div>
+      <div class="key-val"><span class="k">Admissions Open?</span><span class="v v-red">NOT YET</span></div>
+      <div class="key-val" style="border:none"><span class="k">Expected Ops</span><span class="v v-gold">2027–2028</span></div>
+    </div>
+ 
+    <!-- Key Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Full Name</span><span class="v">AIIMS, Darbhanga</span></div>
+      <div class="key-val"><span class="k">Cabinet Approval</span><span class="v">16 Sept 2020</span></div>
+      <div class="key-val"><span class="k">Scheme</span><span class="v v-gold">PMSSY – Phase IV</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">Institution of National Importance</span></div>
+      <div class="key-val"><span class="k">Governance</span><span class="v v-gold">Ministry of Health &amp; FW, GoI</span></div>
+      <div class="key-val"><span class="k">Project Cost</span><span class="v v-gold">₹1,264 Crore</span></div>
+      <div class="key-val"><span class="k">Campus Area</span><span class="v">~187 Acres (Planned)</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Shobhan-Ekmi Bypass, Darbhanga</span></div>
+      <div class="key-val"><span class="k">Hospital Beds</span><span class="v">750 (Planned)</span></div>
+      <div class="key-val"><span class="k">Employment</span><span class="v">~3,000 Posts (On Ops)</span></div>
+    </div>
+ 
+    <!-- Planned Courses Summary -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Planned Courses</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Seats / Status</th></tr>
+        <tr><td>MBBS (5.5 Yrs)</td><td><span class="tag tag-future">100 seats</span></td></tr>
+        <tr><td>B.Sc. Nursing (4 Yrs)</td><td><span class="tag tag-future">60 seats</span></td></tr>
+        <tr><td>MD / MS</td><td><span class="tag tag-red">Future Phase</span></td></tr>
+        <tr><td>DM / M.Ch</td><td><span class="tag tag-red">Later Phase</span></td></tr>
+        <tr><td>PhD Medical</td><td><span class="tag tag-red">Later Phase</span></td></tr>
+      </table>
+    </div>
+ 
+    <!-- Entrance Exams -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>MBBS</td><td><span class="tag tag-exam">NEET-UG (NTA)</span></td></tr>
+        <tr><td>B.Sc. Nursing</td><td><span class="tag tag-exam">AIIMS Nursing Entrance</span></td></tr>
+        <tr><td>MD / MS (future)</td><td><span class="tag tag-exam">INI CET (AIIMS Delhi)</span></td></tr>
+        <tr><td>PhD (future)</td><td><span class="tag tag-exam">UGC-JRF / ICMR</span></td></tr>
+      </table>
+    </div>
+ 
+    <!-- Fee Structure -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Expected Fees (Approx.)</div>
+      <div class="key-val"><span class="k">MBBS (Per Year)</span><span class="v v-green">₹1,628–6,500</span></div>
+      <div class="key-val"><span class="k">MBBS (Full Course)</span><span class="v v-green">₹9,000–40,000</span></div>
+      <div class="key-val"><span class="k">B.Sc. Nursing (Per Year)</span><span class="v v-green">₹1,000–3,000</span></div>
+      <div class="key-val"><span class="k">Hostel (Per Year)</span><span class="v v-green">₹1,000–2,500</span></div>
+      <div class="key-val" style="border:none"><span class="k">Mess / Dining</span><span class="v v-green">₹2,000–3,000/month</span></div>
+      <div style="margin-top:10px;font-size:0.7rem;color:var(--muted);">Official fees not yet announced. Based on pattern of other new AIIMS under PMSSY.</div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+ 
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+ 
+<script>
+  /* ── SHORTLIST STATE ── */
+  let shortlisted = false;
+ 
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+ 
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+ 
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'AIIMS Darbhanga added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+ 
+  /* ── TABS ── */
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+ 
+  /* ── STREAM DROPDOWN ── */
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+ 
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+ 
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+ 
+  /* ── LOGOUT MODAL ── */
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+ 
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
+    

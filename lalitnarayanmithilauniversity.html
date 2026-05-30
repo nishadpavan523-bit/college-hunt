@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lalit Narayan Mithila University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-extra { background: rgba(183,121,245,0.12); border: 1px solid rgba(183,121,245,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-extra .value { color: #b779f5; }
+
+  /* TABS */
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* LAYOUT */
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* COURSE TABLE */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-gold { background: rgba(245,166,35,0.12); color: var(--gold); border: 1px solid var(--border); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* SIDEBAR */
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+  .v-green { color: var(--accent-green) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* PhD */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* PLACEMENTS */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* CAMPUS LIFE */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* SCHOLARSHIP TAG */
+  .schol-tag { background: rgba(99,179,237,0.1); border: 1px solid rgba(99,179,237,0.2); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: #63b3ed; display: inline-block; margin: 3px; }
+
+  /* FACULTY TABLE */
+  .faculty-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .faculty-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:600; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .faculty-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+  .faculty-table tr:last-child td { border-bottom:none; }
+  .faculty-table tr:hover td { background:rgba(245,166,35,0.04); }
+
+  /* HOSTEL */
+  .hostel-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .hostel-item { display:flex; align-items:center; gap:8px; font-size:0.8rem; }
+  .hostel-icon { font-size:1.1rem; }
+
+  /* LOGOUT MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome, User</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Arts &amp; Humanities</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Lalit Narayan Mithila University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>Lalit Narayan <span>Mithila University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Darbhanga, Bihar</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Public University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1972</strong></span>
+        <span class="meta-chip">🎖️ NAAC <strong>B++ Grade</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://lnmu.ac.in/','_blank')">🌐 <strong>lnmu.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC</span>
+      <span class="value">B++ Grade</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">230 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Programmes</span>
+      <span class="value">107+</span>
+    </div>
+    <div class="hero-badge hb-extra">
+      <span class="label">Affiliated Inst.</span>
+      <span class="value">67 Colleges</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1972</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Public University</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC B++ Grade</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Darbhanga, Bihar – 846004</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">230 Acres (Raj Campus)</div></div>
+          <div class="info-chip"><div class="lbl">IIRF / UniRank 2025</div><div class="val">92nd (Mgmt) | 1st in Bihar</div></div>
+          <div class="info-chip"><div class="lbl">Faculties</div><div class="val">7 Faculties | 21 PG Depts</div></div>
+          <div class="info-chip"><div class="lbl">Total Courses</div><div class="val">107+ Programmes</div></div>
+          <div class="info-chip"><div class="lbl">Total Faculty</div><div class="val">400 Members</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About LNMU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          <strong style="color:var(--white);">Lalit Narayan Mithila University (LNMU)</strong> is a <strong style="color:var(--white);">State Public University</strong> established in <strong style="color:var(--white);">1972</strong>, named after <strong style="color:var(--white);">Dr. Lalit Narayan Mishra</strong> — eminent freedom fighter, statesman and Railway Minister of India. Originally founded at Mohanpur House, Sara Mohanpur village, the university shifted in <strong style="color:var(--white);">1975</strong> to the historic palatial <strong style="color:var(--white);">Raj Campus (230 acres)</strong> of Maharajadhiraja Kameshwar Singh of Darbhanga — one of the most heritage-rich campuses in Bihar. Recognised by <strong style="color:var(--white);">UGC, DEB and AIU</strong>, and accredited <strong style="color:var(--white);">NAAC B++</strong>, LNMU is ranked <strong style="color:var(--white);">1st in Bihar</strong> (uniRank) and <strong style="color:var(--white);">92nd in India</strong>. It houses <strong style="color:var(--white);">7 Faculties, 21 PG Departments, 43 Constituent + 24 Affiliated Colleges</strong> across Darbhanga, Madhubani, Samastipur and Begusarai districts, and conducts the <strong style="color:var(--white);">Bihar B.Ed. CET</strong> on behalf of the Bihar Government. Motto: <em style="color:var(--gold);">Sa Vidya Ya Vimuktaye</em> (That is knowledge which liberates).
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic Recognition & Regulatory Bodies</div>
+        <table class="faculty-table">
+          <thead><tr><th>Regulatory Body</th><th>Recognition / Status</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>University Grants Commission (UGC)</td><td>University Recognition &amp; 2(f) / 12(B)</td><td><span class="tag tag-exam">Recognised</span></td></tr>
+            <tr><td>Distance Education Bureau (DEB)</td><td>Distance / Open Learning Programmes</td><td><span class="tag tag-exam">Approved</span></td></tr>
+            <tr><td>Association of Indian Universities (AIU)</td><td>Degree Equivalency &amp; Membership</td><td><span class="tag tag-exam">Member</span></td></tr>
+            <tr><td>NAAC (National Assessment &amp; Accreditation Council)</td><td>Institutional Accreditation</td><td><span class="tag tag-fees">B++ Grade</span></td></tr>
+            <tr><td>Bihar Government (State Act)</td><td>Nodal University for Bihar B.Ed. CET</td><td><span class="tag tag-fees">Designated</span></td></tr>
+            <tr><td>UNICEF Collaboration</td><td>Educational Development Initiatives</td><td><span class="tag tag-fees">Active</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>7 Faculties &amp; Key Departments</div>
+        <table class="faculty-table">
+          <thead><tr><th>#</th><th>Faculty</th><th>Key Departments / Streams</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--gold);font-weight:700;">1</td><td style="font-weight:600;">Humanities</td><td style="color:var(--muted);">Hindi, English, Maithili, Sanskrit, Urdu, Persian, Arabic, Philosophy, Music</td></tr>
+            <tr><td style="color:var(--gold);font-weight:700;">2</td><td style="font-weight:600;">Social Sciences</td><td style="color:var(--muted);">History, Ancient Indian History &amp; Culture, Political Science, Economics, Sociology, Psychology</td></tr>
+            <tr><td style="color:var(--gold);font-weight:700;">3</td><td style="font-weight:600;">Science</td><td style="color:var(--muted);">Physics, Chemistry, Mathematics, Statistics, Botany, Zoology, Biochemistry, Computer Science</td></tr>
+            <tr><td style="color:var(--gold);font-weight:700;">4</td><td style="font-weight:600;">Commerce &amp; Management</td><td style="color:var(--muted);">Commerce (M.Com), Business Administration (MBA), MCA</td></tr>
+            <tr><td style="color:var(--gold);font-weight:700;">5</td><td style="font-weight:600;">Education</td><td style="color:var(--muted);">Education (B.Ed, M.Ed), Physical Education (B.P.Ed, M.P.Ed), Library &amp; Information Science</td></tr>
+            <tr><td style="color:var(--gold);font-weight:700;">6</td><td style="font-weight:600;">Engineering &amp; Technology</td><td style="color:var(--muted);">B.Tech / M.Tech – Computer Science, Electronics, Mechanical, Civil, Electrical</td></tr>
+            <tr><td style="color:var(--gold);font-weight:700;">7</td><td style="font-weight:600;">Law</td><td style="color:var(--muted);">LLB (3-yr), LLM – through affiliated law colleges</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library (Rare MSS)</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Labs &amp; Internet</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Science Laboratories</div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🏛️</div>Heritage Palace Campus</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>SWAYAM / MOOCs</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical / Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Bank ATM on Campus</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria / Canteen</div>
+          <div class="fac-item"><div class="fac-icon">🎯</div>NSS &amp; NCC Units</div>
+          <div class="fac-item"><div class="fac-icon">📡</div>Distance Education (DDE)</div>
+          <div class="fac-item"><div class="fac-icon">🤝</div>UNICEF Collaboration</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span>3 Boys' Hostels (Main Campus)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span>1 Girls' Hostel (Main Campus)</div>
+          <div class="hostel-item"><span class="hostel-icon">📺</span>Recreation Room with TV</div>
+          <div class="hostel-item"><span class="hostel-icon">🎮</span>Indoor &amp; Outdoor Games</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span>Mess / Canteen (Affordable)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏥</span>Medical &amp; Healthcare</div>
+          <div class="hostel-item"><span class="hostel-icon">🏘️</span>PG Accommodation Nearby</div>
+          <div class="hostel-item"><span class="hostel-icon">🏫</span>Hostels at Constituent Colleges</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees (Yearly):</span>
+          <span style="color:var(--muted);"> ~₹5,000 per year (extremely subsidised) · Separate male &amp; female hostels · Mess / dining extra at hostel mess rates · Guest House available for visiting faculty &amp; researchers</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">ℹ️ Admission Note:</span>
+          <span style="color:var(--muted);"> UG programmes are offered through 43 Constituent &amp; 24 Affiliated Colleges. Admissions via <strong style="color:var(--white);">OFSS Bihar</strong> for B.A./B.Sc./B.Com. (merit-based on 10+2 marks — no separate entrance). LNMU is transitioning to a 4-year FYUP under NEP 2020.</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Arts &amp; Humanities – B.A. · 3 Years · OFSS Bihar</span>
+          <div class="course-row">
+            <div class="course-name">B.A. (General / Pass)</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3,000–₹8,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) – Hindi / English / Maithili / Sanskrit / Urdu / Persian / Arabic</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3,000–₹8,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) – History / Political Science / Economics / Sociology / Psychology / Philosophy</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3,000–₹8,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Hons.) – Geography / Home Science / Music (Vocal/Instrumental) / Ancient Indian History</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3,000–₹8,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 from recognised board; min. 45% (General/OBC/EWS); 40% (SC/ST/PwD)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Science – B.Sc. · 3 Years · OFSS Bihar</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (General / Pass)</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹12,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) – Physics / Chemistry / Mathematics / Statistics</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹12,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) – Botany / Zoology / Biochemistry</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹12,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) – Computer Science / Information Technology / Electronics</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹12,000 Total</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Commerce – B.Com. · 3 Years · OFSS Bihar</span>
+          <div class="course-row">
+            <div class="course-name">B.Com. (General / Pass)</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3,000–₹8,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Com. (Hons.) – Accounting / Finance / Business Studies</div>
+            <div class="course-meta"><strong>OFSS Bihar</strong>Merit-Based</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3,000–₹8,000 Total</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Engineering – B.Tech · 4 Years · LNMU CAT</span>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Computer Science &amp; Engineering</div>
+            <div class="course-meta"><strong>LNMU CAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,00,000–₹2,75,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Electronics &amp; Communication / Mechanical / Civil / Electrical Engineering</div>
+            <div class="course-meta"><strong>LNMU CAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,00,000–₹2,75,000</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCM; min. 50% (General/OBC); 45% (SC/ST/PwD) + LNMU CAT score</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Medical &amp; Dental (Affiliated Colleges) · NEET-UG</span>
+          <div class="course-row">
+            <div class="course-name">MBBS – Darbhanga Medical College &amp; Hospital (DMCH)</div>
+            <div class="course-meta"><strong>NEET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">NEET-UG + BCECEB</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BDS / BAMS / BHMS / BUMS (Affiliated Colleges)</div>
+            <div class="course-meta"><strong>NEET-UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5–5.5 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">NEET-UG + BCECEB</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Professional &amp; Vocational UG · Various Entrances</span>
+          <div class="course-row">
+            <div class="course-name">BCA (Bachelor of Computer Applications)</div>
+            <div class="course-meta"><strong>Merit / LNMU Test</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹15,000–₹30,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BBA (Bachelor of Business Administration)</div>
+            <div class="course-meta"><strong>Merit-Based</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹15,000–₹30,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Ed. (Bachelor of Education)</div>
+            <div class="course-meta"><strong>Bihar B.Ed. CET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,530 Total!</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">LLB (3 Year) · B.P.Ed. · B.Lib.I.Sc. · D.El.Ed. · B.Voc.</div>
+            <div class="course-meta"><strong>Various</strong>Entrance</div>
+            <div class="course-meta"><strong>1–3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹10,000–₹20,000</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">⭐ LNMU B.Ed. fee of ₹1,530 for the entire 2-year course is one of the cheapest B.Ed. programmes in India!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">ℹ️ PG Admission Note:</span>
+          <span style="color:var(--muted);"> All PG admissions are strictly <strong style="color:var(--white);">entrance-based — no direct admission</strong>. CUET-PG (NTA) accepted for M.A./M.Sc./M.Com. MBA via CAT/CMAT/MAT. LNMU has released 5 selection lists for PG 2025-26.</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.A. Programmes · 17 Specialisations · 2 Years · CUET-PG</span>
+          <div class="course-row">
+            <div class="course-name">M.A. Hindi / English / Maithili / Sanskrit / Urdu / Persian / Arabic</div>
+            <div class="course-meta"><strong>CUET-PG</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹300–₹8,910 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. History / Political Science / Economics / Sociology / Psychology / Philosophy</div>
+            <div class="course-meta"><strong>CUET-PG</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹300–₹8,910 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Ancient Indian History &amp; Culture / Geography / Home Science / Music</div>
+            <div class="course-meta"><strong>CUET-PG</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹300–₹8,910 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Bachelor's in relevant subject; min. 50% (General/OBC/EWS); 45% (SC/ST/PwD)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. Programmes · 2 Years · CUET-PG</span>
+          <div class="course-row">
+            <div class="course-name">M.Sc. Physics / Chemistry / Mathematics / Statistics</div>
+            <div class="course-meta"><strong>CUET-PG</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000–₹15,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Sc. Botany / Zoology / Biochemistry / Computer Science / IT</div>
+            <div class="course-meta"><strong>CUET-PG</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000–₹15,000 Total</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Com. · 2 Years · CUET-PG</span>
+          <div class="course-row">
+            <div class="course-name">M.Com. (Commerce / Accounting / Finance)</div>
+            <div class="course-meta"><strong>CUET-PG</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹10,000 Total</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA · 2 Years · CAT / CMAT / MAT</span>
+          <div class="course-row">
+            <div class="course-name">MBA (Business Administration) – IIRF 2025 Ranked 92nd in India</div>
+            <div class="course-meta"><strong>CAT / CMAT / MAT</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹40,000–₹80,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Final selection includes Group Discussion + Personal Interview. Eligibility: Graduation with min. 50%.</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MCA · 2 Years · LNMU Entrance / NIMCET</span>
+          <div class="course-row">
+            <div class="course-name">MCA (Master of Computer Applications)</div>
+            <div class="course-meta"><strong>LNMU / NIMCET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹30,000–₹60,000 Total</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech · 2 Years · GATE</span>
+          <div class="course-row">
+            <div class="course-name">M.Tech – Computer Science / Electronics / Mechanical / Civil / Electrical</div>
+            <div class="course-meta"><strong>GATE</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹60,000–₹1,20,000 Total</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Professional PG Programmes</span>
+          <div class="course-row">
+            <div class="course-name">M.Ed. (Master of Education)</div>
+            <div class="course-meta"><strong>CUET-PG / LNMU Test</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹15,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.P.Ed. (Master of Physical Education)</div>
+            <div class="course-meta"><strong>LNMU Test</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹15,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Lib.I.Sc. (Master of Library &amp; Information Science)</div>
+            <div class="course-meta"><strong>CUET-PG</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Yr</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–₹10,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">LLM (Master of Laws)</div>
+            <div class="course-meta"><strong>CLAT-PG / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹10,000–₹25,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">MD / MS (Medical – DMCH &amp; Affiliated Colleges)</div>
+            <div class="course-meta"><strong>NEET-PG / INI CET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">NEET-PG + Counselling</span>
+          </div>
+        </div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;margin-top:8px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">PG Fee Summary (LNMU Main Campus)</div>
+          <div class="key-val"><span class="k">M.A. Programmes (Govt. Fees)</span><span class="v v-gold">₹300 – ₹8,910 (Entire Course)</span></div>
+          <div class="key-val"><span class="k">M.Sc. Programmes</span><span class="v v-gold">₹6,000 – ₹15,000 (Entire Course)</span></div>
+          <div class="key-val"><span class="k">M.Com.</span><span class="v v-gold">₹5,000 – ₹10,000 (Entire Course)</span></div>
+          <div class="key-val"><span class="k">MBA (Flagship)</span><span class="v v-gold">₹40,000 – ₹80,000 (Entire Course)</span></div>
+          <div class="key-val"><span class="k">MCA</span><span class="v v-gold">₹30,000 – ₹60,000 (Entire Course)</span></div>
+          <div class="key-val" style="border:none"><span class="k">M.Tech</span><span class="v v-gold">₹60,000 – ₹1,20,000 (Entire Course)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programmes (All 21 Departments)</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">🔬 Research &amp; Doctorate:</span>
+          <span style="color:var(--muted);"> LNMU offers PhD across all 21 PG departments. Admission via <strong style="color:var(--white);">PAT (PhD Admission Test)</strong>. UGC-NET/CSIR-NET/JRF holders are exempted from the written test. One of the lowest PhD fees in India at just ₹11,000 total.</span>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Humanities &amp; Languages</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Hindi</span>
+            <span class="phd-tag">PhD English</span>
+            <span class="phd-tag">PhD Maithili</span>
+            <span class="phd-tag">PhD Sanskrit</span>
+            <span class="phd-tag">PhD Urdu</span>
+            <span class="phd-tag">PhD Persian</span>
+            <span class="phd-tag">PhD Arabic</span>
+            <span class="phd-tag">PhD Philosophy</span>
+            <span class="phd-tag">PhD Music (Vocal / Instrumental / Musicology)</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD History</span>
+            <span class="phd-tag">PhD Ancient Indian History, Culture &amp; Archaeology</span>
+            <span class="phd-tag">PhD Political Science</span>
+            <span class="phd-tag">PhD Economics</span>
+            <span class="phd-tag">PhD Sociology</span>
+            <span class="phd-tag">PhD Psychology</span>
+            <span class="phd-tag">PhD Geography</span>
+            <span class="phd-tag">PhD Home Science</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Science</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Physics</span>
+            <span class="phd-tag">PhD Chemistry</span>
+            <span class="phd-tag">PhD Mathematics</span>
+            <span class="phd-tag">PhD Statistics</span>
+            <span class="phd-tag">PhD Botany</span>
+            <span class="phd-tag">PhD Zoology</span>
+            <span class="phd-tag">PhD Biochemistry</span>
+            <span class="phd-tag">PhD Computer Science</span>
+            <span class="phd-tag">PhD Information Technology</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce, Management &amp; Education</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Commerce</span>
+            <span class="phd-tag">PhD Management Studies (MBA)</span>
+            <span class="phd-tag">PhD Education</span>
+            <span class="phd-tag">PhD Library &amp; Information Science</span>
+            <span class="phd-tag">PhD Physical Education</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission (PAT)</div>
+          <div class="key-val"><span class="k">General / OBC / EWS</span><span class="v">Master's with min. 55% marks or equiv. CGPA</span></div>
+          <div class="key-val"><span class="k">SC / ST / PwD</span><span class="v">Master's with min. 50% marks or equiv. CGPA</span></div>
+          <div class="key-val"><span class="k">Entrance Test</span><span class="v">PAT (PhD Admission Test) – MCQ + Research Methodology</span></div>
+          <div class="key-val"><span class="k">UGC-NET / CSIR-NET / JRF</span><span class="v">Exempted from PAT written test</span></div>
+          <div class="key-val"><span class="k">Final Merit</span><span class="v">PAT Written (70%) + Interview (30%)</span></div>
+          <div class="key-val"><span class="k">Interview</span><span class="v">Research aptitude, subject knowledge &amp; proposal</span></div>
+          <div class="key-val" style="border:none"><span class="k">Admissions 2025</span><span class="v">Opened Jan 2025 · Deadline: 11 Feb 2025</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#63b3ed;font-weight:600;">PhD Fees:</span>
+          <span style="color:var(--muted);"> Total Programme Fee <strong style="color:var(--white);">₹11,000</strong> for the entire course (one of the lowest in India!) · 1st Year Fee ₹4,000 (excluding thesis charges) · Hostel ~₹5,000/year extra · Full-Time: 3–6 years · Part-Time available for in-service candidates in select depts.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Research Fellowships &amp; Financial Support</div>
+        <div style="margin-bottom:12px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">National Research Fellowships (PhD)</div>
+          <div>
+            <span class="schol-tag">UGC-JRF ₹37,000/month (Yr 1–2)</span>
+            <span class="schol-tag">UGC-SRF ₹42,000/month (Yr 3+)</span>
+            <span class="schol-tag">CSIR-JRF (Science disciplines)</span>
+            <span class="schol-tag">ICSSR Junior Research Fellowship</span>
+            <span class="schol-tag">Bihar State Research Fellowship</span>
+            <span class="schol-tag">DST-INSPIRE PhD Fellowship</span>
+          </div>
+        </div>
+        <div>
+          <div class="phd-cat-label" style="margin-bottom:8px;">State &amp; Special Assistance</div>
+          <div>
+            <span class="schol-tag">E-Kalyan Scholarship Bihar (SC/ST/EBC/BC)</span>
+            <span class="schol-tag">Post-Matric Scholarship (SC/ST/OBC/EBC)</span>
+            <span class="schol-tag">Bihar Student Credit Card Scheme (up to ₹4 Lakh)</span>
+            <span class="schol-tag">PM Yasasvi Scholarship (OBC/EBC/DNT)</span>
+            <span class="schol-tag">LNMU Internal Financial Assistance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (2025-26)</div>
+        <div style="margin-bottom:16px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">📅 Admissions 2025-26 Open:</span>
+          <span style="color:var(--muted);"> Apply at <strong style="color:var(--white);">lnmu.ac.in/admissions</strong> · PG: 5 selection lists already released · PhD: deadline was 11 Feb 2025 (next cycle opening soon)</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear for the Relevant Entrance Exam</div>
+            <div class="tl-desc">UG: Apply on OFSS Bihar (ofssbihar.in) for B.A./B.Sc./B.Com. — merit-based, no exam needed. B.Tech: LNMU CAT. MBBS/BDS: NEET-UG. B.Ed.: Bihar B.Ed. CET (conducted by LNMU). PG: CUET-PG (NTA) for M.A./M.Sc./M.Com.; CAT/CMAT/MAT for MBA; GATE for M.Tech.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register on the Official LNMU Portal</div>
+            <div class="tl-desc">Visit lnmu.ac.in → Click 'Apply Now' and register with your email and mobile number. Fill the application form with personal details, academic qualifications and course preferences.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Upload Documents</div>
+            <div class="tl-desc">Upload scanned copies of marksheets, photo, ID proof, category certificate (SC/ST/OBC/EWS/PwD), domicile certificate and entrance score card.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Pay Application Fee</div>
+            <div class="tl-desc">Pay the application fee online via Credit/Debit Card, Net Banking or UPI as notified on the portal. Keep the payment confirmation receipt for all further stages.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Merit List / Selection List</div>
+            <div class="tl-desc">LNMU releases merit lists / selection lists on the portal (up to 5 lists for PG 2025-26). Check and download your selection letter from lnmu.ac.in. PhD shortlisted candidates are called for Interview / Research Proposal Presentation.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Document Verification &amp; Fee Payment</div>
+            <div class="tl-desc">Attend document verification at the university or designated centre. Pay admission fees online to confirm enrolment. MBA final selection includes Group Discussion + Personal Interview. PhD selection: PAT Written Test (70%) + Interview (30%).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">B.A. / B.Sc. / B.Com. (General &amp; Hons.)</div><div></div><div></div><span class="tag tag-exam">OFSS Bihar (Merit)</span></div>
+        <div class="course-row"><div class="course-name">B.Tech (all streams)</div><div></div><div></div><span class="tag tag-exam">LNMU CAT (PCM)</span></div>
+        <div class="course-row"><div class="course-name">MBBS / BDS / BAMS / BHMS</div><div></div><div></div><span class="tag tag-exam">NEET-UG + BCECEB</span></div>
+        <div class="course-row"><div class="course-name">B.Ed. (2-Year)</div><div></div><div></div><span class="tag tag-exam">Bihar B.Ed. CET (LNMU)</span></div>
+        <div class="course-row"><div class="course-name">M.A. / M.Sc. / M.Com. / PG Diploma</div><div></div><div></div><span class="tag tag-exam">CUET-PG (NTA)</span></div>
+        <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">CAT / CMAT / AIMA-MAT</span></div>
+        <div class="course-row"><div class="course-name">MCA</div><div></div><div></div><span class="tag tag-exam">LNMU Entrance / NIMCET</span></div>
+        <div class="course-row"><div class="course-name">M.Tech</div><div></div><div></div><span class="tag tag-exam">GATE + LNMU Counselling</span></div>
+        <div class="course-row"><div class="course-name">MD / MS (Medical)</div><div></div><div></div><span class="tag tag-exam">NEET-PG / INI CET</span></div>
+        <div class="course-row"><div class="course-name">PhD (all departments)</div><div></div><div></div><span class="tag tag-exam">PAT / NET-JRF Exempt</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Assistance</div>
+        <div style="margin-bottom:12px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">Research Fellowships (PhD)</div>
+          <div>
+            <span class="schol-tag">UGC-JRF ₹37,000/month (Yr 1–2)</span>
+            <span class="schol-tag">UGC-SRF ₹42,000/month (Yr 3+)</span>
+            <span class="schol-tag">CSIR-JRF (Science disciplines)</span>
+            <span class="schol-tag">ICSSR Junior Research Fellowship</span>
+            <span class="schol-tag">Bihar State Research Fellowship</span>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">State &amp; Central Government Scholarships</div>
+          <div>
+            <span class="schol-tag">E-Kalyan Scholarship Bihar (SC/ST/EBC/BC) ₹1,500–3,000/month</span>
+            <span class="schol-tag">Post-Matric Scholarship (SC/ST/OBC/EBC)</span>
+            <span class="schol-tag">Bihar Student Credit Card Scheme (up to ₹4 Lakh)</span>
+            <span class="schol-tag">PM Yasasvi Scholarship (OBC/EBC/DNT) ₹75,000–1,25,000/yr</span>
+            <span class="schol-tag">Central Sector Scholarship (MoE)</span>
+            <span class="schol-tag">Minority Scholarships (Pre &amp; Post-Matric)</span>
+          </div>
+        </div>
+        <div>
+          <div class="phd-cat-label" style="margin-bottom:8px;">Special Schemes</div>
+          <div>
+            <span class="schol-tag">Mukhyamantri Kanya Utthan Yojana (Girl Students)</span>
+            <span class="schol-tag">LNMU Internal Financial Assistance</span>
+            <span class="schol-tag">DST-INSPIRE PhD Fellowship</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">Reservation Policy (Bihar Govt. Norms):</span>
+          <span style="color:var(--muted);"> SC: 15% · ST: 1% · OBC: 27% · EWS: 10% · Women (Horizontal): 35% · PwD (Horizontal): 3%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview (2023)</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">~150</div>
+            <div class="s-lbl">Candidates Placed (2023)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹3.5 LPA</div>
+            <div class="s-lbl">Median UG Salary</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">₹4 LPA</div>
+            <div class="s-lbl">Median PG Salary</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Recruiting Sectors</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">IT Companies</span>
+          <span class="recruiter-tag">Banking &amp; Finance</span>
+          <span class="recruiter-tag">Educational Institutions</span>
+          <span class="recruiter-tag">Government Services</span>
+          <span class="recruiter-tag">Research Institutions</span>
+          <span class="recruiter-tag">Media &amp; Journalism</span>
+          <span class="recruiter-tag">NGOs</span>
+          <span class="recruiter-tag">Civil Services (UPSC/BPSC)</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Notes</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          LNMU's Placement Cell places approximately <strong style="color:var(--white);">~150 candidates annually</strong>. The median salary for UG graduates stands at <strong style="color:var(--white);">₹3.5 LPA</strong> and for PG graduates at <strong style="color:var(--white);">₹4 LPA</strong> (2023 data). Being a state university with a strong focus on humanities, sciences and professional education, graduates predominantly secure positions in <strong style="color:var(--white);">IT companies, banking, government services, educational institutions and civil services</strong>. The MBA programme (IIRF 2025: 92nd in Management) and MCA attract IT and management sector recruiters. LNMU's <strong style="color:var(--white);">UNICEF collaboration</strong> provides exposure to development and social sector organisations. Students also qualify in UPSC, BPSC and other civil service examinations in significant numbers.
+        </p>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Programme-wise Placement Profile</div>
+          <div class="course-row"><div class="course-name">MBA (Flagship Programme)</div><div></div><div></div><span class="tag tag-fees">IT / Banking / Management</span></div>
+          <div class="course-row"><div class="course-name">MCA / M.Sc. Computer Science / B.Tech</div><div></div><div></div><span class="tag tag-fees">IT Sector</span></div>
+          <div class="course-row"><div class="course-name">M.A. (Social Sciences / Humanities)</div><div></div><div></div><span class="tag tag-exam">Civil Services / Teaching / NGOs</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. (Pure / Life Sciences)</div><div></div><div></div><span class="tag tag-exam">Research / Academics</span></div>
+          <div class="course-row"><div class="course-name">PhD (all streams)</div><div></div><div></div><span class="tag tag-fees">Research &amp; Academia</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at LNMU</div>
+        <div style="margin-bottom:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">🏛️ Heritage Raj Campus:</span>
+          <span style="color:var(--muted);"> LNMU is situated on the <strong style="color:var(--white);">historic 230-acre Raj Campus</strong> of Maharajadhiraja Kameshwar Singh of Darbhanga — one of the most unique and heritage-rich campuses in Bihar, featuring palatial architecture and sprawling grounds.</span>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Cultural Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Cultural Fest</strong> — Celebrating Mithila heritage including Saurath Sabha, Madhushravani, Sama-Chakeva, Jitia and Maithili cultural festivals</div></div>
+            <div class="event-item"><span class="event-icon">🏅</span><div><strong>Annual Sports Meet &amp; Inter-College Competitions</strong> — Cricket, football, basketball, volleyball, athletics and indoor games tournaments</div></div>
+            <div class="event-item"><span class="event-icon">📚</span><div><strong>Saraswati Puja &amp; Literary Events</strong> — Annual academic and cultural celebrations across all colleges</div></div>
+            <div class="event-item"><span class="event-icon">🤝</span><div><strong>UNICEF Collaborative Programmes</strong> — Initiatives for improving educational outcomes and child protection in the Mithila region</div></div>
+            <div class="event-item"><span class="event-icon">📝</span><div><strong>Bihar B.Ed. CET Conduct</strong> — LNMU is the designated authority for Bihar B.Ed. admission for all Bihar universities — making it the premier B.Ed. admission authority in Bihar</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports Facilities</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏃</div>Athletics Track</div>
+            <div class="fac-item"><div class="fac-icon">🎮</div>Indoor Games</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏛️ Heritage Raj Campus Highlights</div>
+          <div class="phd-tags">
+            <span class="phd-tag">230-Acre Heritage Campus</span>
+            <span class="phd-tag">Maharajadhiraja Kameshwar Singh's Palace Grounds</span>
+            <span class="phd-tag">Palatial Heritage Architecture</span>
+            <span class="phd-tag">18+ Study Centres</span>
+            <span class="phd-tag">7 Major Academic Buildings</span>
+            <span class="phd-tag">Established 1975 at Raj Campus</span>
+            <span class="phd-tag">Most Unique Campus in Bihar</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">👥 Student Organisations &amp; Support</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🎖️</div>NSS Units</div>
+            <div class="fac-item"><div class="fac-icon">🪖</div>NCC Units</div>
+            <div class="fac-item"><div class="fac-icon">🗳️</div>Student Union</div>
+            <div class="fac-item"><div class="fac-icon">📖</div>IQAC Cell</div>
+            <div class="fac-item"><div class="fac-icon">🎓</div>Placement Cell</div>
+            <div class="fac-item"><div class="fac-icon">📡</div>Distance Education (DDE)</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">💳 Financial Support for Students:</span>
+          <span style="color:var(--muted);"> Bihar Student Credit Card Scheme provides up to <strong style="color:var(--white);">₹4 Lakh</strong> education loan. E-Kalyan portal scholarships for SC/ST/OBC/EBC/BC students. Mukhyamantri Kanya Utthan Yojana supports girl students throughout their education. Extremely low course fees across all programmes ensure higher education remains accessible to all.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://lnmu.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Full Name</span><span class="v">Lalit Narayan Mithila University</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">LNMU</span></div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1972</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State Public University</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-gold">NAAC B++ | UGC | DEB | AIU</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Darbhanga, Bihar – 846004</span></div>
+      <div class="key-val"><span class="k">Campus Area</span><span class="v">230 Acres (Raj Campus)</span></div>
+      <div class="key-val"><span class="k">Ranking</span><span class="v v-gold">1st in Bihar | 92nd India (Mgmt)</span></div>
+      <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v">67 (43 Constituent + 24)</span></div>
+      <div class="key-val"><span class="k">Hostel Type</span><span class="v v-gold">Separate Boys &amp; Girls</span></div>
+      <div class="key-val"><span class="k">Annual Hostel Fee</span><span class="v">~₹5,000 (subsidised)</span></div>
+      <div class="key-val"><span class="k">Motto</span><span class="v v-gold">Sa Vidya Ya Vimuktaye</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Program</th><th>Exam</th></tr>
+        <tr><td>B.A. / B.Sc. / B.Com.</td><td><span class="tag tag-exam">OFSS Bihar</span></td></tr>
+        <tr><td>B.Tech</td><td><span class="tag tag-exam">LNMU CAT</span></td></tr>
+        <tr><td>MBBS / BDS</td><td><span class="tag tag-exam">NEET-UG</span></td></tr>
+        <tr><td>B.Ed. (2-Year)</td><td><span class="tag tag-exam">Bihar B.Ed. CET</span></td></tr>
+        <tr><td>M.A. / M.Sc. / M.Com.</td><td><span class="tag tag-gold">CUET-PG</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-gold">CAT / CMAT</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-gold">LNMU / NIMCET</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-gold">GATE</span></td></tr>
+        <tr><td>MD / MS</td><td><span class="tag tag-exam">NEET-PG</span></td></tr>
+        <tr><td>PhD (all depts.)</td><td><span class="tag tag-gold">PAT / NET Exempt</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">B.A. / B.Com. (Total)</span><span class="v v-gold">₹3,000 – ₹8,000</span></div>
+      <div class="key-val"><span class="k">B.Sc. (Total)</span><span class="v v-gold">₹5,000 – ₹12,000</span></div>
+      <div class="key-val"><span class="k">B.Ed. (Entire 2-Yr!)</span><span class="v v-green">₹1,530 Total</span></div>
+      <div class="key-val"><span class="k">B.Tech (Total)</span><span class="v v-gold">₹2,00,000–₹2,75,000</span></div>
+      <div class="key-val"><span class="k">M.A. (Total)</span><span class="v v-gold">₹300 – ₹8,910</span></div>
+      <div class="key-val"><span class="k">MBA (Total)</span><span class="v v-gold">₹40,000 – ₹80,000</span></div>
+      <div class="key-val"><span class="k">PhD (Entire Course)</span><span class="v v-green">₹11,000 Total</span></div>
+      <div class="key-val"><span class="k">Annual Hostel Fee</span><span class="v v-gold">~₹5,000 (subsidised)</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Scholarships &amp; Support</div>
+      <div style="margin-bottom:10px;">
+        <div class="phd-cat-label" style="margin-bottom:8px;">Government &amp; Merit Schemes</div>
+        <span class="schol-tag">E-Kalyan Bihar Scholarship</span>
+        <span class="schol-tag">Bihar Student Credit Card (₹4L)</span>
+        <span class="schol-tag">PM Yasasvi Scholarship</span>
+        <span class="schol-tag">Mukhyamantri Kanya Utthan Yojana</span>
+        <span class="schol-tag">UGC-JRF / SRF (PhD)</span>
+        <span class="schol-tag">DST-INSPIRE Fellowship</span>
+        <span class="schol-tag">Post-Matric SC/ST/OBC</span>
+      </div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge = document.getElementById('shortlistBadge');
+    const navBtn = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added'); sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'LNMU added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added'); sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown'))
+      document.getElementById('streamDropdown').classList.remove('open');
+  });
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

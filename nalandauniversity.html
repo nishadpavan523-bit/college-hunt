@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nalanda University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* ── RECRUITERS ── */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* ── PhD LIST ── */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── ADMISSIONS TAB ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* ── PLACEMENTS TAB ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ── CAMPUS LIFE TAB ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* Scholarship table */
+  .schol-tag {
+    background: rgba(99,179,237,0.1);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: #63b3ed;
+    display: inline-block;
+    margin: 3px;
+  }
+
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+
+    <!-- Stream selector with dropdown -->
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Arts &amp; Humanities</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Nalanda University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>Nalanda <span>University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Rajgir, Bihar</strong></span>
+        <span class="meta-chip">🏛️ <strong>Institution of National Importance</strong></span>
+        <span class="meta-chip">📅 Re-est. <strong>2010</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://nalandauniv.edu.in/','_blank')" title="Open official website">🌐 <strong>nalandauniv.edu.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">UGC</span>
+      <span class="value">Recognised</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">455 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Type</span>
+      <span class="value">Intl. Univ.</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">Diploma &amp; Certificate</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Ancient Origin</div><div class="val">~427 CE</div></div>
+          <div class="info-chip"><div class="lbl">Re-established</div><div class="val">2010 (Act) / 2014 (Ops)</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Institution of National Importance</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Rajgir, Nalanda, Bihar</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">455 Acres (Eco-friendly)</div></div>
+          <div class="info-chip"><div class="lbl">IIRF Ranking 2025</div><div class="val">48th in India</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About Nalanda University</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Nalanda University is the revival of one of the greatest educational institutions in human history, originally flourishing from <strong style="color:var(--white);">~427 CE to ~1200 CE</strong> — almost 800 years of continuous operation. At its ancient peak, it hosted <strong style="color:var(--white);">10,000 students and 2,000 teachers</strong> from China, Korea, Japan, Sri Lanka, Tibet, Greece, Persia and Turkey. The modern revival was proposed at the <strong style="color:var(--white);">2007 East Asia Summit</strong>, supported by 18 nations, and enacted by the Indian Parliament in 2010. Operations began in 2014, with the new permanent eco-friendly campus at Rajgir inaugurated on <strong style="color:var(--white);">19 June 2024</strong> by PM Narendra Modi. Recognised by <strong style="color:var(--white);">UGC</strong> and an <strong style="color:var(--white);">Institution of National Importance</strong>, the university offers exclusively PG and PhD programmes across 5 Schools and 2 Centres, with students from <strong style="color:var(--white);">24 countries</strong> (18% international student ratio).
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Library (10,000+ Books)</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Amphitheatre (2,000 cap)</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Mess &amp; Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>High-Speed Wi-Fi</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>Net-Zero Energy Campus</div>
+          <div class="fac-item"><div class="fac-icon">🗣️</div>Language Labs</div>
+          <div class="fac-item"><div class="fac-icon">🧘</div>Meditation &amp; Yoga Space</div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>International Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏛️</div>Convention Centre</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Ajatshatru House (Boys)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Tathagat &amp; Maitri Houses</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Enabled</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Vegetarian Mess</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Study Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">🚌</span> Daily Shuttle Service</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+          <div class="hostel-item"><span class="hostel-icon">🌍</span> International Accommodation</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical &amp; Healthcare</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees (Yearly):</span>
+          <span style="color:var(--muted);"> ₹30,000 – ₹50,000 per year · Separate male &amp; female accommodation · Non-AC rooms with study facilities · Monthly shuttle to Patna &amp; Gaya</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: PG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">⚠️ Important Note:</span>
+          <span style="color:var(--muted);"> Nalanda University is a <strong style="color:var(--white);">Postgraduate &amp; Doctoral ONLY</strong> institution. No UG (BA/BSc/BCom/BTech) programmes are offered. All PG programmes are 2-year fully residential.</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.A. Programmes · 2 Years · CUET-PG · ₹1,40,000 Total</span>
+          <div class="course-row">
+            <div class="course-name">M.A. Buddhist Studies</div>
+            <div class="course-meta"><strong>CUET-PG + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Philosophy &amp; Comparative Religions</div>
+            <div class="course-meta"><strong>CUET-PG + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Hindu Studies (Sanatana)</div>
+            <div class="course-meta"><strong>CUET-PG + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Historical Studies</div>
+            <div class="course-meta"><strong>CUET-PG + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. World Literature (English)</div>
+            <div class="course-meta"><strong>CUET-PG + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Sanskrit</div>
+            <div class="course-meta"><strong>CUET-PG + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Bachelor's degree (any discipline) with min. 55% marks · CUET-PG score + SOP + Personal Interview</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. Programme · 2 Years · CUET-PG · ₹1,40,000 Total</span>
+          <div class="course-row">
+            <div class="course-name">M.Sc. Ecology &amp; Environment Studies</div>
+            <div class="course-meta"><strong>CUET-PG + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1,40,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: B.Sc. in Science / Environmental Science or relevant discipline with min. 55% (General) / 50% (SC/ST/PwD)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA · 2 Years · CAT / XAT / MAT / GMAT · ₹2,00,000 – ₹2,40,000 Total</span>
+          <div class="course-row">
+            <div class="course-name">MBA in Sustainable Development &amp; Management</div>
+            <div class="course-meta"><strong>CAT/XAT/MAT/GMAT</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,00,000–2,40,000</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Bachelor's degree with min. 55% aggregate · Min. 70 percentile in CAT/XAT/MAT/GMAT/CUET-PG · Focus: Sustainability strategy, green finance, ESG, CSR, environmental management</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: DIPLOMA & CERTIFICATE ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Diploma &amp; Certificate Programmes</div>
+
+        <div class="course-block">
+          <span class="course-type-label">Diploma Programmes · 1 Year · Merit-Based · ₹30,000–45,000</span>
+          <div class="course-row">
+            <div class="course-name">Diploma in Sanskrit</div>
+            <div class="course-meta"><strong>Merit + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Year</strong>Duration</div>
+            <span class="tag tag-fees">₹30,000–45,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Diploma in Pali</div>
+            <div class="course-meta"><strong>Merit + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Year</strong>Duration</div>
+            <span class="tag tag-fees">₹30,000–45,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Diploma in Tibetan</div>
+            <div class="course-meta"><strong>Merit + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Year</strong>Duration</div>
+            <span class="tag tag-fees">₹30,000–45,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Diploma in Yoga</div>
+            <div class="course-meta"><strong>Merit + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Year</strong>Duration</div>
+            <span class="tag tag-fees">₹30,000–45,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Diploma in Korean</div>
+            <div class="course-meta"><strong>Merit + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Year</strong>Duration</div>
+            <span class="tag tag-fees">₹30,000–45,000</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 12th pass or Graduation in relevant discipline with min. 50% marks</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Certificate Programmes · 6 Months · Merit-Based · ₹15,000–25,000</span>
+          <div class="course-row">
+            <div class="course-name">Certificate in English Communication</div>
+            <div class="course-meta"><strong>Merit + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>6 Months</strong>Duration</div>
+            <span class="tag tag-fees">₹15,000–25,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Certificate in Sanskrit / Pali / Tibetan</div>
+            <div class="course-meta"><strong>Merit + SOP</strong>Entrance</div>
+            <div class="course-meta"><strong>6 Months</strong>Duration</div>
+            <span class="tag tag-fees">₹15,000–25,000</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 12th pass or Graduation in relevant discipline with min. 50% marks · Admission: Merit on qualifying degree + SOP + Interview</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programmes</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Buddhist Studies, Philosophy &amp; Comparative Religions</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Buddhist Studies</span>
+            <span class="phd-tag">PhD Philosophy &amp; Comparative Religions</span>
+            <span class="phd-tag">PhD Hindu Studies (Sanatana)</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Historical Studies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Historical Studies</span>
+            <span class="phd-tag">Ancient India</span>
+            <span class="phd-tag">South &amp; East Asian History</span>
+            <span class="phd-tag">Art History &amp; Epigraphy</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Ecology &amp; Environment Studies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Ecology &amp; Environment</span>
+            <span class="phd-tag">Biodiversity</span>
+            <span class="phd-tag">Climate Change</span>
+            <span class="phd-tag">Environmental Policy</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Languages &amp; Literature</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Languages &amp; Literature</span>
+            <span class="phd-tag">Sanskrit</span>
+            <span class="phd-tag">Pali</span>
+            <span class="phd-tag">Tibetan</span>
+            <span class="phd-tag">Chinese</span>
+            <span class="phd-tag">World Literature</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Sustainable Development &amp; Management</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Sustainable Development</span>
+            <span class="phd-tag">Green Finance</span>
+            <span class="phd-tag">ESG &amp; CSR</span>
+            <span class="phd-tag">Environmental Economics</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification (General/OBC/EWS)</span><span class="v">Master's degree with min. 65% marks</span></div>
+          <div class="key-val"><span class="k">Qualification (SC/ST/PwD)</span><span class="v">Master's degree with min. 60% marks</span></div>
+          <div class="key-val"><span class="k">International Students</span><span class="v">Equivalent Master's; min. 65%</span></div>
+          <div class="key-val"><span class="k">Entrance Preference</span><span class="v">UGC-NET / JRF / CSIR-NET qualified</span></div>
+          <div class="key-val"><span class="k">Research Proposal</span><span class="v">2,000–3,000 words required</span></div>
+          <div class="key-val"><span class="k">Selection Criteria</span><span class="v">Academic (30%) + Proposal (40%) + Interview (30%)</span></div>
+          <div class="key-val" style="border:none"><span class="k">Sessions</span><span class="v">January &amp; July (twice yearly)</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#63b3ed;font-weight:600;">PhD Fees:</span>
+          <span style="color:var(--muted);"> Total Programme Fee ₹2,20,000 · Annual approx. ₹55,000/yr · Hostel ₹30,000–₹50,000 per year extra · Full-Time only (3–5 years)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (2026)</div>
+        <div style="margin-bottom:16px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">📅 Admission 2026 Open:</span>
+          <span style="color:var(--muted);"> Last date <strong style="color:var(--white);">15 June 2026</strong> for PG &amp; PhD programmes · Apply at nalandauniv.edu.in</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Register on the Official Admissions Portal</div>
+            <div class="tl-desc">Visit nalandauniv.edu.in → Admissions section. Register online with email and mobile number. Fill the application form with personal details, academic qualifications and course preference.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Upload SOP &amp; Academic Documents</div>
+            <div class="tl-desc">Submit a Statement of Purpose (SOP) explaining why Nalanda, your research interests and career goals. Upload all academic records. PhD applicants must also submit a Research Proposal (2,000–3,000 words).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Submit Entrance Scores</div>
+            <div class="tl-desc">For MBA: submit valid CAT/XAT/MAT/GMAT/CUET-PG score (min. 70 percentile required). For M.A./M.Sc.: submit CUET-PG (NTA) score. PhD applicants: UGC-NET/JRF/CSIR-NET qualified candidates are given shortlisting preference.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Pay Application Fee</div>
+            <div class="tl-desc">Pay the application fee online as notified on nalandauniv.edu.in. Keep payment confirmation for further stages.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Personal Interview</div>
+            <div class="tl-desc">Shortlisted candidates are called for a Personal Interview conducted in-person at the Rajgir campus or online. PhD interviews are conducted by the School faculty committee.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Final Merit List &amp; Seat Confirmation</div>
+            <div class="tl-desc">Final selection based on CUET-PG/CAT score + SOP + Interview. (PhD: Academic Record 30% + Research Proposal 40% + Interview 30%). Pay fees online to confirm enrolment. Fully residential — hostel accommodation is mandatory.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">M.A. (all streams)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET-PG + SOP + Interview</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Sc. Ecology &amp; Environment</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET-PG + SOP + Interview</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA Sustainable Dev. &amp; Management</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CAT / XAT / MAT / GMAT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Diploma &amp; Certificate Programmes</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Merit + SOP + Interview</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD (all disciplines)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">UGC-NET / JRF / CSIR-NET</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Assistance</div>
+        <div style="margin-bottom:12px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">Research &amp; PhD Fellowships</div>
+          <div>
+            <span class="schol-tag">UGC-JRF (₹37,000/month)</span>
+            <span class="schol-tag">CSIR-JRF</span>
+            <span class="schol-tag">DST-INSPIRE PhD Fellowship</span>
+            <span class="schol-tag">PM Research Fellowship (₹70–80K/month)</span>
+            <span class="schol-tag">ICSSR Junior Research Fellowship</span>
+            <span class="schol-tag">Nalanda University Research Fellowships</span>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">International Scholarships</div>
+          <div>
+            <span class="schol-tag">ICCR Scholarships (for foreign students)</span>
+            <span class="schol-tag">Japanese Govt. MEXT Scholarship</span>
+            <span class="schol-tag">Korean Govt. GKS Scholarship</span>
+            <span class="schol-tag">Chinese Govt. Scholarship</span>
+          </div>
+        </div>
+        <div>
+          <div class="phd-cat-label" style="margin-bottom:8px;">Merit &amp; State Support</div>
+          <div>
+            <span class="schol-tag">Nalanda University Merit Scholarships</span>
+            <span class="schol-tag">Bihar State Scholarship (E-Kalyan)</span>
+            <span class="schol-tag">Bihar Student Credit Card</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: PLACEMENTS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹16 LPA</div>
+            <div class="s-lbl">Highest Package</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹8–10 LPA</div>
+            <div class="s-lbl">Avg Package (MBA)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">100%</div>
+            <div class="s-lbl">MBA Placement (2022)</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Recruiting Sectors</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Sustainability Consulting</span>
+          <span class="recruiter-tag">International NGOs</span>
+          <span class="recruiter-tag">Oil &amp; Gas</span>
+          <span class="recruiter-tag">IT Sector</span>
+          <span class="recruiter-tag">Agribusiness</span>
+          <span class="recruiter-tag">Textiles</span>
+          <span class="recruiter-tag">Green Finance</span>
+          <span class="recruiter-tag">Education &amp; Academia</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Notes</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Nalanda University's placement record is most notable for its MBA in Sustainable Development &amp; Management programme. In <strong style="color:var(--white);">2022, 100% of MBA graduates were placed</strong> with a highest package of <strong style="color:var(--white);">₹16 LPA</strong> and an average of <strong style="color:var(--white);">₹8–10 LPA</strong>. Roles are concentrated in sustainability, CSR, EHS, green finance, energy consulting, agribusiness, oil &amp; gas, IT, and textiles. PG and PhD graduates in Buddhist Studies, History, Languages, and Ecology find opportunities primarily in <strong style="color:var(--white);">academia, research institutions, international cultural organisations, NGOs, and diplomacy</strong>. The university's global reputation and international student base attract recruiters seeking candidates with cross-cultural competence and interdisciplinary expertise.
+        </p>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Programme-wise Placement Profile</div>
+          <div class="course-row">
+            <div class="course-name">MBA Sustainable Dev. &amp; Management</div>
+            <div></div><div></div>
+            <span class="tag" style="background:rgba(72,187,120,0.15);color:#68d391;border:1px solid rgba(72,187,120,0.3);">100% (2022)</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Sc. Ecology &amp; Environment</div>
+            <div></div><div></div>
+            <span class="tag tag-fees">Research / NGOs</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Buddhist / Historical Studies</div>
+            <div></div><div></div>
+            <span class="tag tag-exam">Academia &amp; Diplomacy</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Languages &amp; Literature</div>
+            <div></div><div></div>
+            <span class="tag tag-exam">Teaching &amp; Translation</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">PhD (all streams)</div>
+            <div></div><div></div>
+            <span class="tag tag-fees">Research &amp; Academia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Academic Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Cultural Festival</strong> — Multicultural events celebrating traditions from 24 countries represented by the student body</div></div>
+            <div class="event-item"><span class="event-icon">🌍</span><div><strong>International Academic Conferences</strong> — Guest lectures by world scholars in Buddhist studies, history, sustainability and ecology</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research Seminars</strong> — Interdisciplinary research presentations, paper presentations and academic workshops</div></div>
+            <div class="event-item"><span class="event-icon">🏛️</span><div><strong>East Asia Summit Engagement</strong> — Annual diplomatic academic initiatives with 18 partner nations</div></div>
+            <div class="event-item"><span class="event-icon">🤝</span><div><strong>UNICEF &amp; International Partnerships</strong> — Collaborative programmes with global academic institutions and cultural organisations</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga Facilities</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Meditation Spaces</div>
+            <div class="fac-item"><div class="fac-icon">🚌</div>Campus Shuttle</div>
+            <div class="fac-item"><div class="fac-icon">🎨</div>Art Gallery</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 International Student Community</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Students from 24 Countries</span>
+            <span class="phd-tag">Japan</span>
+            <span class="phd-tag">South Korea</span>
+            <span class="phd-tag">Nepal</span>
+            <span class="phd-tag">Sri Lanka</span>
+            <span class="phd-tag">Vietnam</span>
+            <span class="phd-tag">Myanmar</span>
+            <span class="phd-tag">Serbia</span>
+            <span class="phd-tag">South Sudan</span>
+            <span class="phd-tag">18% International Ratio</span>
+            <span class="phd-tag">~1,038 Students (2023-24)</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">📚 Academic Resources &amp; Heritage Proximity</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">📚</div>Library (10,000+ Books)</div>
+            <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centre</div>
+            <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+            <div class="fac-item"><div class="fac-icon">🗣️</div>Language Labs</div>
+            <div class="fac-item"><div class="fac-icon">🏛️</div>Ancient Nalanda Ruins (12 km)</div>
+            <div class="fac-item"><div class="fac-icon">☸️</div>Bodh Gaya (80 km)</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">🌿 Eco-Friendly Campus:</span>
+          <span style="color:var(--muted);"> Net-zero energy (solar power) · Net-zero water (rainwater harvesting &amp; recycling) · Winner of Ministry of Education's Green Champion Award · Located adjacent to UNESCO World Heritage Site (Ancient Nalanda Ruins)</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <!-- Quick Action -->
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://nalandauniv.edu.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <!-- Key Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Ancient Origin</span><span class="v">~427 CE (800 yrs operation)</span></div>
+      <div class="key-val"><span class="k">Re-established</span><span class="v">2010 (Act) / 2014 (Ops)</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">NU / Nalanda</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">Institution of National Importance</span></div>
+      <div class="key-val"><span class="k">Governance</span><span class="v v-gold">Ministry of Education, GoI</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v v-gold">UGC Recognised</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">455 Acres (Net-Zero)</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Rajgir, Nalanda, Bihar</span></div>
+      <div class="key-val"><span class="k">Partner Nations</span><span class="v">18 countries</span></div>
+      <div class="key-val"><span class="k">IIRF Ranking 2025</span><span class="v v-gold">48th in India</span></div>
+      <div class="key-val"><span class="k">New Campus Inaug.</span><span class="v">19 June 2024</span></div>
+    </div>
+
+    <!-- Entrance Exams -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course Type</th><th>Exam</th></tr>
+        <tr><td>M.A. (all streams)</td><td><span class="tag tag-exam">CUET-PG + SOP</span></td></tr>
+        <tr><td>M.Sc. Ecology</td><td><span class="tag tag-exam">CUET-PG + SOP</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT/XAT/MAT/GMAT</span></td></tr>
+        <tr><td>Diploma &amp; Cert.</td><td><span class="tag tag-exam">Merit + SOP</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">NET/JRF/CSIR-NET</span></td></tr>
+      </table>
+    </div>
+
+    <!-- Approx Fees Summary -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">M.A. (all streams)</span><span class="v v-gold">₹1,40,000 Total</span></div>
+      <div class="key-val"><span class="k">M.Sc. Ecology</span><span class="v v-gold">₹1,40,000 Total</span></div>
+      <div class="key-val"><span class="k">MBA (Sustainable)</span><span class="v v-gold">₹2,00,000–2,40,000</span></div>
+      <div class="key-val"><span class="k">Diploma (1 Year)</span><span class="v v-gold">₹30,000–45,000</span></div>
+      <div class="key-val"><span class="k">Certificate (6 mo)</span><span class="v v-gold">₹15,000–25,000</span></div>
+      <div class="key-val"><span class="k">PhD (Full Course)</span><span class="v v-gold">₹2,20,000 Total</span></div>
+      <div class="key-val"><span class="k">Hostel (Yearly)</span><span class="v v-gold">₹30,000–50,000</span></div>
+    </div>
+
+    <!-- Placement Snapshot -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Highest Package</span><span class="v" style="color:var(--gold);">₹16 LPA</span></div>
+      <div class="key-val"><span class="k">Avg. Package (MBA)</span><span class="v" style="color:var(--accent-green);">₹8–10 LPA</span></div>
+      <div class="key-val"><span class="k">MBA 2022 Placement</span><span class="v" style="color:var(--accent-green);">100%</span></div>
+      <div class="key-val"><span class="k">Top Sectors</span><span class="v">Sustainability, NGOs, Oil &amp; Gas, IT, Academia</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  /* ── SHORTLIST STATE ── */
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'Nalanda University added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  /* ── TABS ── */
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  /* ── STREAM DROPDOWN ── */
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  /* ── LOGOUT MODAL ── */
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

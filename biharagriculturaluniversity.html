@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bihar Agricultural University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero { background: linear-gradient(135deg, #0f2b1a 0%, #1a4a2e 50%, #0f2b1a 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(72,187,120,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(72,187,120,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--accent-green); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--accent-green); color: var(--accent-green); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-rank { background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-rank .value { color: #b794f4; }
+
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--accent-green); border-bottom-color: var(--accent-green); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--accent-green); border-radius: 2px; }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-green); background: rgba(72,187,120,0.1); border: 1px solid rgba(72,187,120,0.25); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(72,187,120,0.06); border-color: rgba(72,187,120,0.25); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-icar { background: rgba(245,166,35,0.12); color: var(--gold); border: 1px solid var(--border); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: rgba(72,187,120,0.1); border-color: rgba(72,187,120,0.3); color: var(--accent-green); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: rgba(72,187,120,0.3); background: rgba(72,187,120,0.06); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--accent-green); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--accent-green); color: var(--navy); }
+  .cta-primary:hover { background: #68d391; }
+  .cta-primary.added { background: var(--gold); color: var(--navy); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--accent-green); color: var(--accent-green); }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--accent-green); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: rgba(72,187,120,0.3); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--accent-green); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--accent-green); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .schol-tag { background: rgba(72,187,120,0.1); border: 1px solid rgba(72,187,120,0.2); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: #68d391; display: inline-block; margin: 3px; }
+
+  .college-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .college-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .college-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+  .college-table tr:last-child td { border-bottom:none; }
+  .college-table tr:hover td { background:rgba(72,187,120,0.04); }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        🌾 <span id="streamLabel">Agriculture</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Agriculture','🌾')">🌾 Agriculture</div>
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Veterinary Science','🐄')">🐄 Veterinary Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Bihar Agricultural University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🌾</div>
+    <div class="uni-title">
+      <h1>Bihar <span>Agricultural University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Sabour, Bhagalpur, Bihar</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Agricultural University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2010 (College 1908)</strong></span>
+        <span class="meta-chip">🎓 <strong>6 Constituent Colleges</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://bausabour.ac.in/','_blank')">🌐 <strong>bausabour.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC</span>
+      <span class="value">Grade A</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">ICAR</span>
+      <span class="value">Accredited</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">NIRF 2025</span>
+      <span class="value">#36 Agri</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">Research Stations</span>
+      <span class="value">12</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Full Name</div><div class="val">Bihar Agricultural University, Sabour</div></div>
+          <div class="info-chip"><div class="lbl">Historical Roots</div><div class="val">Bihar Agricultural College, 17 Aug 1908</div></div>
+          <div class="info-chip"><div class="lbl">Est. as University</div><div class="val">5 August 2010 (Bihar Legislature Act)</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Sabour, Bhagalpur Road, Bihar – 813210</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Agricultural University, Govt. of Bihar</div></div>
+          <div class="info-chip"><div class="lbl">Jurisdiction</div><div class="val">25 Districts of Bihar</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About BAU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Bihar Agricultural University traces its roots to the <strong style="color:var(--white);">Bihar Agricultural College, Sabour — founded on 17 August 1908</strong>, making it one of India's oldest agricultural colleges. It was established as a full university by an Act of the Bihar State Legislature on <strong style="color:var(--white);">5 August 2010</strong>. BAU holds a prestigious <strong style="color:var(--white);">NAAC Grade A</strong> accreditation and is <strong style="color:var(--white);">ICAR Accredited</strong>, ranking <strong style="color:var(--white);">36th in NIRF 2025</strong> under the Agriculture &amp; Allied Sectors category. The university operates through <strong style="color:var(--white);">6 constituent colleges</strong>, <strong style="color:var(--white);">12 research stations</strong> across 3 agro-ecological zones of Bihar, and has <strong style="color:var(--white);">500+ researchers and faculty</strong> with a 1:2.4 faculty-to-student ratio. It is a <strong style="color:var(--white);">fully residential university</strong> — all students must reside in campus hostels.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>6 Constituent Colleges</div>
+        <table class="college-table">
+          <thead>
+            <tr><th>#</th><th>College Name</th><th>Location</th><th>Focus</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Bihar Agricultural College (BAC), Sabour</td><td>Sabour, Bhagalpur</td><td><span class="tag tag-fees">Agriculture (Flagship, 1908)</span></td></tr>
+            <tr><td>2</td><td>College of Agriculture, Noorsarai</td><td>Noorsarai, Nalanda</td><td><span class="tag tag-fees">Agriculture</span></td></tr>
+            <tr><td>3</td><td>College of Agriculture, Kishanganj</td><td>Kishanganj</td><td><span class="tag tag-fees">Agriculture</span></td></tr>
+            <tr><td>4</td><td>College of Agriculture, Purnea</td><td>Purnea</td><td><span class="tag tag-fees">Agriculture</span></td></tr>
+            <tr><td>5</td><td>College of Agriculture, Dumraon</td><td>Dumraon, Buxar</td><td><span class="tag tag-fees">Agriculture</span></td></tr>
+            <tr><td>6</td><td>College of Horticulture, Noorsarai</td><td>Noorsarai, Nalanda</td><td><span class="tag tag-icar">Horticulture (Only)</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;font-size:0.73rem;color:var(--muted);">12 Research Stations across 3 agro-ecological zones: Alluvial Plains Zone · South Bihar Zone · North-East Bihar (Terai) Zone</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic &amp; Research Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central &amp; Dept. Libraries</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Advanced Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🌾</div>Experimental Farms</div>
+          <div class="fac-item"><div class="fac-icon">🧬</div>Biotechnology Lab</div>
+          <div class="fac-item"><div class="fac-icon">🌱</div>Tissue Culture Lab</div>
+          <div class="fac-item"><div class="fac-icon">🧪</div>Soil Testing Lab</div>
+          <div class="fac-item"><div class="fac-icon">🌡️</div>Meteorological Observatory</div>
+          <div class="fac-item"><div class="fac-icon">🏭</div>Post-Harvest Tech. Lab</div>
+          <div class="fac-item"><div class="fac-icon">🚜</div>KVKs (Farmer Training)</div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>CETL (Teaching Centre)</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Campus Wi-Fi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">🏠 Fully Residential:</span>
+          <span style="color:var(--muted);"> BAU is a <strong style="color:var(--white);">fully residential university</strong>. All UG students must stay in campus hostels. Hostel room rent is <strong style="color:var(--white);">FREE</strong>; only mess charges (~₹2,985/semester) are billed. Total 4-year UG intake: ~240 seats (200 Agriculture + 40 Horticulture).</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Sc. (Hons.) Agriculture · 4 Years / 8 Semesters</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Agriculture</div>
+            <div class="course-meta"><strong>BCECE (85%)</strong>Bihar Board</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹45,000–60,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Agriculture (ICAR Seats)</div>
+            <div class="course-meta"><strong>ICAR AIEEA-UG (15%)</strong>All India</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-icar">ICAR Quota</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Physics + Chemistry + Biology / Agriculture / Mathematics · Min. 50% (General/OBC/EWS) · 45% (SC/ST/PwD) · ~40 seats per college × 5 colleges = ~200 total seats</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Sc. (Hons.) Horticulture · 4 Years / 8 Semesters</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Horticulture</div>
+            <div class="course-meta"><strong>BCECE (85%)</strong>Bihar Board</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹45,000–60,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Hons.) Horticulture (ICAR Seats)</div>
+            <div class="course-meta"><strong>ICAR AIEEA-UG (15%)</strong>All India</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-icar">ICAR Quota</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB / Agriculture / Mathematics · Min. 50% (General/OBC/EWS) · 45% (SC/ST/PwD) · ~40 seats at College of Horticulture, Noorsarai</div>
+        </div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;margin-top:8px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">UG Fee Structure (2025-26)</div>
+          <div class="key-val"><span class="k">General (1st Year)</span><span class="v v-gold">₹30,850</span></div>
+          <div class="key-val"><span class="k">OBC (1st Year)</span><span class="v v-gold">₹21,250</span></div>
+          <div class="key-val"><span class="k">SC/ST/PwD (1st Year)</span><span class="v v-gold">₹10,035–15,000</span></div>
+          <div class="key-val"><span class="k">Hostel Room Rent</span><span class="v" style="color:var(--accent-green);">FREE</span></div>
+          <div class="key-val" style="border:none"><span class="k">Mess Charges</span><span class="v">~₹2,985/semester</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">⚠️ Bihar Domicile Required:</span>
+          <span style="color:var(--muted);"> PG admission at BAU is open to <strong style="color:var(--white);">Bihar domicile candidates only</strong>. Total PG intake: ~107 seats. Duration: 2 years / 4 semesters.</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. Agriculture – 11 Specialisations · 2 Years</span>
+          <div class="course-row"><div class="course-name">M.Sc. Agronomy</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~10 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Plant Breeding &amp; Genetics</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~10 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Plant Pathology / Agricultural Entomology</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~10 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Soil Science &amp; Agricultural Chemistry</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~10 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Agricultural Economics / Extension Education</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~8 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Horticulture – Fruit Science / Vegetable Science</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~8 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Agricultural Engineering / Food Science &amp; Technology</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~7–8 Seats</div><span class="tag tag-fees">₹20,000–50,000 Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: B.Sc. (Hons.) Agriculture or equivalent · Min. 60% (General/OBC/EWS) · 55% (SC/ST/PwD) · Bihar domicile mandatory</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.V.Sc. Veterinary Science – 11 Disciplines · 2 Years</span>
+          <div class="course-row"><div class="course-name">M.V.Sc. Animal Nutrition / Animal Genetics &amp; Breeding</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~4 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.V.Sc. Veterinary Pathology / Microbiology &amp; Immunology</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~4 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.V.Sc. Vet. Pharmacology / Surgery / Gynaecology / Medicine</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~3 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div class="course-row"><div class="course-name">M.V.Sc. Poultry Science / Livestock Prod. / Vet. Public Health</div><div class="course-meta"><strong>BAU PG Test</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>~3 Seats</div><span class="tag tag-fees">₹20,000–40,000 Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: B.V.Sc. &amp; A.H. from a recognised university · Min. 60% (General) · 55% (SC/ST/PwD) · Bihar domicile mandatory</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programmes – 10 Disciplines</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">⚠️ Very Limited Seats:</span>
+          <span style="color:var(--muted);"> Only <strong style="color:var(--white);">~12 total PhD seats per year</strong> across all disciplines. Highly competitive. Bihar domicile preference for PAT seats; ICAR national seats for ICAR-JRF holders.</span>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Crop Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Agronomy</span>
+            <span class="phd-tag">PhD Plant Breeding &amp; Genetics</span>
+            <span class="phd-tag">PhD Plant Pathology</span>
+            <span class="phd-tag">PhD Agricultural Entomology</span>
+            <span class="phd-tag">PhD Soil Science &amp; Agricultural Chemistry</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Economics, Horticulture &amp; Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Agricultural Economics</span>
+            <span class="phd-tag">PhD Horticulture (Fruit / Vegetable Science)</span>
+            <span class="phd-tag">PhD Agricultural Engineering</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Food Science &amp; Veterinary Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Food Science &amp; Technology</span>
+            <span class="phd-tag">PhD Veterinary Sciences (select disciplines)</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">General / OBC / EWS</span><span class="v">Min. 60% in M.Sc. (Agri/Hort/related) or M.V.Sc.</span></div>
+          <div class="key-val"><span class="k">SC / ST / PwD</span><span class="v">Min. 55% in relevant PG degree</span></div>
+          <div class="key-val"><span class="k">Exemption Preference</span><span class="v">ICAR-JRF / UGC-JRF / ICAR-SRF qualified</span></div>
+          <div class="key-val"><span class="k">Selection Criteria</span><span class="v">Entrance Test (70%) + Interview (30%)</span></div>
+          <div class="key-val"><span class="k">Interview</span><span class="v">Personal Interview + Research Proposal</span></div>
+          <div class="key-val" style="border:none"><span class="k">Duration</span><span class="v">Min. 3 years – Max. 5–6 years (Full-Time)</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#63b3ed;font-weight:600;">PhD Fees:</span>
+          <span style="color:var(--muted);"> Highly subsidised at ~₹5,120–₹20,000 for the full course · Annual fee ~₹5,000–₹10,000 · Hostel minimal; mess charges extra</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Fellowships for PG &amp; PhD Scholars</div>
+        <div style="margin-bottom:10px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">ICAR Fellowships</div>
+          <span class="schol-tag">ICAR-JRF ₹31,000/month (Yrs 1–2)</span>
+          <span class="schol-tag">ICAR-SRF ₹35,000/month (Yr 3+)</span>
+          <span class="schol-tag">ICAR NTS – UG ₹3,000/month</span>
+          <span class="schol-tag">ICAR NTS – PG ₹5,000/month (CGPA ≥ 7.0)</span>
+          <span class="schol-tag">ICAR NFBSFARA Scholarship</span>
+        </div>
+        <div>
+          <div class="phd-cat-label" style="margin-bottom:8px;">State &amp; National Schemes</div>
+          <span class="schol-tag">Bihar State Research Fellowship</span>
+          <span class="schol-tag">E-Kalyan (SC/ST/EBC/BC) ₹1,500–3,000/month</span>
+          <span class="schol-tag">Bihar Student Credit Card (up to ₹4 Lakh)</span>
+          <span class="schol-tag">Mukhyamantri Kanya Utthan Yojana</span>
+          <span class="schol-tag">PM Yasasvi Scholarship</span>
+          <span class="schol-tag">National Fellowship for SC/ST ₹31,000/month</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div style="margin-bottom:16px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">UG Admission:</span>
+          <span style="color:var(--muted);"> Apply via <strong style="color:var(--white);">BCECE Board</strong> (bceceboard.bihar.gov.in) for 85% seats. ICAR AIEEA-UG (icar.nta.ac.in) for 15% national seats. BAU portal: bausabour.ac.in</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Apply for BCECE / ICAR AIEEA-UG Entrance Exam</div>
+            <div class="tl-desc">85% seats: Register and appear for BCECE (Bihar Combined Entrance Competitive Examination) conducted by BCECE Board. 15% seats: Register for ICAR AIEEA-UG conducted by NTA at icar.nta.ac.in.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Appear in Entrance Examination</div>
+            <div class="tl-desc">Appear in the BCECE or ICAR AIEEA-UG exam. Eligibility: 10+2 with PCB/Agriculture/Mathematics, min. 50% (General). NEET-style objective questions covering Biology, Chemistry, Physics and Agriculture.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Rank Card &amp; Counselling</div>
+            <div class="tl-desc">After result declaration, BCECE Board releases rank cards. Register for centralised counselling. Choose course preference: B.Sc. Agriculture or B.Sc. Horticulture and preferred college campus.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Seat Allotment &amp; Document Verification</div>
+            <div class="tl-desc">Allotted college is displayed in counselling portal. Carry original 10+2 marksheet, caste certificate, domicile proof, BCECE rank card. Documents are verified at the respective college.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; Hostel Allocation</div>
+            <div class="tl-desc">Pay the admission fee as per category. Hostel room rent is FREE. Only mess charges (~₹2,985/semester) are applicable. Hostel allocation is mandatory — BAU is a fully residential university.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — PG / PhD Admission (Separate Process)</div>
+            <div class="tl-desc">PG: BAU conducts its own entrance-cum-academic performance test. Bihar domicile mandatory. Apply on bausabour.ac.in. PhD: BAU PAT (PhD Admission Test) + Interview; ICAR-JRF holders get preference.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">B.Sc. (Hons.) Agriculture (85% Seats)</div><div></div><div></div><span class="tag tag-exam">BCECE (Bihar Board)</span></div>
+        <div class="course-row"><div class="course-name">B.Sc. (Hons.) Agriculture (15% Seats)</div><div></div><div></div><span class="tag tag-icar">ICAR AIEEA-UG (NTA)</span></div>
+        <div class="course-row"><div class="course-name">B.Sc. (Hons.) Horticulture (85% Seats)</div><div></div><div></div><span class="tag tag-exam">BCECE (Bihar Board)</span></div>
+        <div class="course-row"><div class="course-name">B.Sc. (Hons.) Horticulture (15% Seats)</div><div></div><div></div><span class="tag tag-icar">ICAR AIEEA-UG (NTA)</span></div>
+        <div class="course-row"><div class="course-name">M.Sc. Agriculture / M.V.Sc.</div><div></div><div></div><span class="tag tag-exam">BAU PG Test + Merit</span></div>
+        <div class="course-row"><div class="course-name">PhD (all disciplines)</div><div></div><div></div><span class="tag tag-exam">BAU PAT / ICAR-JRF</span></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹6 LPA</div>
+            <div class="s-lbl">Median (BSc Agri)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹7.2 LPA</div>
+            <div class="s-lbl">Median (MSc Agri)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">1:2.4</div>
+            <div class="s-lbl">Faculty:Student Ratio</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">IFFCO</span>
+          <span class="recruiter-tag">FCI (Food Corp. of India)</span>
+          <span class="recruiter-tag">SBI (Agriculture Officer)</span>
+          <span class="recruiter-tag">Punjab National Bank</span>
+          <span class="recruiter-tag">Tata Rallis</span>
+          <span class="recruiter-tag">Mahindra Agri</span>
+          <span class="recruiter-tag">State Agriculture Dept.</span>
+          <span class="recruiter-tag">NABARD</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Career Pathways</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          BAU graduates are well-regarded across agri-business, government services and research. The most popular career path is <strong style="color:var(--white);">BPSC (Bihar Public Service Commission) Agricultural Officer</strong> — a highly sought route for BAU graduates. Other avenues include <strong style="color:var(--white);">UPSC combined agriculture services, banking (Agriculture Officer exam at SBI/PNB/NABARD), ICAR research positions, State/Central Govt. extension services, agri-input companies (IFFCO, Tata Rallis)</strong> and food technology firms. PG and PhD graduates primarily go into <strong style="color:var(--white);">research, teaching, and advanced agri-business roles</strong>.
+        </p>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:10px;">Programme-wise Salary Profile</div>
+          <div class="course-row"><div class="course-name">B.Sc. (Hons.) Agriculture</div><div></div><div></div><span class="tag tag-fees">Median ₹6 LPA</span></div>
+          <div class="course-row"><div class="course-name">M.Sc. Agriculture</div><div></div><div></div><span class="tag tag-fees">Median ₹7.2 LPA</span></div>
+          <div class="course-row"><div class="course-name">Government / BPSC Agri. Officer</div><div></div><div></div><span class="tag tag-icar">Most Popular Route</span></div>
+          <div class="course-row"><div class="course-name">Banking (Agriculture Officer)</div><div></div><div></div><span class="tag tag-exam">SBI / PNB / NABARD</span></div>
+        </div>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:10px;">International Collaborations</div>
+          <div class="recruiter-list">
+            <span class="recruiter-tag">Harvestplus ICRISAT</span>
+            <span class="recruiter-tag">ICAR-NRRI</span>
+            <span class="recruiter-tag">CSMP-IRRI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏠 Fully Residential Campus</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏠</div>Boys' Hostels</div>
+            <div class="fac-item"><div class="fac-icon">🏡</div>Girls' Hostels</div>
+            <div class="fac-item"><div class="fac-icon">🍽️</div>Clean Mess (₹1,500/mo)</div>
+            <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi (Hostel &amp; Campus)</div>
+            <div class="fac-item"><div class="fac-icon">📷</div>CCTV 24×7</div>
+            <div class="fac-item"><div class="fac-icon">🔑</div>Room Rent FREE</div>
+          </div>
+          <div style="margin-top:10px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+            <span style="color:var(--accent-green);font-weight:600;">Hostel Policy:</span>
+            <span style="color:var(--muted);"> Hostel accommodation is <strong style="color:var(--white);">mandatory</strong> for all students (UG, PG, PhD). Room rent is FREE. Mess charges ~₹2,985/semester (~₹1,500/month). Separate boys' and girls' hostels at all 6 constituent college campuses.</span>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏟️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball</div>
+            <div class="fac-item"><div class="fac-icon">🏓</div>Table Tennis</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton</div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🌾</span><div><strong>Kisan Mela (Farmers' Fair)</strong> — Annual flagship event connecting students, faculty and farmers; technology demonstrations and exhibits</div></div>
+            <div class="event-item"><span class="event-icon">🎓</span><div><strong>Annual Convocation</strong> — Formal degree award ceremony attended by prominent agricultural scientists and policymakers</div></div>
+            <div class="event-item"><span class="event-icon">🌱</span><div><strong>NSS Unit</strong> — National Service Scheme for community engagement and rural outreach activities</div></div>
+            <div class="event-item"><span class="event-icon">🪖</span><div><strong>NCC Unit</strong> — National Cadet Corps for leadership, discipline and defence awareness</div></div>
+            <div class="event-item"><span class="event-icon">👗</span><div><strong>Cloth Bank Initiative</strong> — Social responsibility programme distributing clothes to 200+ beneficiaries annually</div></div>
+          </div>
+        </div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">📍 Location &amp; Infrastructure:</span>
+          <span style="color:var(--muted);"> Lush green agricultural campus in Sabour, Bhagalpur with experimental farms attached to each college. Bank / ATM at main campus. Transport facility for campus connectivity. Medical/health facility on campus. KVKs for farmer training and extension services.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://bausabour.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Full Name</span><span class="v">Bihar Agricultural University, Sabour</span></div>
+      <div class="key-val"><span class="k">Historical Roots</span><span class="v">Bihar Agri. College, 17 Aug 1908</span></div>
+      <div class="key-val"><span class="k">Est. as University</span><span class="v">5 August 2010</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State Agricultural University</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-green">NAAC Grade A + ICAR</span></div>
+      <div class="key-val"><span class="k">NIRF 2025</span><span class="v v-green">#36 (Agriculture)</span></div>
+      <div class="key-val"><span class="k">Constituent Colleges</span><span class="v">6</span></div>
+      <div class="key-val"><span class="k">Research Stations</span><span class="v">12</span></div>
+      <div class="key-val"><span class="k">Jurisdiction</span><span class="v">25 Districts of Bihar</span></div>
+      <div class="key-val"><span class="k">Faculty</span><span class="v">500+ Researchers</span></div>
+      <div class="key-val"><span class="k">Residential</span><span class="v v-green">Fully Residential</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>BSc Agri. (85%)</td><td><span class="tag tag-exam">BCECE</span></td></tr>
+        <tr><td>BSc Agri. (15%)</td><td><span class="tag tag-icar">ICAR AIEEA-UG</span></td></tr>
+        <tr><td>BSc Horti. (85%)</td><td><span class="tag tag-exam">BCECE</span></td></tr>
+        <tr><td>BSc Horti. (15%)</td><td><span class="tag tag-icar">ICAR AIEEA-UG</span></td></tr>
+        <tr><td>MSc Agriculture</td><td><span class="tag tag-exam">BAU PG Test</span></td></tr>
+        <tr><td>MVSc</td><td><span class="tag tag-exam">BAU PG Test</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-icar">BAU PAT / ICAR-JRF</span></td></tr>
+      </table>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">BSc Agri/Horti (General, 1st Yr)</span><span class="v v-gold">₹30,850</span></div>
+      <div class="key-val"><span class="k">BSc Agri/Horti (OBC, 1st Yr)</span><span class="v v-gold">₹21,250</span></div>
+      <div class="key-val"><span class="k">BSc Agri/Horti (SC/ST, 1st Yr)</span><span class="v v-gold">₹10,035–15,000</span></div>
+      <div class="key-val"><span class="k">BSc 4-Year Total (General)</span><span class="v v-gold">₹45,000–60,000</span></div>
+      <div class="key-val"><span class="k">Hostel Room Rent</span><span class="v v-green">FREE</span></div>
+      <div class="key-val"><span class="k">Mess Charges</span><span class="v">~₹2,985/semester</span></div>
+      <div class="key-val"><span class="k">MSc (2 Yrs Total)</span><span class="v v-gold">₹20,000–50,000</span></div>
+      <div class="key-val"><span class="k">PhD (Full Course)</span><span class="v v-gold">₹5,120–20,000</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Median (BSc Agriculture)</span><span class="v v-green">₹6 LPA</span></div>
+      <div class="key-val"><span class="k">Median (MSc Agriculture)</span><span class="v v-green">₹7.2 LPA</span></div>
+      <div class="key-val"><span class="k">Top Recruiters</span><span class="v">IFFCO, FCI, SBI, Tata Rallis</span></div>
+      <div class="key-val"><span class="k">Best Career Path</span><span class="v">BPSC Agri. Officer</span></div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge = document.getElementById('shortlistBadge');
+    const navBtn = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added'); sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'BAU added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added'); sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown'))
+      document.getElementById('streamDropdown').classList.remove('open');
+  });
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

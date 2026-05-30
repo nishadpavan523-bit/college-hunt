@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Central Sanskrit University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero { background: linear-gradient(135deg, #1a0f2b 0%, #2e1a4a 50%, #1a0f2b 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(159,122,234,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(159,122,234,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: #b794f4; }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: #b794f4; color: #b794f4; }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-rank { background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-rank .value { color: #b794f4; }
+
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: #b794f4; border-bottom-color: #b794f4; }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: #b794f4; border-radius: 2px; }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #b794f4; background: rgba(159,122,234,0.1); border: 1px solid rgba(159,122,234,0.25); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(159,122,234,0.06); border-color: rgba(159,122,234,0.25); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-ugc { background: rgba(159,122,234,0.12); color: #b794f4; border: 1px solid rgba(159,122,234,0.25); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: rgba(159,122,234,0.1); border-color: rgba(159,122,234,0.3); color: #b794f4; }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: rgba(159,122,234,0.3); background: rgba(159,122,234,0.06); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: #b794f4; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-gold { color: var(--gold) !important; }
+  .v-purple { color: #b794f4 !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: #b794f4; color: var(--navy); }
+  .cta-primary:hover { background: #d6bcfa; }
+  .cta-primary.added { background: var(--gold); color: var(--navy); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: #b794f4; color: #b794f4; }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: #b794f4; margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: rgba(159,122,234,0.3); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:#b794f4; border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:#b794f4; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .schol-tag { background: rgba(159,122,234,0.1); border: 1px solid rgba(159,122,234,0.2); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: #d6bcfa; display: inline-block; margin: 3px; }
+
+  .college-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .college-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .college-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+  .college-table tr:last-child td { border-bottom:none; }
+  .college-table tr:hover td { background:rgba(159,122,234,0.04); }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        🕉️ <span id="streamLabel">Sanskrit / Classical</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Sanskrit / Classical','🕉️')">🕉️ Sanskrit / Classical</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Education','🎓')">🎓 Education</div>
+        <div class="stream-opt" onclick="selectStream(this,'Philosophy','🧘')">🧘 Philosophy</div>
+        <div class="stream-opt" onclick="selectStream(this,'Astrology &amp; Vedic Studies','🌟')">🌟 Astrology &amp; Vedic Studies</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Central Sanskrit University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🕉️</div>
+    <div class="uni-title">
+      <h1>Central <span>Sanskrit University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>New Delhi, India</strong></span>
+        <span class="meta-chip">🏛️ <strong>Central University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1970 (Central Univ. 2020)</strong></span>
+        <span class="meta-chip">📜 <strong>Formerly: Rashtriya Sanskrit Sansthan</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.sanskrit.nic.in/','_blank')">🌐 <strong>sanskrit.nic.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC</span>
+      <span class="value">Accredited</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Type</span>
+      <span class="value">Central Univ.</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Recognition</span>
+      <span class="value">UGC / MoE</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">Status Since</span>
+      <span class="value">2020</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Short Name</div><div class="val">CSU</div></div>
+          <div class="info-chip"><div class="lbl">Former Name</div><div class="val">Rashtriya Sanskrit Sansthan</div></div>
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1970 (Central University 2020)</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">New Delhi, India</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Central University</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC &amp; Ministry of Education</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About CSU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Central Sanskrit University traces its roots to the <strong style="color:var(--white);">Rashtriya Sanskrit Sansthan, founded in 1970</strong>, making it one of India's most prominent institutions for Sanskrit and classical studies. It was accorded the status of a <strong style="color:var(--white);">full Central University in 2020</strong> by the Ministry of Education. The university holds <strong style="color:var(--white);">NAAC Accreditation</strong> and is recognised by both <strong style="color:var(--white);">UGC and the Ministry of Education</strong>. CSU is dedicated to promoting Sanskrit language, Vedic studies, Indian philosophy, and classical education across India with multiple campus locations. It offers programmes from certificate and diploma levels through to <strong style="color:var(--white);">undergraduate, postgraduate, M.Phil., and PhD</strong> levels, preserving and advancing classical Indian knowledge traditions.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic Programmes at a Glance</div>
+        <table class="college-table">
+          <thead>
+            <tr><th>#</th><th>Programme Level</th><th>Key Programmes</th><th>Duration</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Certificate</td><td>Certificate Courses in Sanskrit</td><td><span class="tag tag-fees">6 Months – 1 Year</span></td></tr>
+            <tr><td>2</td><td>Diploma</td><td>Diploma Programs in Sanskrit &amp; Classical Studies</td><td><span class="tag tag-fees">1 Year</span></td></tr>
+            <tr><td>3</td><td>UG (Shastri)</td><td>Shastri (B.A.), B.A. Sanskrit, B.Ed., Integrated Programs</td><td><span class="tag tag-ugc">3–4 Years</span></td></tr>
+            <tr><td>4</td><td>PG (Acharya)</td><td>Acharya (M.A.), M.A. Sanskrit, M.Ed., PG Diploma</td><td><span class="tag tag-ugc">2 Years</span></td></tr>
+            <tr><td>5</td><td>M.Phil.</td><td>M.Phil. Programs in Sanskrit &amp; Allied Disciplines</td><td><span class="tag tag-ugc">1–2 Years</span></td></tr>
+            <tr><td>6</td><td>PhD</td><td>Vedanta, Vyakarana, Nyaya, Jyotisha, Literature, Education</td><td><span class="tag tag-exam">3–5 Years</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;font-size:0.73rem;color:var(--muted);">Multiple campuses across India · Admission through CUET / CUET-PG / University Entrance Norms</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic &amp; Research Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Digital Learning Resources</div>
+          <div class="fac-item"><div class="fac-icon">🏫</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Centers</div>
+          <div class="fac-item"><div class="fac-icon">🏅</div>Sports Facilities</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Facilities</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi Enabled Campus</div>
+          <div class="fac-item"><div class="fac-icon">📖</div>Manuscript Repository</div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>Seminar Halls</div>
+          <div class="fac-item"><div class="fac-icon">🍽️</div>Mess &amp; Dining</div>
+          <div class="fac-item"><div class="fac-icon">🔐</div>24×7 Security</div>
+          <div class="fac-item"><div class="fac-icon">🌐</div>E-Learning Portal</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.2);border-radius:8px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:#b794f4;font-weight:600;">🕉️ Sanskrit-Focused Education:</span>
+          <span style="color:var(--muted);"> CSU offers traditional Sanskrit-medium programmes alongside modern education, blending classical Indian knowledge systems with contemporary academic standards. Admission is primarily through <strong style="color:var(--white);">CUET or university merit/entrance norms</strong>.</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Shastri (B.A.) · 3 Years</span>
+          <div class="course-row">
+            <div class="course-name">Shastri (B.A.) – Sanskrit &amp; Classical Studies</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,000–₹6,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. Sanskrit</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2,000–₹6,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 or equivalent · Admission through CUET or University norms</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Ed. &amp; Integrated Teacher Education · 4 Years</span>
+          <div class="course-row">
+            <div class="course-name">B.Ed. (Bachelor of Education)</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000–₹15,000 Total</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Integrated Teacher Education Programs</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000–₹15,000 Total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Graduation with Sanskrit background preferred for B.Ed. · 10+2 with required marks for Integrated programs</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Certificate &amp; Diploma Programs</span>
+          <div class="course-row">
+            <div class="course-name">Certificate Courses in Sanskrit</div>
+            <div class="course-meta"><strong>Merit Based</strong>Admission</div>
+            <div class="course-meta"><strong>6M–1 Yr</strong>Duration</div>
+            <span class="tag tag-fees">₹500–₹5,000</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Diploma Programs (Sanskrit &amp; Classical)</div>
+            <div class="course-meta"><strong>Merit Based</strong>Admission</div>
+            <div class="course-meta"><strong>1 Year</strong>Duration</div>
+            <span class="tag tag-fees">₹1,000–₹6,000</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Open to students with basic Sanskrit background · Ideal for short-term learners and working professionals</div>
+        </div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;margin-top:8px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">UG Fee Structure</div>
+          <div class="key-val"><span class="k">Shastri / B.A. Sanskrit</span><span class="v v-gold">₹2,000–₹6,000 (Total)</span></div>
+          <div class="key-val"><span class="k">B.Ed.</span><span class="v v-gold">₹8,000–₹15,000 (Total)</span></div>
+          <div class="key-val"><span class="k">Certificate Courses</span><span class="v v-gold">₹500–₹5,000</span></div>
+          <div class="key-val" style="border:none"><span class="k">Diploma Programs</span><span class="v v-gold">₹1,000–₹6,000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Courses</div>
+        <div style="margin-bottom:14px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#b794f4;font-weight:600;">📜 Acharya (M.A.) Programmes:</span>
+          <span style="color:var(--muted);"> PG admissions are through <strong style="color:var(--white);">CUET-PG or merit-based university norms</strong>. CSU's PG programmes are grounded in classical Sanskrit scholarship combined with modern academic methodology. Duration: 2 years / 4 semesters.</span>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Acharya (M.A.) Programs · 2 Years</span>
+          <div class="course-row">
+            <div class="course-name">Acharya (M.A.) Sanskrit</div>
+            <div class="course-meta"><strong>CUET-PG / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Subsidised Fees</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Sanskrit (Modern Academic)</div>
+            <div class="course-meta"><strong>CUET-PG / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Subsidised Fees</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Bachelor's degree in relevant discipline · Admission through CUET-PG or University Merit</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Ed. &amp; PG Diploma Programs</span>
+          <div class="course-row">
+            <div class="course-name">M.Ed. (Master of Education)</div>
+            <div class="course-meta"><strong>CUET-PG / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Subsidised Fees</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Phil. Programs (Sanskrit &amp; Allied)</div>
+            <div class="course-meta"><strong>University Entrance</strong>Admission</div>
+            <div class="course-meta"><strong>1–2 Yrs</strong>Duration</div>
+            <span class="tag tag-ugc">Research Programme</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">PG Diploma Programs</div>
+            <div class="course-meta"><strong>Merit Based</strong>Admission</div>
+            <div class="course-meta"><strong>1 Year</strong>Duration</div>
+            <span class="tag tag-fees">Subsidised Fees</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: M.Ed. requires B.Ed. degree · PG Diploma requires graduation in relevant discipline</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programmes – Classical &amp; Modern Disciplines</div>
+        <div style="margin-bottom:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">🔬 Research Excellence:</span>
+          <span style="color:var(--muted);"> PhD programmes at CSU combine <strong style="color:var(--white);">classical Sanskrit scholarship with contemporary research methodology</strong>. UGC-NET JRF qualified candidates receive fellowship support. Admission via university entrance and interview.</span>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Vedic &amp; Philosophical Studies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Vedanta</span>
+            <span class="phd-tag">PhD Indian Philosophy</span>
+            <span class="phd-tag">PhD Nyaya</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Language &amp; Literature</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Vyakarana (Sanskrit Grammar)</span>
+            <span class="phd-tag">PhD Sanskrit Literature</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Applied &amp; Other Disciplines</div>
+          <div class="phd-tags">
+            <span class="phd-tag">PhD Jyotisha (Vedic Astrology)</span>
+            <span class="phd-tag">PhD Education</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(159,122,234,0.06);border:1px solid rgba(159,122,234,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:#b794f4;margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">General / OBC / EWS</span><span class="v">Min. 55% in M.A. / Acharya or equivalent PG</span></div>
+          <div class="key-val"><span class="k">SC / ST / PwD</span><span class="v">Min. 50% in relevant PG degree</span></div>
+          <div class="key-val"><span class="k">Fellowship Preference</span><span class="v">UGC-NET JRF / CSIR-JRF qualified candidates</span></div>
+          <div class="key-val"><span class="k">Selection Criteria</span><span class="v">Entrance Test + Personal Interview</span></div>
+          <div class="key-val" style="border:none"><span class="k">Duration</span><span class="v">Min. 3 years – Max. 5 years (Full-Time)</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Fellowships &amp; Financial Assistance</div>
+        <div style="margin-bottom:10px;">
+          <div class="phd-cat-label" style="margin-bottom:8px;">UGC &amp; Government Fellowships</div>
+          <span class="schol-tag">UGC-NET JRF Fellowship</span>
+          <span class="schol-tag">Government Merit Scholarships</span>
+          <span class="schol-tag">SC/ST/OBC Scholarships</span>
+          <span class="schol-tag">National Fellowship for SC/ST</span>
+        </div>
+        <div>
+          <div class="phd-cat-label" style="margin-bottom:8px;">Institutional &amp; State Schemes</div>
+          <span class="schol-tag">Ministry of Education Scholarships</span>
+          <span class="schol-tag">PM Yasasvi Scholarship</span>
+          <span class="schol-tag">E-Kalyan (SC/ST/OBC/EBC)</span>
+          <span class="schol-tag">CSU Merit Scholarship</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div style="margin-bottom:16px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#b794f4;font-weight:600;">UG Admission:</span>
+          <span style="color:var(--muted);"> Apply via <strong style="color:var(--white);">CUET (Common University Entrance Test)</strong> conducted by NTA for most UG programmes, or through university merit/entrance norms. Official portal: <strong style="color:var(--white);">sanskrit.nic.in/admission.php</strong></span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Apply for CUET / University Entrance</div>
+            <div class="tl-desc">Register for CUET at cuet.samarth.ac.in for UG programmes. For PG, register for CUET-PG. For PhD and Diploma/Certificate courses, apply directly through the CSU admission portal at sanskrit.nic.in/admission.php.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Appear in Entrance Examination</div>
+            <div class="tl-desc">Appear in CUET / CUET-PG as applicable. For UG Shastri/B.A.: 10+2 eligibility required. For B.Ed.: graduation with Sanskrit background preferred. For Integrated Programs: 10+2 with required marks.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Score Card &amp; Merit List</div>
+            <div class="tl-desc">After result declaration, CSU releases merit lists based on CUET scores or university entrance performance. Shortlisted candidates are called for document verification and counselling.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification</div>
+            <div class="tl-desc">Carry original 10+2 / graduation marksheet, caste certificate (if applicable), domicile proof, CUET score card, and passport-size photographs. Documents are verified at the respective campus.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; Hostel Allocation</div>
+            <div class="tl-desc">Pay the admission fee as per programme and category. Apply for hostel accommodation separately — separate hostels available for boys and girls. Mess and dining facilities available on campus.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — PhD Admission (Separate Process)</div>
+            <div class="tl-desc">PhD: CSU conducts its own entrance test followed by a personal interview. UGC-NET JRF qualified candidates may be exempt from entrance test. Apply via the official CSU portal well before deadlines.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">Shastri / B.A. Sanskrit</div><div></div><div></div><span class="tag tag-exam">CUET (NTA)</span></div>
+        <div class="course-row"><div class="course-name">B.Ed. / Integrated Programs</div><div></div><div></div><span class="tag tag-exam">CUET / Merit</span></div>
+        <div class="course-row"><div class="course-name">Certificate &amp; Diploma</div><div></div><div></div><span class="tag tag-fees">Merit / Direct</span></div>
+        <div class="course-row"><div class="course-name">Acharya (M.A.) / M.Ed.</div><div></div><div></div><span class="tag tag-exam">CUET-PG / Merit</span></div>
+        <div class="course-row"><div class="course-name">M.Phil. Programs</div><div></div><div></div><span class="tag tag-ugc">University Entrance</span></div>
+        <div class="course-row"><div class="course-name">PhD (all disciplines)</div><div></div><div></div><span class="tag tag-ugc">CSU Entrance + Interview / UGC-JRF</span></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Career &amp; Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:#b794f4;">Govt. &amp; Teaching</div>
+            <div class="s-lbl">Primary Career Path</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">Research</div>
+            <div class="s-lbl">PhD / M.Phil. Focus</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">UGC / UPSC</div>
+            <div class="s-lbl">Competitive Exams</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Career Pathways</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Teaching (School / College)</span>
+          <span class="recruiter-tag">UPSC Sanskrit Services</span>
+          <span class="recruiter-tag">UGC / CSIR Research</span>
+          <span class="recruiter-tag">ASI (Archaeology)</span>
+          <span class="recruiter-tag">State Education Departments</span>
+          <span class="recruiter-tag">Sanskrit Academies</span>
+          <span class="recruiter-tag">Cultural Organisations</span>
+          <span class="recruiter-tag">Manuscripts Research</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Career Pathways</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          CSU graduates are well-regarded in <strong style="color:var(--white);">teaching, research, and government services</strong> related to classical and Sanskrit studies. The most popular career paths include <strong style="color:var(--white);">school and college teaching (UGC-NET qualified)</strong>, government roles through <strong style="color:var(--white);">UPSC Sanskrit Services, state education departments</strong>, and positions in <strong style="color:var(--white);">Sanskrit academies, ASI (Archaeological Survey of India), and cultural institutions</strong>. PG and PhD graduates primarily pursue <strong style="color:var(--white);">research, academic positions, and roles in manuscript preservation and Indological studies</strong>.
+        </p>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:#b794f4;margin-bottom:10px;">Programme-wise Career Profile</div>
+          <div class="course-row"><div class="course-name">Shastri / B.A. Sanskrit</div><div></div><div></div><span class="tag tag-fees">Teaching / UGC-NET Pathway</span></div>
+          <div class="course-row"><div class="course-name">B.Ed. / Integrated Programs</div><div></div><div></div><span class="tag tag-fees">School Teaching (Sanskrit)</span></div>
+          <div class="course-row"><div class="course-name">Acharya (M.A.) / M.Ed.</div><div></div><div></div><span class="tag tag-ugc">College Teaching / Research</span></div>
+          <div class="course-row"><div class="course-name">PhD / M.Phil.</div><div></div><div></div><span class="tag tag-exam">Academic / Research Positions</span></div>
+        </div>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:#b794f4;margin-bottom:10px;">Key Competitive Examinations</div>
+          <div class="recruiter-list">
+            <span class="recruiter-tag">UGC-NET Sanskrit</span>
+            <span class="recruiter-tag">UPSC Sanskrit Services</span>
+            <span class="recruiter-tag">State TET / SLET</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏠 Hostel &amp; Accommodation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏠</div>Boys' Hostels</div>
+            <div class="fac-item"><div class="fac-icon">🏡</div>Girls' Hostels</div>
+            <div class="fac-item"><div class="fac-icon">📖</div>Reading Rooms</div>
+            <div class="fac-item"><div class="fac-icon">🏛️</div>Common Halls</div>
+            <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi Enabled Campus</div>
+            <div class="fac-item"><div class="fac-icon">🔐</div>24×7 Security &amp; Wardens</div>
+          </div>
+          <div style="margin-top:10px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+            <span style="color:#b794f4;font-weight:600;">Hostel Policy:</span>
+            <span style="color:var(--muted);"> Separate hostels for boys and girls are available at the main campus and constituent campuses. Facilities include reading rooms, common halls, mess and dining, Wi-Fi connectivity, and round-the-clock security with resident wardens.</span>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏟️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball</div>
+            <div class="fac-item"><div class="fac-icon">🏓</div>Table Tennis</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga &amp; Wellness</div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🕉️</span><div><strong>Sanskrit Diwas (Sanskrit Day)</strong> — Annual flagship celebration on Shravan Purnima promoting Sanskrit language and classical knowledge</div></div>
+            <div class="event-item"><span class="event-icon">🎓</span><div><strong>Annual Convocation</strong> — Formal degree award ceremony attended by distinguished scholars, policymakers, and Indologists</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Research Seminars &amp; Workshops</strong> — Regular national and international conferences on Vedic studies, Indian philosophy, and classical literature</div></div>
+            <div class="event-item"><span class="event-icon">🌱</span><div><strong>NSS Unit</strong> — National Service Scheme for community outreach, rural engagement, and social responsibility activities</div></div>
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Cultural Programmes</strong> — Sanskrit drama, classical music, and cultural events celebrating India's rich classical heritage</div></div>
+          </div>
+        </div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">📍 Location &amp; Infrastructure:</span>
+          <span style="color:var(--muted);"> Main campus in New Delhi with multiple constituent campuses across India. Campus features a central library, digital learning resources, smart classrooms, research centers, medical facility, sports grounds, and a well-maintained mess and dining infrastructure.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.sanskrit.nic.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">CSU</span></div>
+      <div class="key-val"><span class="k">Former Name</span><span class="v">Rashtriya Sanskrit Sansthan</span></div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1970</span></div>
+      <div class="key-val"><span class="k">Central Univ. Status</span><span class="v">2020</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">Central University</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-green">NAAC Accredited</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v v-purple">UGC &amp; Ministry of Education</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">New Delhi, India</span></div>
+      <div class="key-val"><span class="k">Programmes Offered</span><span class="v">UG, PG, M.Phil., PhD</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>Shastri / B.A.</td><td><span class="tag tag-exam">CUET (NTA)</span></td></tr>
+        <tr><td>B.Ed.</td><td><span class="tag tag-exam">CUET / Merit</span></td></tr>
+        <tr><td>Certificate/Diploma</td><td><span class="tag tag-fees">Merit / Direct</span></td></tr>
+        <tr><td>Acharya (M.A.)</td><td><span class="tag tag-exam">CUET-PG</span></td></tr>
+        <tr><td>M.Ed.</td><td><span class="tag tag-exam">CUET-PG / Merit</span></td></tr>
+        <tr><td>M.Phil.</td><td><span class="tag tag-ugc">Univ. Entrance</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-ugc">CSU Test / UGC-JRF</span></td></tr>
+      </table>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">Shastri / B.A. Sanskrit</span><span class="v v-gold">₹2,000–₹6,000 (Total)</span></div>
+      <div class="key-val"><span class="k">B.Ed.</span><span class="v v-gold">₹8,000–₹15,000 (Total)</span></div>
+      <div class="key-val"><span class="k">Certificate Courses</span><span class="v v-gold">₹500–₹5,000</span></div>
+      <div class="key-val"><span class="k">Diploma Programs</span><span class="v v-gold">₹1,000–₹6,000</span></div>
+      <div class="key-val"><span class="k">Acharya / M.Ed.</span><span class="v v-green">Highly Subsidised</span></div>
+      <div class="key-val"><span class="k">PhD (Full Course)</span><span class="v v-green">Highly Subsidised</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Career Snapshot</div>
+      <div class="key-val"><span class="k">Primary Path</span><span class="v v-purple">Teaching &amp; Research</span></div>
+      <div class="key-val"><span class="k">Govt. Exams</span><span class="v">UGC-NET, UPSC Sanskrit</span></div>
+      <div class="key-val"><span class="k">Key Sectors</span><span class="v">Education, Culture, Govt.</span></div>
+      <div class="key-val"><span class="k">PhD Focus</span><span class="v">Academic / Indological Research</span></div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge = document.getElementById('shortlistBadge');
+    const navBtn = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added'); sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'CSU added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added'); sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown'))
+      document.getElementById('streamDropdown').classList.remove('open');
+  });
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

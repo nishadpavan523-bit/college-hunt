@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBAU Lucknow - SearchCollege</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+    --navy:#0f1535;
+    --navy2:#1a2250;
+    --card:#1b2454;
+    --gold:#f5a623;
+    --gold-light:#ffc152;
+    --white:#ffffff;
+    --muted:#a0aec0;
+    --green:#48bb78;
+    --border:rgba(245,166,35,0.2);
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:var(--navy);
+    color:var(--white);
+}
+
+/* NAVBAR */
+
+nav{
+    height:70px;
+    background:var(--navy);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 40px;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:1.4rem;
+    font-weight:700;
+    font-family:'Raleway',sans-serif;
+    color:var(--gold);
+}
+
+.logo span{
+    color:white;
+}
+
+.nav-right{
+    display:flex;
+    gap:12px;
+}
+
+.nav-btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:25px;
+    font-size:0.8rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.stream-btn{
+    background:#1d2b68;
+    color:white;
+    border:1px solid var(--border);
+}
+
+.shortlist-btn{
+    background:var(--gold);
+    color:#111;
+}
+
+.logout-btn{
+    background:transparent;
+    color:white;
+    border:1px solid rgba(255,255,255,0.2);
+}
+
+.nav-btn:hover{
+    transform:translateY(-2px);
+}
+
+.shortlist-btn:hover{
+    background:var(--gold-light);
+}
+
+.stream-btn:hover,
+.logout-btn:hover{
+    border-color:var(--gold);
+    color:var(--gold);
+}
+
+/* HERO */
+
+.hero{
+    background:linear-gradient(135deg,#1b2564,#2d3a8c,#1b2564);
+    padding:50px;
+    position:relative;
+    overflow:hidden;
+}
+
+.hero::before{
+    content:'';
+    position:absolute;
+    right:70px;
+    top:50%;
+    transform:translateY(-50%);
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    border:2px solid rgba(245,166,35,0.15);
+}
+
+.breadcrumb{
+    font-size:0.75rem;
+    color:var(--muted);
+    margin-bottom:20px;
+}
+
+.breadcrumb a{
+    color:var(--gold);
+    text-decoration:none;
+}
+
+.hero-flex{
+    display:flex;
+    gap:22px;
+    align-items:flex-start;
+}
+
+.uni-logo{
+    width:80px;
+    height:80px;
+    border-radius:16px;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:2rem;
+    color:#222;
+}
+
+.uni-title h1{
+    font-size:2rem;
+    font-family:'Raleway',sans-serif;
+    margin-bottom:10px;
+}
+
+.uni-title span{
+    color:var(--gold);
+}
+
+.meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:10px;
+}
+
+.meta-chip{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.12);
+    padding:6px 14px;
+    border-radius:25px;
+    font-size:0.75rem;
+    color:var(--muted);
+}
+
+.meta-chip strong{
+    color:white;
+}
+
+/* BADGES */
+
+.badges{
+    display:flex;
+    gap:15px;
+    margin-top:30px;
+    flex-wrap:wrap;
+}
+
+.badge{
+    padding:14px 20px;
+    border-radius:14px;
+    min-width:130px;
+    text-align:center;
+}
+
+.badge .label{
+    font-size:0.7rem;
+    color:var(--muted);
+    text-transform:uppercase;
+}
+
+.badge .value{
+    margin-top:5px;
+    font-size:1rem;
+    font-weight:700;
+}
+
+.badge1{
+    background:rgba(72,187,120,0.15);
+    border:1px solid rgba(72,187,120,0.3);
+}
+
+.badge2{
+    background:rgba(245,166,35,0.1);
+    border:1px solid rgba(245,166,35,0.25);
+}
+
+.badge3{
+    background:rgba(99,179,237,0.12);
+    border:1px solid rgba(99,179,237,0.25);
+}
+
+/* TABS */
+
+.tabs{
+    background:var(--navy2);
+    display:flex;
+    gap:10px;
+    padding:0 40px;
+    overflow:auto;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.tab{
+    padding:16px 20px;
+    color:var(--muted);
+    font-size:0.82rem;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:0.3s ease;
+    white-space:nowrap;
+}
+
+.tab:hover{
+    color:white;
+}
+
+.active{
+    color:var(--gold);
+    border-bottom-color:var(--gold);
+}
+
+/* MAIN */
+
+.main{
+    max-width:1200px;
+    margin:auto;
+    padding:35px 25px;
+    display:grid;
+    grid-template-columns:1fr 320px;
+    gap:25px;
+}
+
+/* CARD */
+
+.card{
+    background:var(--card);
+    border-radius:18px;
+    padding:25px;
+    border:1px solid rgba(255,255,255,0.06);
+    margin-bottom:22px;
+    transition:0.3s ease;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(245,166,35,0.3);
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:1rem;
+    margin-bottom:20px;
+    font-weight:700;
+}
+
+.line{
+    width:4px;
+    height:18px;
+    border-radius:2px;
+    background:var(--gold);
+}
+
+/* INFO GRID */
+
+.grid3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.info{
+    background:rgba(255,255,255,0.04);
+    border-radius:12px;
+    padding:14px;
+    border:1px solid rgba(255,255,255,0.06);
+    transition:0.3s ease;
+}
+
+.info:hover{
+    transform:translateY(-4px);
+    border-color:var(--gold);
+}
+
+.info small{
+    display:block;
+    color:var(--muted);
+    margin-bottom:5px;
+    font-size:0.68rem;
+    text-transform:uppercase;
+}
+
+.info strong{
+    font-size:0.82rem;
+}
+
+/* COURSE */
+
+.course-section{
+    margin-bottom:30px;
+}
+
+.course-label{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:8px;
+    background:rgba(245,166,35,0.1);
+    border:1px solid rgba(245,166,35,0.2);
+    color:var(--gold);
+    font-size:0.7rem;
+    margin-bottom:15px;
+    text-transform:uppercase;
+    font-weight:700;
+}
+
+.course-row{
+    display:grid;
+    grid-template-columns:1fr auto auto auto;
+    gap:10px;
+    align-items:center;
+    background:rgba(255,255,255,0.03);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:10px;
+    border:1px solid rgba(255,255,255,0.06);
+    transition:0.3s ease;
+    cursor:pointer;
+}
+
+.course-row:hover{
+    transform:translateY(-4px);
+    border-color:var(--gold);
+    background:rgba(245,166,35,0.06);
+}
+
+.course-name{
+    font-size:0.82rem;
+    font-weight:500;
+}
+
+.course-meta{
+    text-align:center;
+    font-size:0.72rem;
+    color:var(--muted);
+}
+
+.course-meta strong{
+    display:block;
+    color:white;
+}
+
+.tag{
+    padding:5px 10px;
+    border-radius:7px;
+    font-size:0.7rem;
+    font-weight:600;
+}
+
+.fees{
+    background:rgba(72,187,120,0.12);
+    color:#68d391;
+}
+
+.exam{
+    background:rgba(99,179,237,0.12);
+    color:#63b3ed;
+}
+
+/* FACILITY */
+
+.facility-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.fac{
+    background:rgba(255,255,255,0.04);
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.06);
+    transition:0.3s ease;
+    cursor:pointer;
+}
+
+.fac:hover{
+    transform:translateY(-4px);
+    border-color:var(--gold);
+    background:rgba(245,166,35,0.06);
+}
+
+.fac-icon{
+    font-size:1.5rem;
+    margin-bottom:8px;
+}
+
+/* SIDEBAR */
+
+.side-card{
+    background:var(--card);
+    border-radius:18px;
+    padding:22px;
+    border:1px solid rgba(255,255,255,0.06);
+    margin-bottom:20px;
+    transition:0.3s ease;
+}
+
+.side-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(245,166,35,0.25);
+}
+
+.side-title{
+    color:var(--gold);
+    font-size:0.85rem;
+    margin-bottom:15px;
+    text-transform:uppercase;
+    font-weight:700;
+}
+
+.key{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    font-size:0.8rem;
+}
+
+.key span:first-child{
+    color:var(--muted);
+}
+
+/* BUTTON */
+
+.cta{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s ease;
+    margin-bottom:10px;
+}
+
+.cta1{
+    background:var(--gold);
+    color:#111;
+}
+
+.cta2{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.2);
+    color:white;
+}
+
+.cta:hover{
+    transform:translateY(-3px);
+}
+
+.cta1:hover{
+    background:var(--gold-light);
+}
+
+.cta2:hover{
+    border-color:var(--gold);
+    color:var(--gold);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    .main{
+        grid-template-columns:1fr;
+    }
+
+    .grid3{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:600px){
+
+    nav{
+        padding:0 15px;
+    }
+
+    .hero{
+        padding:25px;
+    }
+
+    .hero-flex{
+        flex-direction:column;
+    }
+
+    .grid3{
+        grid-template-columns:1fr;
+    }
+
+    .facility-grid{
+        grid-template-columns:1fr;
+    }
+
+    .course-row{
+        grid-template-columns:1fr;
+        text-align:left;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+
+<div class="logo">
+🎓 <span>Search</span>College
+</div>
+
+<div class="nav-right">
+<button class="nav-btn stream-btn">Central University</button>
+<button class="nav-btn shortlist-btn">⭐ Shortlist</button>
+<button class="nav-btn logout-btn">Logout</button>
+</div>
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="breadcrumb">
+<a href="#">Home</a> ›
+<a href="#">Universities</a> ›
+Babasaheb Bhimrao Ambedkar University
+</div>
+
+<div class="hero-flex">
+
+<div class="uni-logo">
+🏛️
+</div>
+
+<div class="uni-title">
+
+<h1>
+Babasaheb Bhimrao <span>Ambedkar University</span>
+</h1>
+
+<div class="meta">
+
+<div class="meta-chip">
+<strong>Lucknow, Uttar Pradesh</strong>
+</div>
+
+<div class="meta-chip">
+🏛️ <strong>Central University</strong>
+</div>
+
+<div class="meta-chip">
+📅 <strong>Established 1996</strong>
+</div>
+
+<div class="meta-chip">
+🌐 <strong>bbau.ac.in</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="badges">
+
+<div class="badge badge1">
+<div class="label">Accreditation</div>
+<div class="value">NAAC</div>
+</div>
+
+<div class="badge badge2">
+<div class="label">Campus Area</div>
+<div class="value">250 Acres</div>
+</div>
+
+<div class="badge badge3">
+<div class="label">Type</div>
+<div class="value">Central</div>
+</div>
+
+</div>
+
+</section>
+
+<!-- TABS -->
+
+<div class="tabs">
+
+<div class="tab active">Overview</div>
+<div class="tab">UG Courses</div>
+<div class="tab">PG Courses</div>
+<div class="tab">PhD</div>
+<div class="tab">Admissions</div>
+<div class="tab">Placements</div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<!-- LEFT -->
+
+<div>
+
+<!-- BASIC -->
+
+<div class="card">
+
+<div class="card-title">
+<div class="line"></div>
+Basic Information
+</div>
+
+<div class="grid3">
+
+<div class="info">
+<small>Established</small>
+<strong>1996</strong>
+</div>
+
+<div class="info">
+<small>Type</small>
+<strong>Central University</strong>
+</div>
+
+<div class="info">
+<small>Location</small>
+<strong>Lucknow, UP</strong>
+</div>
+
+<div class="info">
+<small>Campus</small>
+<strong>250 Acres</strong>
+</div>
+
+<div class="info">
+<small>Recognition</small>
+<strong>UGC Approved</strong>
+</div>
+
+<div class="info">
+<small>Admission</small>
+<strong>CUET / JEE</strong>
+</div>
+
+</div>
+
+</div>
+
+<!-- UG -->
+
+<div class="card">
+
+<div class="card-title">
+<div class="line"></div>
+UG Courses
+</div>
+
+<div class="course-section">
+
+<div class="course-label">
+Management & Commerce
+</div>
+
+<div class="course-row">
+<div class="course-name">BBA</div>
+
+<div class="course-meta">
+<strong>CUET-UG</strong>
+Exam
+</div>
+
+<div class="course-meta">
+<strong>3 Years</strong>
+Duration
+</div>
+
+<div class="tag fees">
+₹20K–40K
+</div>
+</div>
+
+<div class="course-row">
+<div class="course-name">B.Com</div>
+
+<div class="course-meta">
+<strong>CUET-UG</strong>
+Exam
+</div>
+
+<div class="course-meta">
+<strong>3 Years</strong>
+Duration
+</div>
+
+<div class="tag fees">
+₹20K–40K
+</div>
+</div>
+
+</div>
+
+<div class="course-section">
+
+<div class="course-label">
+Science & Technology
+</div>
+
+<div class="course-row">
+<div class="course-name">B.Tech Computer Science</div>
+
+<div class="course-meta">
+<strong>JEE Main</strong>
+Exam
+</div>
+
+<div class="course-meta">
+<strong>4 Years</strong>
+Duration
+</div>
+
+<div class="tag fees">
+₹3–5L
+</div>
+</div>
+
+<div class="course-row">
+<div class="course-name">BCA</div>
+
+<div class="course-meta">
+<strong>CUET-UG</strong>
+Exam
+</div>
+
+<div class="course-meta">
+<strong>3 Years</strong>
+Duration
+</div>
+
+<div class="tag fees">
+₹40K–80K
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- PG -->
+
+<div class="card">
+
+<div class="card-title">
+<div class="line"></div>
+PG Courses
+</div>
+
+<div class="course-row">
+<div class="course-name">MBA</div>
+
+<div class="course-meta">
+<strong>CUET-PG</strong>
+Exam
+</div>
+
+<div class="course-meta">
+<strong>2 Years</strong>
+Duration
+</div>
+
+<div class="tag fees">
+₹1–2L
+</div>
+</div>
+
+<div class="course-row">
+<div class="course-name">MCA</div>
+
+<div class="course-meta">
+<strong>CUET-PG</strong>
+Exam
+</div>
+
+<div class="course-meta">
+<strong>2 Years</strong>
+Duration
+</div>
+
+<div class="tag fees">
+₹80K–1.5L
+</div>
+</div>
+
+<div class="course-row">
+<div class="course-name">M.Sc Biotechnology</div>
+
+<div class="course-meta">
+<strong>CUET-PG</strong>
+Exam
+</div>
+
+<div class="course-meta">
+<strong>2 Years</strong>
+Duration
+</div>
+
+<div class="tag fees">
+₹20K–60K
+</div>
+</div>
+
+</div>
+
+<!-- FACILITIES -->
+
+<div class="card">
+
+<div class="card-title">
+<div class="line"></div>
+Campus Facilities
+</div>
+
+<div class="facility-grid">
+
+<div class="fac">
+<div class="fac-icon">📚</div>
+Library
+</div>
+
+<div class="fac">
+<div class="fac-icon">📶</div>
+Wi-Fi
+</div>
+
+<div class="fac">
+<div class="fac-icon">🏥</div>
+Medical
+</div>
+
+<div class="fac">
+<div class="fac-icon">🏋️</div>
+Gym
+</div>
+
+<div class="fac">
+<div class="fac-icon">🏟️</div>
+Sports
+</div>
+
+<div class="fac">
+<div class="fac-icon">🍽️</div>
+Cafeteria
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SIDEBAR -->
+
+<div>
+
+<div class="side-card">
+
+<button class="cta cta1">
+⭐ Add To Shortlist
+</button>
+
+<button class="cta cta2"
+onclick="window.open('https://www.bbau.ac.in/','_blank')">
+🌐 Visit Official Website
+</button>
+
+</div>
+
+<div class="side-card">
+
+<div class="side-title">
+Key Facts
+</div>
+
+<div class="key">
+<span>Established</span>
+<span>1996</span>
+</div>
+
+<div class="key">
+<span>University Type</span>
+<span>Central</span>
+</div>
+
+<div class="key">
+<span>Location</span>
+<span>Lucknow</span>
+</div>
+
+<div class="key">
+<span>Campus Area</span>
+<span>250 Acres</span>
+</div>
+
+<div class="key">
+<span>NAAC</span>
+<span>Accredited</span>
+</div>
+
+</div>
+
+<div class="side-card">
+
+<div class="side-title">
+Placement Stats
+</div>
+
+<div class="key">
+<span>Highest Package</span>
+<span>₹18 LPA</span>
+</div>
+
+<div class="key">
+<span>Average Package</span>
+<span>₹3–5 LPA</span>
+</div>
+
+<div class="key">
+<span>Top Recruiters</span>
+<span>TCS, Infosys</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
