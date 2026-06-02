@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chaudhary Devi Lal University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  /* ── NAV ── */
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HERO ── */
+  .hero { background: linear-gradient(135deg, #0f1a35 0%, #1a2a50 50%, #0f1a35 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(72,187,120,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(72,187,120,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--accent-green); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--accent-green); color: var(--accent-green); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac   { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central{ background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-rank   { background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value    { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value  { color: #63b3ed; }
+  .hb-rank .value    { color: #b794f4; }
+
+  /* ── TABS ── */
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--accent-green); border-bottom-color: var(--accent-green); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--accent-green); border-radius: 2px; }
+
+  /* ── COURSE ROWS ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-green); background: rgba(72,187,120,0.1); border: 1px solid rgba(72,187,120,0.25); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(72,187,120,0.06); border-color: rgba(72,187,120,0.25); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+
+  /* ── TAGS ── */
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-ugc  { background: rgba(245,166,35,0.12); color: var(--gold); border: 1px solid var(--border); }
+
+  /* ── GRIDS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* ── RECRUITER ── */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: rgba(72,187,120,0.1); border-color: rgba(72,187,120,0.3); color: var(--accent-green); }
+
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: rgba(72,187,120,0.3); background: rgba(72,187,120,0.06); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--accent-green); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-gold  { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--accent-green); color: var(--navy); }
+  .cta-primary:hover { background: #68d391; }
+  .cta-primary.added { background: var(--gold); color: var(--navy); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--accent-green); color: var(--accent-green); }
+
+  /* ── SCHOLARSHIP TAGS ── */
+  .schol-tag { background: rgba(72,187,120,0.1); border: 1px solid rgba(72,187,120,0.2); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: #68d391; display: inline-block; margin: 3px; }
+
+  /* ── PhD ── */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--accent-green); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: rgba(72,187,120,0.3); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--accent-green); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc  { font-size:0.75rem; color:var(--muted); }
+
+  /* ── STATS ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ── EVENT LIST ── */
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* ── COLLEGE TABLE ── */
+  .college-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .college-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .college-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+  .college-table tr:last-child td { border-bottom:none; }
+  .college-table tr:hover td { background:rgba(72,187,120,0.04); }
+
+  /* ── MODAL ── */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p  { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel  { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap  { grid-template-columns: 1fr; }
+    .hero          { padding: 24px 20px; }
+    .tabs-bar      { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3        { grid-template-columns: 1fr 1fr; }
+    .stat-row      { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome, User</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📚 <span id="streamLabel">Arts &amp; Science</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Science','📚')">📚 Arts &amp; Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce &amp; Management','💼')">💼 Commerce &amp; Management</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Chaudhary Devi Lal University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🎓</div>
+    <div class="uni-title">
+      <h1>Chaudhary Devi Lal <span>University, Sirsa</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Sirsa, Haryana</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Government University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2003</strong></span>
+        <span class="meta-chip">🏫 <strong>Residential Campus</strong></span>
+        <span class="meta-chip clickable" onclick="showToast('🌐','Opening website…')">🌐 <strong>cdlu.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac"><span class="label">NAAC</span><span class="value">Accredited</span></div>
+    <div class="hero-badge hb-central"><span class="label">Recognition</span><span class="value">UGC / AICTE</span></div>
+    <div class="hero-badge hb-campus"><span class="label">Campus</span><span class="value">Residential</span></div>
+    <div class="hero-badge hb-rank"><span class="label">Distance Ed</span><span class="value">Available</span></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Full Name</div><div class="val">Chaudhary Devi Lal University</div></div>
+          <div class="info-chip"><div class="lbl">Popular Name</div><div class="val">CDLU Sirsa</div></div>
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2003</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Government University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Sirsa, Haryana</div></div>
+          <div class="info-chip"><div class="lbl">Campus Type</div><div class="val">Residential Campus</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC, AICTE, BCI, NCTE</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC Accredited</div></div>
+          <div class="info-chip"><div class="lbl">Official Website</div><div class="val">cdlu.ac.in</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About CDLU Sirsa</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Chaudhary Devi Lal University (CDLU), Sirsa was established in 2003 by the Haryana State Legislature Act No. 9 of 2003. Named after the former Deputy Prime Minister of India, Ch. Devi Lal, the university is a state government university offering a wide range of programs across arts, commerce, science, law, management, education, and engineering. CDLU is recognized by <strong style="color:var(--white);">UGC, AICTE, BCI, and NCTE</strong> and holds NAAC accreditation. The university also operates a Directorate of Distance Education, making quality education accessible to learners across the region.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>University Highlights</div>
+        <div class="stat-row">
+          <div class="stat-box"><div class="s-val" style="color:var(--accent-green)">2003</div><div class="s-lbl">Established</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--gold)">State</div><div class="s-lbl">Ownership</div></div>
+          <div class="stat-box"><div class="s-val" style="color:#63b3ed">UG–PhD</div><div class="s-lbl">Academic Levels</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="info-chip"><div class="lbl">Admission Modes</div><div class="val">Merit &amp; Entrance Based</div></div>
+          <div class="info-chip"><div class="lbl">Distance Education</div><div class="val">Available (DDE)</div></div>
+          <div class="info-chip"><div class="lbl">Research Programs</div><div class="val">Ph.D. in Multiple Disciplines</div></div>
+          <div class="info-chip"><div class="lbl">Specialization Areas</div><div class="val">Arts, Commerce, Science, Law, Management, Education, Engineering</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Assistance</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+          <span class="schol-tag">🏆 Haryana Govt. Scholarships</span>
+          <span class="schol-tag">📋 SC/ST/OBC Scholarships</span>
+          <span class="schol-tag">⭐ Merit Scholarships</span>
+          <span class="schol-tag">🌙 Minority Scholarships</span>
+          <span class="schol-tag">💰 EWS Assistance</span>
+          <span class="schol-tag">📝 Post-Matric Scholarships</span>
+        </div>
+        <div class="phd-cat-label">Research Fellowships</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+          <span class="schol-tag">🔬 UGC-NET JRF</span>
+          <span class="schol-tag">📖 Research Assistantships</span>
+          <span class="schol-tag">🎓 University Research Fellowships</span>
+        </div>
+      </div>
+
+    </div><!-- /panel-0 -->
+
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Undergraduate Programs</div>
+
+        <div class="course-block">
+          <div class="course-type-label">Arts &amp; Humanities</div>
+          <div class="course-row"><span class="course-name">BA</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹2K–10K/yr</span></div>
+          <div class="course-row"><span class="course-name">BA Journalism &amp; Mass Communication</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹2K–10K/yr</span></div>
+          <div class="course-row"><span class="course-name">BA Honours Programs</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹2K–10K/yr</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Commerce &amp; Management</div>
+          <div class="course-row"><span class="course-name">B.Com</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹2K–10K/yr</span></div>
+          <div class="course-row"><span class="course-name">BBA</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹10K–35K/yr</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Computer Applications &amp; IT</div>
+          <div class="course-row"><span class="course-name">BCA</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹8.5K–25K/yr</span></div>
+          <div class="course-row"><span class="course-name">Diploma in Computer Science &amp; Technology</span><span class="course-meta"><strong>1–2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-ugc">UGC</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Science Programs</div>
+          <div class="course-row"><span class="course-name">B.Sc Medical</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹8K–30K/yr</span></div>
+          <div class="course-row"><span class="course-name">B.Sc Non-Medical</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹8K–30K/yr</span></div>
+          <div class="course-row"><span class="course-name">Biotechnology Programs</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹8K–30K/yr</span></div>
+          <div class="course-row"><span class="course-name">Environmental Science Programs</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹8K–30K/yr</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Law Programs</div>
+          <div class="course-row"><span class="course-name">LLB</span><span class="course-meta"><strong>3 Yrs</strong>Duration</span><span class="tag tag-exam">Entrance / Merit</span><span class="tag tag-fees">₹15K–40K/yr</span></div>
+          <div class="course-row"><span class="course-name">BA LLB Integrated</span><span class="course-meta"><strong>5 Yrs</strong>Duration</span><span class="tag tag-exam">Entrance / Merit</span><span class="tag tag-fees">₹15K–40K/yr</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Education Programs</div>
+          <div class="course-row"><span class="course-name">B.Ed</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-ugc">NCTE</span></div>
+          <div class="course-row"><span class="course-name">Integrated Education Programs</span><span class="course-meta"><strong>4 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-ugc">NCTE</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Engineering &amp; Technology</div>
+          <div class="course-row"><span class="course-name">B.Tech Programs (via Affiliated Colleges)</span><span class="course-meta"><strong>4 Yrs</strong>Duration</span><span class="tag tag-exam">JEE Main</span><span class="tag tag-fees">₹40K–1L/yr</span></div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Admission Criteria</div>
+        <table class="college-table">
+          <thead><tr><th>Course</th><th>Eligibility</th><th>Admission Process</th></tr></thead>
+          <tbody>
+            <tr><td>BA / B.Com</td><td>10+2</td><td><span class="tag tag-ugc">Merit Based</span></td></tr>
+            <tr><td>BCA</td><td>10+2 (Maths preferred)</td><td><span class="tag tag-exam">Merit / Entrance</span></td></tr>
+            <tr><td>BBA</td><td>10+2</td><td><span class="tag tag-ugc">Merit Based</span></td></tr>
+            <tr><td>B.Sc Programs</td><td>10+2 Science</td><td><span class="tag tag-ugc">Merit</span></td></tr>
+            <tr><td>Law Programs</td><td>10+2</td><td><span class="tag tag-exam">Entrance / Merit</span></td></tr>
+            <tr><td>B.Tech</td><td>10+2 PCM</td><td><span class="tag tag-exam">JEE Main / Counselling</span></td></tr>
+            <tr><td>B.Ed</td><td>Graduation</td><td><span class="tag tag-exam">Merit / Entrance</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /panel-1 -->
+
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Postgraduate Programs</div>
+
+        <div class="course-block">
+          <div class="course-type-label">Arts &amp; Humanities</div>
+          <div class="course-row"><span class="course-name">MA English</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹3K–30K</span></div>
+          <div class="course-row"><span class="course-name">MA Hindi</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹3K–30K</span></div>
+          <div class="course-row"><span class="course-name">MA Economics</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹3K–30K</span></div>
+          <div class="course-row"><span class="course-name">MA Public Administration</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹3K–30K</span></div>
+          <div class="course-row"><span class="course-name">MA Journalism &amp; Mass Communication</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹3K–30K</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Commerce &amp; Management</div>
+          <div class="course-row"><span class="course-name">M.Com</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹3K–30K</span></div>
+          <div class="course-row"><span class="course-name">MBA</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹25K–60K</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Computer Applications</div>
+          <div class="course-row"><span class="course-name">MCA</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹30K–1L</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Science Programs</div>
+          <div class="course-row"><span class="course-name">M.Sc Physics</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹15K–50K</span></div>
+          <div class="course-row"><span class="course-name">M.Sc Chemistry</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹15K–50K</span></div>
+          <div class="course-row"><span class="course-name">M.Sc Mathematics</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹15K–50K</span></div>
+          <div class="course-row"><span class="course-name">M.Sc Biotechnology</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹15K–50K</span></div>
+          <div class="course-row"><span class="course-name">M.Sc Food Science &amp; Technology</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹15K–50K</span></div>
+          <div class="course-row"><span class="course-name">M.Sc Environmental Science</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-fees">₹15K–50K</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Education</div>
+          <div class="course-row"><span class="course-name">M.Ed</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit / Entrance</span><span class="tag tag-ugc">NCTE</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Engineering &amp; Technology</div>
+          <div class="course-row"><span class="course-name">M.Tech Programs</span><span class="course-meta"><strong>2 Yrs</strong>Duration</span><span class="tag tag-exam">GATE / Merit</span><span class="tag tag-fees">₹50K–1L</span></div>
+        </div>
+
+        <div class="course-block">
+          <div class="course-type-label">Law</div>
+          <div class="course-row"><span class="course-name">LLM</span><span class="course-meta"><strong>1–2 Yrs</strong>Duration</span><span class="tag tag-exam">Merit Based</span><span class="tag tag-fees">₹20K–50K</span></div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Admission Criteria</div>
+        <table class="college-table">
+          <thead><tr><th>Program</th><th>Eligibility</th><th>Admission Process</th></tr></thead>
+          <tbody>
+            <tr><td>MA / M.Sc</td><td>Relevant Graduation</td><td><span class="tag tag-exam">Merit / Entrance</span></td></tr>
+            <tr><td>MBA</td><td>Graduation</td><td><span class="tag tag-exam">Merit / Entrance</span></td></tr>
+            <tr><td>MCA</td><td>Graduation (Maths)</td><td><span class="tag tag-ugc">Merit</span></td></tr>
+            <tr><td>M.Tech</td><td>B.Tech Degree</td><td><span class="tag tag-exam">GATE / Merit</span></td></tr>
+            <tr><td>LLM</td><td>LLB Degree</td><td><span class="tag tag-ugc">Merit</span></td></tr>
+            <tr><td>M.Ed</td><td>B.Ed Degree</td><td><span class="tag tag-exam">Merit / Entrance</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /panel-2 -->
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Ph.D. &amp; Research Programs</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Humanities &amp; Languages</div>
+          <div class="phd-tags">
+            <span class="phd-tag">English</span>
+            <span class="phd-tag">Hindi</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce &amp; Management</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Commerce</span>
+            <span class="phd-tag">Management</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Science &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Environmental Science</span>
+            <span class="phd-tag">Computer Science</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Other Disciplines</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Education</span>
+            <span class="phd-tag">Law</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Ph.D. Eligibility Criteria</div>
+        <div style="background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree with minimum 55% marks</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v"><span class="tag tag-exam">University Entrance Test</span> <span class="tag tag-exam">NET</span></span></div>
+          <div class="key-val"><span class="k">Selection Process</span><span class="v">Written Test + Interview</span></div>
+          <div class="key-val" style="border:none"><span class="k">Relaxation</span><span class="v">As per UGC norms (SC/ST/OBC/PwD)</span></div>
+        </div>
+      </div>
+    </div><!-- /panel-3 -->
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Visit Official Portal</div>
+            <div class="tl-desc">Visit the official CDLU admission portal at cdlu.ac.in to check program notifications</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Fill Online Application Form</div>
+            <div class="tl-desc">Complete the online application form accurately with all required personal and academic details</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Upload Required Documents</div>
+            <div class="tl-desc">Upload scanned copies of marksheets, ID proof, category certificate, and photographs</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Entrance Examination (if applicable)</div>
+            <div class="tl-desc">Appear for university entrance examination as per the requirements of your chosen program</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Counselling &amp; Document Verification</div>
+            <div class="tl-desc">Participate in the counselling process and get original documents verified at the university</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Fee Payment &amp; Seat Confirmation</div>
+            <div class="tl-desc">Pay the admission fee online through the portal to confirm and secure your allocated seat</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Competition Levels</div>
+        <table class="college-table">
+          <thead><tr><th>Course</th><th>Competition Level</th></tr></thead>
+          <tbody>
+            <tr><td>MBA</td><td><span class="tag tag-ugc">Moderate</span></td></tr>
+            <tr><td>MCA</td><td><span class="tag tag-ugc">Moderate</span></td></tr>
+            <tr><td>Law Programs</td><td><span class="tag tag-ugc">Moderate</span></td></tr>
+            <tr><td>BCA</td><td><span class="tag tag-ugc">Moderate</span></td></tr>
+            <tr><td>B.Tech</td><td><span class="tag tag-exam">Moderate to High</span></td></tr>
+            <tr><td>M.Sc Programs</td><td><span class="tag tag-ugc">Moderate</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Hostel Facilities &amp; Fees</div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">Separate hostel facilities are available for boys and girls on campus.</p>
+        <div class="grid-2" style="margin-bottom:18px;">
+          <div class="info-chip"><div class="lbl">Hostel Rent</div><div class="val">₹10,000 – ₹25,000/yr</div></div>
+          <div class="info-chip"><div class="lbl">Mess Charges</div><div class="val">Extra (as applicable)</div></div>
+          <div class="info-chip"><div class="lbl">Security Deposit</div><div class="val">Refundable</div></div>
+          <div class="info-chip"><div class="lbl">Electricity</div><div class="val">Additional if applicable</div></div>
+        </div>
+        <div class="phd-cat-label">Hostel Amenities</div>
+        <div class="phd-tags" style="margin-top:8px;">
+          <span class="phd-tag">Furnished Rooms</span>
+          <span class="phd-tag">Wi-Fi</span>
+          <span class="phd-tag">Mess Facility</span>
+          <span class="phd-tag">Reading Rooms</span>
+          <span class="phd-tag">Sports &amp; Recreation</span>
+          <span class="phd-tag">24×7 Security</span>
+          <span class="phd-tag">Medical Assistance</span>
+          <span class="phd-tag">Clean Drinking Water</span>
+          <span class="phd-tag">Power Backup</span>
+        </div>
+      </div>
+    </div><!-- /panel-4 -->
+
+    <!-- ── TAB 5: PLACEMENTS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:18px;">CDLU provides placement support through its dedicated placement and career guidance cell. Companies from IT, banking, education, and research sectors participate in campus drives.</p>
+        <div class="stat-row">
+          <div class="stat-box"><div class="s-val" style="color:var(--accent-green)">IT</div><div class="s-lbl">Top Sector</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--gold)">Banking</div><div class="s-lbl">Finance Sector</div></div>
+          <div class="stat-box"><div class="s-val" style="color:#63b3ed">R&amp;D</div><div class="s-lbl">Research Sector</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Major Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">HCL</span>
+          <span class="recruiter-tag">Local &amp; Regional Industries</span>
+          <span class="recruiter-tag">Educational Institutions</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Areas</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">💻</span><span>IT Sector – Software, Web Development, Data Analysis</span></div>
+          <div class="event-item"><span class="event-icon">🏦</span><span>Banking &amp; Finance – PSU Banks, NBFCs, Insurance</span></div>
+          <div class="event-item"><span class="event-icon">🎓</span><span>Education – Schools, Colleges, EdTech Companies</span></div>
+          <div class="event-item"><span class="event-icon">💼</span><span>Management – HR, Marketing, Operations Roles</span></div>
+          <div class="event-item"><span class="event-icon">🔬</span><span>Research &amp; Development – Government Labs, Institutes</span></div>
+        </div>
+      </div>
+    </div><!-- /panel-5 -->
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Laboratories</div>
+          <div class="fac-item"><div class="fac-icon">💻</div>Computer Centres</div>
+          <div class="fac-item"><div class="fac-icon">🎤</div>Seminar Halls</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Student Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Facilities</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">💪</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">🚌</div>Transport Facilities</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi Campus</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Student Clubs &amp; Activities</div>
+        <div class="phd-tags">
+          <span class="phd-tag">NSS</span>
+          <span class="phd-tag">NCC</span>
+          <span class="phd-tag">Cultural Club</span>
+          <span class="phd-tag">Literary Society</span>
+          <span class="phd-tag">Sports Club</span>
+          <span class="phd-tag">Debate Society</span>
+          <span class="phd-tag">Eco Club</span>
+          <span class="phd-tag">Science Society</span>
+        </div>
+      </div>
+    </div><!-- /panel-6 -->
+
+  </div><!-- /left column -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sideShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://cdlu.ac.in','_blank')">🌐 Visit Official Website</button>
+      <button class="cta-btn cta-outline" onclick="showToast('📋','Opening application form…')">📋 Apply Now</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Facts</div>
+      <div class="key-val"><span class="k">Est. Year</span><span class="v v-gold">2003</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State Government</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Sirsa, Haryana</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">Residential</span></div>
+      <div class="key-val"><span class="k">NAAC</span><span class="v v-green">Accredited ✓</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v">UGC, AICTE, BCI, NCTE</span></div>
+      <div class="key-val"><span class="k">Distance Ed</span><span class="v v-green">Available ✓</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fee Range</div>
+      <div class="key-val"><span class="k">BA Programs</span><span class="v v-gold">₹2K–10K/yr</span></div>
+      <div class="key-val"><span class="k">B.Com</span><span class="v v-gold">₹2K–10K/yr</span></div>
+      <div class="key-val"><span class="k">BCA</span><span class="v v-gold">₹8.5K–25K/yr</span></div>
+      <div class="key-val"><span class="k">BBA</span><span class="v v-gold">₹10K–35K/yr</span></div>
+      <div class="key-val"><span class="k">Law Programs</span><span class="v v-gold">₹15K–40K/yr</span></div>
+      <div class="key-val"><span class="k">B.Tech</span><span class="v v-gold">₹40K–1L/yr</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹25K–60K</span></div>
+      <div class="key-val"><span class="k">MCA</span><span class="v v-gold">₹30K–1L</span></div>
+      <div class="key-val"><span class="k">M.Tech</span><span class="v v-gold">₹50K–1L</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Hostel Info</div>
+      <div class="key-val"><span class="k">Boys Hostel</span><span class="v v-green">Available ✓</span></div>
+      <div class="key-val"><span class="k">Girls Hostel</span><span class="v v-green">Available ✓</span></div>
+      <div class="key-val"><span class="k">Hostel Rent</span><span class="v">₹10K–25K/yr</span></div>
+      <div class="key-val"><span class="k">Wi-Fi</span><span class="v v-green">Yes ✓</span></div>
+      <div class="key-val"><span class="k">Mess</span><span class="v v-green">Available ✓</span></div>
+      <div class="key-val"><span class="k">Security</span><span class="v v-green">24×7 ✓</span></div>
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Are you sure you want to logout from CollegeHunt?</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+  let toastTimer;
+
+  function switchTab(idx, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + idx).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream: ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      document.getElementById('streamDropdown').classList.remove('open');
+    }
+  });
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sideShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'CDLU Sirsa added to your shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function showToast(icon, msg) {
+    clearTimeout(toastTimer);
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  document.getElementById('logoutModal').addEventListener('click', function(e) {
+    if (e.target === this) closeLogout();
+  });
+</script>
+</body>
+</html>

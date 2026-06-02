@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>I.K. Gujral Punjab Technical University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;--navy-mid: #1a2250;--navy-card: #1e2a5e;--gold: #f5a623;
+    --gold-light: #ffc152;--white: #ffffff;--muted: #a0aec0;--accent-green: #48bb78;
+    --card-bg: #1b2454;--border: rgba(245,166,35,0.2);--tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-rank { background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-rank .value { color: #b794f4; }
+
+  /* ── TABS BAR ── */
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; flex-shrink: 0; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-ugc { background: rgba(245,166,35,0.12); color: var(--gold); border: 1px solid var(--border); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-gold { color: var(--gold) !important; }
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+  .college-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .college-table th { color:var(--muted); text-align:left; padding:8px 10px; font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .college-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+  .college-table tr:last-child td { border-bottom:none; }
+  .college-table tr:hover td { background:rgba(245,166,35,0.04); }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+  @media (max-width: 900px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    .course-row { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home...')">College<span>Hunt</span></div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology')">Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science')">Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce')">Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities')">Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law')">Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management')">Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    I.K. Gujral Punjab Technical University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🎓</div>
+    <div class="uni-title">
+      <h1>IK Gujral <span>Punjab Technical University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Kapurthala Road, Jalandhar, Punjab</strong></span>
+        <span class="meta-chip"><strong>State Public University</strong></span>
+        <span class="meta-chip">Est. <strong>1997</strong></span>
+        <span class="meta-chip clickable" onclick="showToast('🌐','Opening website...')"><strong>ptu.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac"><span class="label">Accreditation</span><span class="value">NAAC</span></div>
+    <div class="hero-badge hb-central"><span class="label">Campus Area</span><span class="value">78 Acres</span></div>
+    <div class="hero-badge hb-campus"><span class="label">Affiliated Colleges</span><span class="value">250+</span></div>
+    <div class="hero-badge hb-rank"><span class="label">Established</span><span class="value">1997</span></div>
+  </div>
+</div><!-- /hero -->
+
+<!-- TABS BAR -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1997</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Public University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Jalandhar, Punjab</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC Accredited</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">78 Acres</div></div>
+          <div class="info-chip"><div class="lbl">Affiliated Colleges</div><div class="val">250+ Institutions</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About IKGPTU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          I.K. Gujral Punjab Technical University (IKGPTU), formerly known as <strong style="color:var(--white);">Punjab Technical University (PTU)</strong>, was established in 1997 by the Government of Punjab and renamed in honour of former Prime Minister I.K. Gujral in 2015. It is one of Punjab's premier technical and professional universities, recognized by <strong style="color:var(--white);">UGC</strong> and accredited by NAAC. The university affiliates over <strong style="color:var(--white);">250 institutions</strong> across Punjab, making it one of the largest technical university systems in North India. With constituent campuses in Jalandhar, Amritsar, Mohali, and Hoshiarpur, IKGPTU offers programs in Engineering &amp; Technology, Management, Pharmacy, Architecture, Hospitality, Applied Sciences, and Humanities. It also provides flexible <strong style="color:var(--white);">Distance Education</strong> and online learning programs for working professionals.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Recognition and Approvals</div>
+        <div class="grid-2">
+          <div class="info-chip"><div class="lbl">UGC</div><div class="val">Recognized</div></div>
+          <div class="info-chip"><div class="lbl">AICTE</div><div class="val">Approved Programs</div></div>
+          <div class="info-chip"><div class="lbl">NAAC</div><div class="val">Accredited</div></div>
+          <div class="info-chip"><div class="lbl">PCI</div><div class="val">Pharmacy Approved</div></div>
+          <div class="info-chip"><div class="lbl">COA</div><div class="val">Architecture Approved</div></div>
+          <div class="info-chip"><div class="lbl">NCTE</div><div class="val">Education Approved</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>University Structure and Campuses</div>
+        <div class="grid-2" style="margin-bottom:18px;">
+          <div class="info-chip"><div class="lbl">Main Campus</div><div class="val">Jalandhar</div></div>
+          <div class="info-chip"><div class="lbl">Amritsar Campus</div><div class="val">Constituent Campus</div></div>
+          <div class="info-chip"><div class="lbl">Mohali Campus</div><div class="val">Constituent Campus</div></div>
+          <div class="info-chip"><div class="lbl">Hoshiarpur Campus</div><div class="val">Constituent Campus</div></div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:18px;">The university's affiliated network covers Engineering Colleges, Management Institutes, Pharmacy Colleges, Architecture Colleges, Hotel Management Institutes, Polytechnic Institutions, and Computer Application Colleges across Punjab.</div>
+        <div class="card-title" style="margin-top:4px;"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">💻</div>Digital Library</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Centres</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Labs</div>
+          <div class="fac-item"><div class="fac-icon">💡</div>Innovation and Startup Support</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Banking Facilities</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeterias</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid" style="margin-bottom:12px;">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Connectivity</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess Facilities</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">🎮</span> Indoor Recreation</div>
+          <div class="hostel-item"><span class="hostel-icon">👕</span> Laundry Services</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+        </div>
+        <div style="background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹20,000–₹50,000/year &nbsp;|&nbsp; Security Deposit: Refundable &nbsp;|&nbsp; Mess charges extra</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Tech — 4 Years — JEE Main + Counselling</span>
+          <div class="course-row"><div class="course-name">B.Tech – Computer Science Engineering (CSE)</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Tech – Artificial Intelligence</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Tech – Data Science</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Tech – Information Technology</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Tech – Mechanical Engineering</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Tech – Civil Engineering</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Tech – Electrical Engineering</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Tech – Electronics &amp; Communication Engineering</div><div class="tag tag-exam">JEE Main</div><div class="tag tag-fees">₹2.5–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCM · Admission via JEE Main + centralized counselling</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">BCA / BBA / B.Com / BA — 3 Years — Merit</span>
+          <div class="course-row"><div class="course-name">BCA (Bachelor of Computer Applications)</div><div class="tag tag-exam">Merit Based</div><div class="tag tag-fees">₹1–2L total</div><div class="tag tag-ugc">3 Years</div></div>
+          <div class="course-row"><div class="course-name">BBA (Bachelor of Business Administration)</div><div class="tag tag-exam">Merit Based</div><div class="tag tag-fees">₹1–2L total</div><div class="tag tag-ugc">3 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Com (Bachelor of Commerce)</div><div class="tag tag-exam">Merit Based</div><div class="tag tag-fees">₹1–2L total</div><div class="tag tag-ugc">3 Years</div></div>
+          <div class="course-row"><div class="course-name">BA (Bachelor of Arts)</div><div class="tag tag-exam">Merit Based</div><div class="tag tag-fees">₹1–2L total</div><div class="tag tag-ugc">3 Years</div></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 pass from a recognised board · Merit-based admission</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Sc — 3 Years — Merit</span>
+          <div class="course-row"><div class="course-name">B.Sc (Physics / Chemistry / Mathematics)</div><div class="tag tag-exam">Merit Based</div><div class="tag tag-fees">₹50K–1.5L total</div><div class="tag tag-ugc">3 Years</div></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Science stream</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Pharmacy and Architecture — 4–5 Years</span>
+          <div class="course-row"><div class="course-name">B.Pharm (Bachelor of Pharmacy)</div><div class="tag tag-exam">Merit Based</div><div class="tag tag-fees">₹3–5L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div class="course-row"><div class="course-name">B.Arch (Bachelor of Architecture)</div><div class="tag tag-exam">NATA</div><div class="tag tag-fees">₹4–6L total</div><div class="tag tag-ugc">5 Years</div></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">B.Pharm: PCB/PCM required · B.Arch: 10+2 with Mathematics + NATA score · COA-approved</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Hospitality — 4 Years — Merit</span>
+          <div class="course-row"><div class="course-name">BHMCT (Bachelor of Hotel Management &amp; Catering Technology)</div><div class="tag tag-exam">Merit Based</div><div class="tag tag-fees">₹2–4L total</div><div class="tag tag-ugc">4 Years</div></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 from a recognised board</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA / M.Com — 2 Years — CMAT / CAT / MAT</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">MBA – General / Dual Specialization</span>
+            <span class="phd-tag">MBA – Finance</span>
+            <span class="phd-tag">MBA – Marketing</span>
+            <span class="phd-tag">MBA – Human Resource Management</span>
+            <span class="phd-tag">MBA – International Business</span>
+            <span class="phd-tag">M.Com</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Approx. Fee: ₹1–3L total · Eligibility: Graduation with min. qualifying marks · Admission via CMAT / CAT / MAT</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech / MCA — 2 Years — GATE / Merit</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.Tech – Computer Science Engineering</span>
+            <span class="phd-tag">M.Tech – Artificial Intelligence</span>
+            <span class="phd-tag">M.Tech – Data Science</span>
+            <span class="phd-tag">M.Tech – Mechanical Engineering</span>
+            <span class="phd-tag">M.Tech – Civil Engineering</span>
+            <span class="phd-tag">M.Tech – Electronics &amp; Communication</span>
+            <span class="phd-tag">MCA (Master of Computer Applications)</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Approx. Fee: ₹1–2L total · Eligibility: B.E./B.Tech or BCA/B.Sc. with Mathematics · GATE preferred for M.Tech</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc / MA — 2 Years — Merit</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.Sc – Physics</span>
+            <span class="phd-tag">M.Sc – Chemistry</span>
+            <span class="phd-tag">M.Sc – Mathematics</span>
+            <span class="phd-tag">MA – English</span>
+            <span class="phd-tag">MA – Economics</span>
+            <span class="phd-tag">MA – Communication Studies</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Approx. Fee: ₹50,000–1.5L total · Eligibility: Bachelor's in relevant discipline</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Pharm — 2 Years — GPAT / Merit</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.Pharm – Pharmaceutics</span>
+            <span class="phd-tag">M.Pharm – Pharmacology</span>
+            <span class="phd-tag">M.Pharm – Pharmaceutical Sciences</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Approx. Fee: ₹1–3L total · Eligibility: B.Pharm with min. qualifying marks · PCI-approved</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Distance Education and Online Programs</span>
+          <div class="phd-tags">
+            <span class="phd-tag">Distance Education – Various Programs</span>
+            <span class="phd-tag">Online Learning Initiatives</span>
+            <span class="phd-tag">Industry-Oriented Certifications</span>
+            <span class="phd-tag">Professional Skill Development</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+        <div class="phd-category"><div class="phd-cat-label">Engineering and Technology</div><div class="phd-tags"><span class="phd-tag">Computer Science &amp; Engineering</span><span class="phd-tag">Artificial Intelligence</span><span class="phd-tag">Data Science</span><span class="phd-tag">Electronics &amp; Communication</span><span class="phd-tag">Mechanical Engineering</span><span class="phd-tag">Civil Engineering</span><span class="phd-tag">Electrical Engineering</span></div></div>
+        <div class="phd-category"><div class="phd-cat-label">Applied Sciences and Mathematics</div><div class="phd-tags"><span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span><span class="phd-tag">Mathematics</span><span class="phd-tag">Applied Sciences</span></div></div>
+        <div class="phd-category"><div class="phd-cat-label">Pharmacy</div><div class="phd-tags"><span class="phd-tag">Pharmaceutical Sciences</span><span class="phd-tag">Pharmacology</span><span class="phd-tag">Pharmaceutics</span></div></div>
+        <div class="phd-category"><div class="phd-cat-label">Management, Commerce and Humanities</div><div class="phd-tags"><span class="phd-tag">Management</span><span class="phd-tag">Commerce</span><span class="phd-tag">Humanities</span><span class="phd-tag">English</span><span class="phd-tag">Economics</span></div></div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility and Admission Process</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree in relevant subject</span></div>
+          <div class="key-val"><span class="k">Admission Mode</span><span class="v">Entrance Examination + Personal Interview</span></div>
+          <div class="key-val"><span class="k">Exemptions</span><span class="v">UGC-NET / CSIR-NET / GATE qualified candidates</span></div>
+          <div class="key-val"><span class="k">Chancellor</span><span class="v">Governor of Punjab</span></div>
+          <div class="key-val" style="border:none"><span class="k">Duration</span><span class="v">Min. 3 Years (UGC norms)</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Research Focus:</span>
+          <span style="color:var(--muted);"> AI Research, Data Science, Engineering Innovation, Startup Incubation, Patent Development, and Industry-Funded Research. The university hosts Startup Incubation Centres and an Entrepreneurship Development Cell.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (UG)</div>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-title">Step 1 — Appear in Relevant Entrance Exam</div><div class="tl-desc">Appear for JEE Main (B.Tech), NATA (B.Arch), or prepare merit documents for BCA, BBA, B.Com, B.Pharm, BHMCT, and other programs as applicable.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 2 — Register via Centralised Counselling / University Portal</div><div class="tl-desc">B.Tech admissions are conducted through centralized Punjab state counselling. Other programs are admitted through the university's online admission portal.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 3 — Merit List and Seat Allotment</div><div class="tl-desc">Seats are allotted based on entrance exam scores and qualifying marks. Candidates can choose from main campus, constituent campuses, or affiliated colleges.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 4 — Document Verification and Fee Payment</div><div class="tl-desc">Submit 10th and 12th marksheets, category certificate, ID proof, and entrance scorecard. Complete fee payment and enrolment formalities at the allotted institution.</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (PG)</div>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-title">Step 1 — Check Eligibility and Program</div><div class="tl-desc">Confirm eligibility: graduation in a relevant discipline with the minimum qualifying percentage. Prepare national exam scores (GATE / CMAT / CAT / MAT) as applicable.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 2 — Apply via University Admission Portal</div><div class="tl-desc">Register on the IKGPTU admission portal, fill the application form, and pay the registration fee to confirm your application.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 3 — Entrance Score Submission / University Criteria</div><div class="tl-desc">Submit GATE scores for M.Tech, CMAT/CAT/MAT scores for MBA. MCA and M.Sc. admissions are based on graduation merit or university entrance criteria.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 4 — Document Verification and Enrolment</div><div class="tl-desc">Submit degree certificates, marksheets, category certificate, and ID proof. Pay the semester fee to complete enrolment.</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">B.Tech (All Branches)</div><div></div><div></div><span class="tag tag-exam">JEE Main + Counselling</span></div>
+        <div class="course-row"><div class="course-name">B.Arch</div><div></div><div></div><span class="tag tag-exam">NATA</span></div>
+        <div class="course-row"><div class="course-name">B.Pharm</div><div></div><div></div><span class="tag tag-exam">Merit Based</span></div>
+        <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">CMAT / CAT / MAT</span></div>
+        <div class="course-row"><div class="course-name">M.Tech</div><div></div><div></div><span class="tag tag-exam">GATE / Merit</span></div>
+        <div class="course-row"><div class="course-name">MCA</div><div></div><div></div><span class="tag tag-exam">Graduation Merit</span></div>
+        <div class="course-row"><div class="course-name">Other UG Programs</div><div></div><div></div><span class="tag tag-exam">Merit Based</span></div>
+        <div class="course-row"><div class="course-name">PhD</div><div></div><div></div><span class="tag tag-exam">Entrance Test + Interview</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships Available</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Government Scholarships</div>
+          <div class="phd-tags"><span class="phd-tag">SC Scholarship</span><span class="phd-tag">ST Scholarship</span><span class="phd-tag">OBC Scholarship</span><span class="phd-tag">Minority Scholarships</span><span class="phd-tag">NSP Scholarships</span></div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">University Support</div>
+          <div class="phd-tags"><span class="phd-tag">Merit Scholarships</span><span class="phd-tag">Need-Based Assistance</span><span class="phd-tag">Special Category Scholarships</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">IT &amp; Tech</div><div class="s-lbl">Top Sector</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--gold);">250+</div><div class="s-lbl">Affiliated Colleges</div></div>
+          <div class="stat-box"><div class="s-val" style="color:#63b3ed;">10+</div><div class="s-lbl">Top Recruiters</div></div>
+        </div>
+        <div class="card-title"><span class="dot"></span>Major Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Infosys</span><span class="recruiter-tag">TCS</span><span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">Cognizant</span><span class="recruiter-tag">HCL</span><span class="recruiter-tag">Tech Mahindra</span>
+          <span class="recruiter-tag">Capgemini</span><span class="recruiter-tag">Accenture</span><span class="recruiter-tag">IBM</span><span class="recruiter-tag">Amazon</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Support and Training</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">🎓</div>Technical Training</div>
+          <div class="fac-item"><div class="fac-icon">📜</div>Industry Certifications</div>
+          <div class="fac-item"><div class="fac-icon">🏢</div>Internship Programs</div>
+          <div class="fac-item"><div class="fac-icon">🤝</div>Industry Collaborations</div>
+          <div class="fac-item"><div class="fac-icon">🚀</div>Entrepreneurship Support</div>
+          <div class="fac-item"><div class="fac-icon">💡</div>Startup Incubation</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Notes</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">IKGPTU has an active Training &amp; Placement Department that facilitates campus recruitment across its main campus and its vast network of over 250 affiliated institutions. Top IT companies including Infosys, TCS, Wipro, Cognizant, HCL, IBM, and Amazon are regular recruiters for B.Tech, MCA, and BCA graduates. The university provides technical training, placement preparation programs, and industry certification opportunities to bridge academics and industry. The university's extensive Punjab-wide network gives students broad geographic access to job markets in North India.</p>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">Annual Events and Fests</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">💻</span><div><strong>Technical Festivals</strong> — University-wide technical competitions, hackathons, project exhibitions, and coding challenges across engineering and computer science programs</div></div>
+            <div class="event-item"><span class="event-icon">🚀</span><div><strong>Hackathons and Startup Summits</strong> — Innovation-driven events connecting students with industry mentors, investors, and incubation support programs</div></div>
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Cultural Festivals</strong> — Music, dance, drama, and inter-campus cultural competitions celebrating student talent and heritage</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Sports Competitions</strong> — Inter-college and inter-campus athletic events covering cricket, football, basketball, volleyball, and indoor sports</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research Conferences</strong> — Academic seminars, research paper presentations, and industry-academia knowledge exchange programs held throughout the year</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">Sports and Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🏟️</div>Indoor Sports Complex</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">Student Clubs and Societies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Coding Clubs</span><span class="phd-tag">Robotics Club</span>
+            <span class="phd-tag">Entrepreneurship Cell</span><span class="phd-tag">Literary Society</span>
+            <span class="phd-tag">Cultural Clubs</span><span class="phd-tag">Sports Clubs</span>
+            <span class="phd-tag">Innovation Cell</span><span class="phd-tag">NSS</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">Research and Innovation</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Artificial Intelligence Research</span><span class="phd-tag">Data Science Research</span>
+            <span class="phd-tag">Engineering Innovation</span><span class="phd-tag">Startup Incubation Centres</span>
+            <span class="phd-tag">Entrepreneurship Development Cell</span><span class="phd-tag">Patent Development</span>
+            <span class="phd-tag">Industry-Funded Research</span><span class="phd-tag">Skill Development Initiatives</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Actions</div>
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="showToast('🌐','Opening website...')">Visit Official Website</button>
+      <button class="cta-btn cta-outline" onclick="showToast('🤝','Connecting to counsellor...')">Talk to Counsellor</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1997</span></div>
+      <div class="key-val"><span class="k">Former Name</span><span class="v">Punjab Technical University</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v v-gold">State Public</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-green">NAAC Accredited</span></div>
+      <div class="key-val"><span class="k">UGC Recognized</span><span class="v v-green">Yes</span></div>
+      <div class="key-val"><span class="k">AICTE Approved</span><span class="v v-green">Yes</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">78 Acres</span></div>
+      <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v">250+ Institutions</span></div>
+      <div class="key-val"><span class="k">Chancellor</span><span class="v">Governor of Punjab</span></div>
+      <div class="key-val"><span class="k">Website</span><span class="v v-gold">ptu.ac.in</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <thead><tr><th>Course</th><th>Exam</th></tr></thead>
+        <tbody>
+          <tr><td>B.Tech</td><td><span class="tag tag-exam">JEE Main</span></td></tr>
+          <tr><td>B.Arch</td><td><span class="tag tag-exam">NATA</span></td></tr>
+          <tr><td>B.Pharm / Others</td><td><span class="tag tag-exam">Merit Based</span></td></tr>
+          <tr><td>MBA</td><td><span class="tag tag-exam">CMAT / CAT / MAT</span></td></tr>
+          <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE / Merit</span></td></tr>
+          <tr><td>MCA</td><td><span class="tag tag-exam">Graduation Merit</span></td></tr>
+          <tr><td>PhD</td><td><span class="tag tag-exam">Entrance + Interview</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Total)</div>
+      <div class="key-val"><span class="k">B.Tech</span><span class="v v-gold">₹2.5–5 Lakh</span></div>
+      <div class="key-val"><span class="k">BCA / BBA</span><span class="v v-gold">₹1–2 Lakh</span></div>
+      <div class="key-val"><span class="k">B.Pharm</span><span class="v v-gold">₹3–5 Lakh</span></div>
+      <div class="key-val"><span class="k">B.Arch</span><span class="v v-gold">₹4–6 Lakh</span></div>
+      <div class="key-val"><span class="k">BHMCT</span><span class="v v-gold">₹2–4 Lakh</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹1–3 Lakh</span></div>
+      <div class="key-val"><span class="k">MCA / M.Tech</span><span class="v v-gold">₹1–2 Lakh</span></div>
+      <div class="key-val"><span class="k">M.Pharm</span><span class="v v-gold">₹1–3 Lakh</span></div>
+      <div class="key-val"><span class="k">M.Sc</span><span class="v v-gold">₹50K–1.5 Lakh</span></div>
+      <div class="key-val"><span class="k">Hostel / yr</span><span class="v v-gold">₹20,000–₹50,000</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Top Recruiters</span><span class="v v-green">TCS, Infosys, IBM, Amazon</span></div>
+      <div class="key-val"><span class="k">Top Sectors</span><span class="v">IT, Management, Pharma</span></div>
+      <div class="key-val"><span class="k">Internships</span><span class="v v-green">Available</span></div>
+      <div class="key-val"><span class="k">Industry Tie-Ups</span><span class="v">Extensive</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<!-- Logout Modal -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <h3>Log out?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var shortlisted = false;
+  var toastTimer;
+
+  function switchTab(idx, el) {
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    el.classList.add('active');
+    document.getElementById('panel-' + idx).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    var badge   = document.getElementById('shortlistBadge');
+    var navBtn  = document.getElementById('navShortlistBtn');
+    var sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(function(){ badge.classList.remove('pop'); }, 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      sideBtn.classList.add('added');
+      sideBtn.textContent = 'Shortlisted ✓';
+      showToast('✅','IKGPTU added to your shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = 'Add to Shortlist';
+      showToast('❌','Removed from shortlist');
+    }
+  }
+
+  function showToast(icon, msg) {
+    var t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, label) {
+    document.querySelectorAll('.stream-opt').forEach(function(o){ o.classList.remove('active'); });
+    el.classList.add('active');
+    document.getElementById('streamLabel').textContent = label;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast('🎓','Stream switched to ' + label);
+  }
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      document.getElementById('streamDropdown').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
