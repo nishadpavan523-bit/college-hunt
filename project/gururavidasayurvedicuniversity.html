@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guru Ravidas Ayurved University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+@media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        🌿 <span id="streamLabel">AYUSH &amp; Medical</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'AYUSH &amp; Medical','🌿')">🌿 AYUSH &amp; Medical</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Guru Ravidas Ayurved University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🌿</div>
+    <div class="uni-title">
+      <h1>Guru Ravidas <span>Ayurved University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Kharkan, Hoshiarpur, Punjab</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Government University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2011</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://graupunjab.org/','_blank')" title="Open official website">🌐 <strong>graupunjab.org ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Recognition</span>
+      <span class="value">UGC Approved</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">University Type</span>
+      <span class="value">State Govt.</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Specialization</span>
+      <span class="value">AYUSH</span>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Scholarships</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<div class="content-wrap">
+  <div>
+
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2011</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Government University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Hoshiarpur, Punjab</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC Approved</div></div>
+          <div class="info-chip"><div class="lbl">Specialization</div><div class="val">AYUSH Sciences</div></div>
+          <div class="info-chip"><div class="lbl">Courses Offered</div><div class="val">UG, PG, PhD</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About GRAU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Guru Ravidas Ayurved University (GRAU), established by the <strong style="color:var(--white);">Government of Punjab in 2011</strong>, is located at Kharkan, Una Road, Hoshiarpur, Punjab. Recognised by the <strong style="color:var(--white);">University Grants Commission (UGC)</strong>, GRAU functions as the affiliating and regulatory authority for Ayurvedic, Homoeopathic and Unani colleges across Punjab. It is one of the few specialized <strong style="color:var(--white);">AYUSH universities in North India</strong> dedicated to promoting and regulating quality AYUSH education. The university operates under the chancellorship of the <strong style="color:var(--white);">Governor of Punjab</strong> and covers disciplines of <strong style="color:var(--white);">Ayurveda, Homoeopathy and Unani</strong> at UG, PG and PhD levels through affiliated colleges statewide.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">💻</div>Digital Resources</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>Herbal Garden</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Facilities</div>
+          <div class="fac-item"><div class="fac-icon">🎤</div>Seminar Halls</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi Campus</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess Facility</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Room</div>
+          <div class="hostel-item"><span class="hostel-icon">🛋️</span> Common Room</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">💧</span> Clean Drinking Water</div>
+          <div class="hostel-item"><span class="hostel-icon">🎮</span> Recreation</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees (Approx):</span>
+          <span style="color:var(--muted);"> Hostel Rent: ₹10,000–40,000/year &nbsp;|&nbsp; Security Deposit: Refundable &nbsp;|&nbsp; Mess Charges: Extra &nbsp;|&nbsp; Electricity &amp; Maintenance: As Applicable</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+        <div class="course-block">
+          <span class="course-type-label">Ayurveda · 5.5 Years · NEET UG</span>
+          <div class="course-row">
+            <div class="course-name">BAMS – Bachelor of Ayurvedic Medicine and Surgery</div>
+            <div class="course-meta"><strong>NEET UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3.5–8 lakh total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB &amp; English · Admission via NEET-UG + Punjab AYUSH Counselling · Competition: Very High</div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Homoeopathy · 5.5 Years · NEET UG</span>
+          <div class="course-row">
+            <div class="course-name">BHMS – Bachelor of Homoeopathic Medicine and Surgery</div>
+            <div class="course-meta"><strong>NEET UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹3.5–8 lakh total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB &amp; English · Admission via NEET-UG + Counselling · Competition: High</div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Unani · 5.5 Years · NEET UG</span>
+          <div class="course-row">
+            <div class="course-name">BUMS – Bachelor of Unani Medicine and Surgery</div>
+            <div class="course-meta"><strong>NEET UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5.5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹4–5.5 lakh total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB &amp; English · Admission via NEET-UG + Counselling · Competition: Moderate</div>
+        </div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:8px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">UG Admission Note</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">10+2 with Physics, Chemistry, Biology &amp; English</span></div>
+          <div class="key-val"><span class="k">Entrance Exam</span><span class="v">NEET-UG (Mandatory)</span></div>
+          <div class="key-val" style="border:none"><span class="k">Admission Route</span><span class="v">Punjab AYUSH Counselling</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+        <div class="course-block">
+          <span class="course-type-label">MD Ayurveda · 3 Years · AIAPGET</span>
+          <div class="course-row">
+            <div class="course-name">MD (Ayurveda) – Various Specializations</div>
+            <div class="course-meta"><strong>AIAPGET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹4.5–19 lakh total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: BAMS Degree · Admission via AIAPGET Counselling · Fee varies by college &amp; specialization</div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">MD Homoeopathy · 3 Years · AIAPGET</span>
+          <div class="course-row">
+            <div class="course-name">MD (Homoeopathy) – Various Specializations</div>
+            <div class="course-meta"><strong>AIAPGET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹4–15 lakh total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: BHMS Degree · Admission via AIAPGET Counselling · Fee varies by specialization</div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Other AYUSH Specializations · NCISM / NCH Approved</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Various Ayurveda PG Specializations</span>
+            <span class="phd-tag">Various Homoeopathy PG Specializations</span>
+            <span class="phd-tag">NCISM Approved Programs</span>
+            <span class="phd-tag">NCH Approved Programs</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Approved by the National Commission for Indian System of Medicine (NCISM) and National Commission for Homoeopathy (NCH)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Ayurveda &amp; Allied AYUSH Disciplines</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Ayurveda</span>
+            <span class="phd-tag">Ayurvedic Clinical Research</span>
+            <span class="phd-tag">Ayurvedic Pharmacology</span>
+            <span class="phd-tag">Allied AYUSH Disciplines</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">PhD Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree in Relevant Discipline</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">55% Marks</span></div>
+          <div class="key-val"><span class="k">Admission Process</span><span class="v">Entrance Test + Interview</span></div>
+          <div class="key-val" style="border:none"><span class="k">Relaxation</span><span class="v">As per UGC / Punjab Govt. Norms</span></div>
+        </div>
+        <div style="margin-top:14px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:10px;">PhD Fee Structure (Approximate)</div>
+          <div class="key-val"><span class="k">Registration Fee</span><span class="v v-gold">₹5,000 – ₹15,000</span></div>
+          <div class="key-val"><span class="k">Annual Research Fee</span><span class="v v-gold">₹15,000 – ₹40,000</span></div>
+          <div class="key-val" style="border:none"><span class="k">Thesis Evaluation Fee</span><span class="v v-gold">As Applicable</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:#63b3ed;font-weight:600;">Notifications:</span>
+          <span style="color:var(--muted);"> The university regularly releases PhD admission notifications and conducts entrance examinations and interviews for research programs in AYUSH disciplines.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (UG)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Qualify NEET-UG</div>
+            <div class="tl-desc">Appear and qualify in NEET-UG, the mandatory national entrance exam for BAMS, BHMS, and BUMS admissions in all affiliated colleges.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register for Punjab AYUSH Counselling</div>
+            <div class="tl-desc">Register on the official state counselling portal and fill the online application form with required course preferences.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Upload Required Documents</div>
+            <div class="tl-desc">Upload mandatory documents: 10th &amp; 12th marksheets, NEET scorecard, transfer certificate, character certificate, domicile certificate, category certificate (if applicable), Aadhaar card, and photographs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Participate in Counselling Rounds</div>
+            <div class="tl-desc">Attend counselling rounds based on NEET merit rank. Choose preferred colleges from affiliated AYUSH colleges across Punjab.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Seat Allotment, Fee Payment &amp; Reporting</div>
+            <div class="tl-desc">Accept allotted seat, pay the required fees online, and report to the college with all original documents for final admission confirmation.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (PG)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Qualify AIAPGET</div>
+            <div class="tl-desc">Appear for the All India AYUSH Post Graduate Entrance Test (AIAPGET), the mandatory national entrance exam for MD Ayurveda and MD Homoeopathy.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Participate in Counselling</div>
+            <div class="tl-desc">Participate in AIAPGET counselling for seat allotment in PG programs at affiliated AYUSH colleges under GRAU.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Document Verification</div>
+            <div class="tl-desc">Submit UG degree certificate, internship completion certificate, AIAPGET scorecard, registration certificate, and identity proof for verification.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Fee Submission &amp; Admission Confirmation</div>
+            <div class="tl-desc">Complete fee payment and confirm admission at the allotted institution within the stipulated deadline.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">BAMS / BHMS / BUMS (UG)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NEET UG</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MD Ayurveda / MD Homoeopathy (PG)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">AIAPGET</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">University Entrance Test</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off Trends</div>
+        <div class="course-row">
+          <div class="course-name">BAMS</div>
+          <div></div><div></div>
+          <span class="tag" style="background:rgba(245,101,101,0.15);color:#fc8181;border:1px solid rgba(245,101,101,0.3);">Very High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">BHMS</div>
+          <div></div><div></div>
+          <span class="tag" style="background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid var(--border);">High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">BUMS</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Moderate</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MD Ayurveda</div>
+          <div></div><div></div>
+          <span class="tag" style="background:rgba(245,101,101,0.15);color:#fc8181;border:1px solid rgba(245,101,101,0.3);">Very High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MD Homoeopathy</div>
+          <div></div><div></div>
+          <span class="tag" style="background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid var(--border);">High</span>
+        </div>
+        <div style="font-size:0.73rem;color:var(--muted);margin-top:10px;">Admission is primarily based on NEET-UG and AIAPGET merit ranks. Government colleges generally require higher scores than private affiliated institutions.</div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Government Scholarships</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">SC Scholarships</span>
+          <span class="recruiter-tag">ST Scholarships</span>
+          <span class="recruiter-tag">OBC Scholarships</span>
+          <span class="recruiter-tag">EWS Scholarships</span>
+          <span class="recruiter-tag">Post-Matric Scholarships</span>
+          <span class="recruiter-tag">Punjab Government Scholarships</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Research Fellowships</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">UGC-NET JRF</span>
+          <span class="recruiter-tag">AYUSH Research Fellowships</span>
+          <span class="recruiter-tag">State Government Fellowships</span>
+        </div>
+        <div style="margin-top:14px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Fellowship Note:</span>
+          <span style="color:var(--muted);"> UGC-NET JRF holders receive standard national payouts. AYUSH Research Fellowships are available for PhD scholars in AYUSH disciplines. State government fellowships are awarded based on merit and category norms as prescribed by the Punjab Government.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+        <div class="campus-section">
+          <div class="campus-section-title">🌿 Academic &amp; Research Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research Symposium</strong> — Annual events showcasing innovations in AYUSH disciplines and traditional medicine sciences</div></div>
+            <div class="event-item"><span class="event-icon">🌱</span><div><strong>Herbal Garden Programme</strong> — Hands-on learning with medicinal plants and Ayurvedic herbs cultivated on campus</div></div>
+            <div class="event-item"><span class="event-icon">⚕️</span><div><strong>Health Camps</strong> — Community outreach health awareness drives organised by AYUSH students and faculty</div></div>
+            <div class="event-item"><span class="event-icon">🎤</span><div><strong>Seminars &amp; Workshops</strong> — Regular academic events, guest lectures, and workshops in AYUSH and allied sciences</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony for graduating students across all AYUSH programs</div></div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga Centre</div>
+            <div class="fac-item"><div class="fac-icon">🎮</div>Recreation Zone</div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Welfare &amp; Clubs</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Student Welfare Cell</span>
+            <span class="phd-tag">AYUSH Society</span>
+            <span class="phd-tag">NSS</span>
+            <span class="phd-tag">Literary Club</span>
+            <span class="phd-tag">Cultural Committee</span>
+            <span class="phd-tag">Sports Committee</span>
+            <span class="phd-tag">Research Club</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://graupunjab.org/','_blank')">🌐 Visit Official Website</button>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">GRAU</span></div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2011</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">State Government University</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v v-gold">UGC Approved</span></div>
+      <div class="key-val"><span class="k">Affiliation</span><span class="v">AYUSH Education, Punjab</span></div>
+      <div class="key-val"><span class="k">Chancellor</span><span class="v">Governor of Punjab</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Hoshiarpur, Punjab</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>BAMS / BHMS / BUMS</td><td><span class="tag tag-exam">NEET UG</span></td></tr>
+        <tr><td>MD Ayurveda</td><td><span class="tag tag-exam">AIAPGET</span></td></tr>
+        <tr><td>MD Homoeopathy</td><td><span class="tag tag-exam">AIAPGET</span></td></tr>
+        <tr><td>PhD Programs</td><td><span class="tag tag-exam">University Entrance</span></td></tr>
+      </table>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">BAMS (Total)</span><span class="v v-gold">₹3.5 – ₹8 lakh</span></div>
+      <div class="key-val"><span class="k">BHMS (Total)</span><span class="v v-gold">₹3.5 – ₹8 lakh</span></div>
+      <div class="key-val"><span class="k">BUMS (Total)</span><span class="v v-gold">₹4 – ₹5.5 lakh</span></div>
+      <div class="key-val"><span class="k">MD Ayurveda (Total)</span><span class="v v-gold">₹4.5 – ₹19 lakh</span></div>
+      <div class="key-val"><span class="k">MD Homoeopathy (Total)</span><span class="v v-gold">₹4 – ₹15 lakh</span></div>
+      <div class="key-val"><span class="k">PhD Registration</span><span class="v v-gold">₹5,000 – ₹15,000</span></div>
+      <div class="key-val"><span class="k">PhD Annual Fee</span><span class="v v-gold">₹15,000 – ₹40,000</span></div>
+      <div class="key-val"><span class="k">Hostel Rent/yr</span><span class="v v-gold">₹10,000 – ₹40,000</span></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cut-Off Snapshot</div>
+      <div class="key-val"><span class="k">BAMS</span><span class="v" style="color:#fc8181;">Very High</span></div>
+      <div class="key-val"><span class="k">BHMS</span><span class="v" style="color:var(--gold);">High</span></div>
+      <div class="key-val"><span class="k">BUMS</span><span class="v" style="color:#63b3ed;">Moderate</span></div>
+      <div class="key-val"><span class="k">MD Ayurveda</span><span class="v" style="color:#fc8181;">Very High</span></div>
+      <div class="key-val"><span class="k">MD Homoeopathy</span><span class="v" style="color:var(--gold);">High</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge = document.getElementById('shortlistBadge');
+    const navBtn = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'GRAU added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+  function openLogout() { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

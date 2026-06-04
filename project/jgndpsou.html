@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>JGND PSOU – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* ── RECRUITERS ── */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* ── PhD LIST ── */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── ADMISSIONS TAB ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* ── PLACEMENTS TAB ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ── CAMPUS LIFE TAB ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  /* ── SCHOLARSHIP GRID ── */
+  .scholarship-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .scholarship-item {
+    background: rgba(72,187,120,0.07);
+    border: 1px solid rgba(72,187,120,0.18);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .scholarship-item::before { content: '🎓'; font-size: 0.9rem; }
+
+  @media (max-width: 900px) {
+    .content-wrap { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .hero { padding: 24px 20px; }
+    .hero::before, .hero::after { display: none; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    .scholarship-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 16px; }
+    .nav-right { gap: 6px; }
+    .nav-btn { padding: 5px 10px; font-size: 0.72rem; }
+  }
+  @media (max-width: 480px) {
+    .uni-title h1 { font-size: 1.2rem; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .hostel-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr; }
+    .course-row { grid-template-columns: 1fr; gap: 6px; }
+    .content-wrap { padding: 20px 14px; }
+    .card { padding: 16px; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Arts &amp; Humanities</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    JGND PSOU
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">📘</div>
+    <div class="uni-title">
+      <h1>Jagat Guru Nanak Dev <span>Punjab State Open University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Patiala, Punjab</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Open University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2019</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.psou.ac.in/','_blank')" title="Open official website">🌐 <strong>psou.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Recognition</span>
+      <span class="value">UGC 2(f)</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Mode</span>
+      <span class="value">ODL / Online</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Schools</span>
+      <span class="value">6 Schools</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Scholarships</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2019</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Open University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Patiala, Punjab</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC 2(f) &amp; 12(B)</div></div>
+          <div class="info-chip"><div class="lbl">Mode</div><div class="val">ODL &amp; Online</div></div>
+          <div class="info-chip"><div class="lbl">Schools</div><div class="val">6 Schools of Study</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About JGND PSOU</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Jagat Guru Nanak Dev Punjab State Open University (JGND PSOU) is the <strong style="color:var(--white);">first State Open University of Punjab</strong>, established in 2019 under Punjab State Legislature Act No. 19 of 2019. Recognised by the University Grants Commission under Sections 2(f) and 12(B), the university was founded to provide <strong style="color:var(--white);">accessible, flexible, and affordable higher education</strong> through Open and Distance Learning (ODL) and online modes. The university particularly focuses on reaching learners in rural areas, working professionals, women, differently-abled learners, and other underserved groups across Punjab and beyond.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>E-Library</div>
+          <div class="fac-item"><div class="fac-icon">💻</div>Digital Learning Platform</div>
+          <div class="fac-item"><div class="fac-icon">📖</div>Online Study Material</div>
+          <div class="fac-item"><div class="fac-icon">🏢</div>Learner Support Centres</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Facilities</div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>Academic Counselling</div>
+          <div class="fac-item"><div class="fac-icon">👩‍🏫</div>Faculty Support System</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Online Admission Portal</div>
+          <div class="fac-item"><div class="fac-icon">🤝</div>Student Support Services</div>
+        </div>
+        <div style="margin-top:16px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">Note on Hostel:</span>
+          <span style="color:var(--muted);"> As JGND PSOU operates primarily through Open &amp; Distance Learning, regular residential hostel facilities are generally not a major component. Students study via learner support centres and online resources. Verify current arrangements directly with the university before admission.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Schools of Study</div>
+        <div class="grid-2">
+          <div class="info-chip"><div class="lbl">School 1</div><div class="val">Languages</div></div>
+          <div class="info-chip"><div class="lbl">School 2</div><div class="val">Business Management &amp; Commerce</div></div>
+          <div class="info-chip"><div class="lbl">School 3</div><div class="val">Social Sciences &amp; Liberal Arts</div></div>
+          <div class="info-chip"><div class="lbl">School 4</div><div class="val">Sciences &amp; Emerging Technologies</div></div>
+          <div class="info-chip"><div class="lbl">School 5</div><div class="val">Education &amp; Vocational Studies</div></div>
+          <div class="info-chip"><div class="lbl">School 6</div><div class="val">Religious Studies</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">Undergraduate Degree Programmes · Merit Based</span>
+          <div class="course-row">
+            <div class="course-name">Bachelor of Arts (BA)</div>
+            <div class="course-meta"><strong>10+2</strong>Eligibility</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BCA (Honours) — with Mathematics Preferred</div>
+            <div class="course-meta"><strong>10+2</strong>Eligibility</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,500/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Com (Honours) — Accounting &amp; Taxation</div>
+            <div class="course-meta"><strong>10+2</strong>Eligibility</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,500/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. Data Sciences — Science Stream Preferred</div>
+            <div class="course-meta"><strong>10+2 Sci</strong>Eligibility</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,500/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Com Digital</div>
+            <div class="course-meta"><strong>10+2</strong>Eligibility</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">Merit</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. Liberal Arts</div>
+            <div class="course-meta"><strong>10+2</strong>Eligibility</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000/sem</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">All UG admissions are merit/eligibility based · No entrance exam required · ODL mode of study</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Diploma &amp; Certificate · Short-Term Programmes</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Law and Artificial Intelligence</span>
+            <span class="phd-tag">Public Policy and Governance</span>
+            <span class="phd-tag">Human Rights and Duties</span>
+            <span class="phd-tag">Library and Information Science</span>
+            <span class="phd-tag">Police Administration</span>
+            <span class="phd-tag">Forensic Sciences</span>
+            <span class="phd-tag">Women and Gender Studies</span>
+            <span class="phd-tag">Software Development &amp; Programming</span>
+            <span class="phd-tag">Mobile Application Development</span>
+            <span class="phd-tag">Web Application Development</span>
+            <span class="phd-tag">Retail and Sales Management</span>
+            <span class="phd-tag">Sikh Theology</span>
+            <span class="phd-tag">International Humanitarian Law</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility and duration vary by programme · Available through ODL/Online modes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. · 2 Years · Merit Based</span>
+          <div class="course-row">
+            <div class="course-name">M.Sc. Computer Science</div>
+            <div class="course-meta"><strong>B.Sc. / BCA</strong>Eligibility</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹7,250/sem</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Bachelor's Degree in relevant field with min. 50% marks · Merit based admission</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Com / MBA · 2 Years · Merit Based</span>
+          <div class="course-row">
+            <div class="course-name">M.Com (Master of Commerce)</div>
+            <div class="course-meta"><strong>B.Com</strong>Eligibility</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,750/sem</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: B.Com or equivalent with min. 50% marks · Merit based admission</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.A. Programmes · 2 Years · ₹5,000/sem</span>
+          <div class="course-row">
+            <div class="course-name">M.A. English</div>
+            <div class="course-meta"><strong>Bachelor's</strong>Eligibility</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Punjabi</div>
+            <div class="course-meta"><strong>Bachelor's</strong>Eligibility</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.A. Economics</div>
+            <div class="course-meta"><strong>Bachelor's</strong>Eligibility</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000/sem</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Bachelor's Degree in any field with min. 50% marks · All programmes through ODL/Online mode</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programmes</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Languages &amp; Literature</div>
+          <div class="phd-tags">
+            <span class="phd-tag">English</span>
+            <span class="phd-tag">Punjabi</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce &amp; Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Commerce</span>
+            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Social Sciences</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Sciences &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Computer Science</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Humanities &amp; Other Disciplines</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Religious Studies</span>
+            <span class="phd-tag">Education</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Selection Process</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree in Relevant Subject</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">55% or equivalent grade</span></div>
+          <div class="key-val"><span class="k">Relaxation</span><span class="v">As per UGC Regulations</span></div>
+          <div class="key-val"><span class="k">Selection Process</span><span class="v">Entrance Test + Interview + Document Verification</span></div>
+          <div class="key-val"><span class="k">Fee — Registration</span><span class="v">As per University Notification</span></div>
+          <div class="key-val"><span class="k">Fee — Research</span><span class="v">Semester-wise (notified annually)</span></div>
+          <div class="key-val" style="border:none"><span class="k">Thesis Evaluation</span><span class="v">Separate fee applicable</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">NET/JRF Holders:</span>
+          <span style="color:var(--muted);"> Candidates qualified in UGC-NET/JRF are eligible for relaxation/exemptions as per UGC norms. NET/JRF certificate must be submitted during document verification.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (UG / PG)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Visit the University Admission Portal</div>
+            <div class="tl-desc">Navigate to the official admission portal at psou.ac.in and create your applicant account with a valid email and phone number.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Complete Online Registration</div>
+            <div class="tl-desc">Fill in the online application form with your personal, academic, and category details as required.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Upload Required Documents</div>
+            <div class="tl-desc">Upload scanned copies of marksheets, degree certificates, identity proof (Aadhaar), passport photographs, and category certificates (if applicable).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Pay Admission Fees Online</div>
+            <div class="tl-desc">Submit the applicable semester-wise admission fee through the online payment gateway on the portal.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Submit Application &amp; Verification</div>
+            <div class="tl-desc">Submit the completed application for university-side verification. Admission confirmation is issued upon successful document review.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (PhD)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Apply Online</div>
+            <div class="tl-desc">Register on the university's PhD admission portal and submit your application along with the research proposal.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Appear for Entrance Test</div>
+            <div class="tl-desc">Appear for the university-conducted PhD Entrance Test. NET/JRF certificate holders may be eligible for relaxation.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Personal Interview</div>
+            <div class="tl-desc">Attend the interview round conducted by the respective school's research committee.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification &amp; Fee Submission</div>
+            <div class="tl-desc">Submit Master's degree certificates, mark sheets, research proposal, category certificate, and NET/JRF certificate (if applicable). Pay the applicable research fees.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Documents Required</div>
+        <div class="grid-3">
+          <div>
+            <div style="font-size:0.72rem;font-weight:600;color:var(--gold);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">UG Admissions</div>
+            <div class="phd-tags" style="flex-direction:column;">
+              <span class="phd-tag">10th Marksheet</span>
+              <span class="phd-tag">12th Marksheet</span>
+              <span class="phd-tag">Aadhaar Card</span>
+              <span class="phd-tag">Passport Photos</span>
+              <span class="phd-tag">Category Certificate</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;font-weight:600;color:var(--gold);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">PG Admissions</div>
+            <div class="phd-tags" style="flex-direction:column;">
+              <span class="phd-tag">Graduation Marksheet</span>
+              <span class="phd-tag">Degree Certificate</span>
+              <span class="phd-tag">Identity Proof</span>
+              <span class="phd-tag">Category Certificate</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;font-weight:600;color:var(--gold);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">PhD Admissions</div>
+            <div class="phd-tags" style="flex-direction:column;">
+              <span class="phd-tag">Master's Certificate</span>
+              <span class="phd-tag">Master's Marksheets</span>
+              <span class="phd-tag">Research Proposal</span>
+              <span class="phd-tag">Category Certificate</span>
+              <span class="phd-tag">NET/JRF Certificate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: SCHOLARSHIPS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Assistance</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;margin-bottom:18px;">
+          JGND PSOU, being a state open university committed to inclusivity, facilitates access to a wide range of government scholarships for eligible learners. Students can avail financial support from the Punjab Government and central scholarship schemes by applying through respective portals.
+        </p>
+        <div class="scholarship-grid">
+          <div class="scholarship-item">Punjab Government Scholarships</div>
+          <div class="scholarship-item">SC Scholarships</div>
+          <div class="scholarship-item">ST Scholarships</div>
+          <div class="scholarship-item">OBC Scholarships</div>
+          <div class="scholarship-item">EWS Scholarships</div>
+          <div class="scholarship-item">Minority Scholarships</div>
+          <div class="scholarship-item">Post-Matric Scholarships</div>
+          <div class="scholarship-item">Differently-Abled Learners</div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">How to Apply:</span>
+          <span style="color:var(--muted);"> Eligible students should apply through the National Scholarship Portal (NSP) or the Punjab Scholarship Portal at the time of admission. Category certificates are mandatory for scholarship applications.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Student Life &amp; Support</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Academic Support &amp; Programmes</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">💻</span><div><strong>Digital Learning Platform</strong> — Comprehensive online portal with recorded lectures, study material, and live sessions</div></div>
+            <div class="event-item"><span class="event-icon">📚</span><div><strong>E-Library Access</strong> — Digital library with journals, e-books, and research databases for all enrolled learners</div></div>
+            <div class="event-item"><span class="event-icon">🏢</span><div><strong>Learner Support Centres</strong> — Extensive network of support centres across Punjab for in-person academic assistance</div></div>
+            <div class="event-item"><span class="event-icon">🎓</span><div><strong>Academic Counselling</strong> — Dedicated counsellors available to guide students on course selection and career pathways</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research Facilities</strong> — PhD scholars have access to research infrastructure and faculty mentorship</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🌟 University Mission &amp; Focus Groups</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">👩</div>Women Learners</div>
+            <div class="fac-item"><div class="fac-icon">💼</div>Working Professionals</div>
+            <div class="fac-item"><div class="fac-icon">🏘️</div>Rural Learners</div>
+            <div class="fac-item"><div class="fac-icon">♿</div>Differently-Abled</div>
+            <div class="fac-item"><div class="fac-icon">📍</div>Underserved Groups</div>
+            <div class="fac-item"><div class="fac-icon">🌐</div>Online Learners</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">📋 Medium of Instruction</div>
+          <div class="phd-tags">
+            <span class="phd-tag">English</span>
+            <span class="phd-tag">Punjabi</span>
+            <span class="phd-tag">Other Applicable Languages</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <!-- Quick Action -->
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.psou.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <!-- Key Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2019</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">State Open University</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v v-gold">UGC 2(f) &amp; 12(B)</span></div>
+      <div class="key-val"><span class="k">Mode</span><span class="v">ODL &amp; Online</span></div>
+      <div class="key-val"><span class="k">Schools</span><span class="v">6 Schools of Study</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Patiala, Punjab</span></div>
+    </div>
+
+    <!-- Admission Mode -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Admission Mode</div>
+      <table class="exam-table">
+        <tr><th>Course Type</th><th>Mode</th></tr>
+        <tr><td>All UG Courses</td><td><span class="tag tag-exam">Merit Based</span></td></tr>
+        <tr><td>All PG Courses</td><td><span class="tag tag-exam">Merit Based</span></td></tr>
+        <tr><td>Diploma / Certificate</td><td><span class="tag tag-exam">Eligibility</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">Entrance Test</span></td></tr>
+      </table>
+    </div>
+
+    <!-- Approx Fees Summary -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Per Semester)</div>
+      <div class="key-val"><span class="k">BA / B.A. Liberal Arts</span><span class="v v-gold">₹5,000</span></div>
+      <div class="key-val"><span class="k">B.Com (Hons.)</span><span class="v v-gold">₹5,500</span></div>
+      <div class="key-val"><span class="k">BCA (Hons.)</span><span class="v v-gold">₹6,500</span></div>
+      <div class="key-val"><span class="k">B.Sc. Data Sciences</span><span class="v v-gold">₹6,500</span></div>
+      <div class="key-val"><span class="k">M.A. (All Streams)</span><span class="v v-gold">₹5,000</span></div>
+      <div class="key-val"><span class="k">M.Com</span><span class="v v-gold">₹6,750</span></div>
+      <div class="key-val"><span class="k">M.Sc. Computer Science</span><span class="v v-gold">₹7,250</span></div>
+      <div class="key-val"><span class="k">PhD</span><span class="v v-gold">As Notified</span></div>
+    </div>
+
+    <!-- Quick Info -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Info</div>
+      <div class="key-val"><span class="k">First Open Univ.</span><span class="v" style="color:var(--accent-green);">Punjab (2019)</span></div>
+      <div class="key-val"><span class="k">Learner Focus</span><span class="v">Rural, Working, Women</span></div>
+      <div class="key-val"><span class="k">Scholarship Portal</span><span class="v">NSP / Punjab Portal</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  /* ── SHORTLIST STATE ── */
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'JGND PSOU added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  /* ── TABS ── */
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  /* ── STREAM DROPDOWN ── */
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  /* ── LOGOUT MODAL ── */
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
