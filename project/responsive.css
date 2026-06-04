@@ -1,0 +1,41 @@
+/* === RESPONSIVE LOGIN PAGE === */
+* { box-sizing: border-box; }
+
+.login-container {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+/* MOBILE - 700px se neeche */
+@media (max-width: 700px) {
+  .login-container {
+    flex-direction: column !important;
+  }
+  .login-left {
+    padding: 32px 20px 20px !important;
+  }
+  .login-hero-text h2 {
+    font-size: 28px !important;
+  }
+  .login-right {
+    width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid rgba(255,255,255,.07) !important;
+    padding: 24px 16px !important;
+  }
+  .login-card {
+    padding: 24px 20px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* VERY SMALL - 400px se neeche */
+@media (max-width: 400px) {
+  .login-left { padding: 24px 16px 16px !important; }
+  .login-right { padding: 16px 12px !important; }
+  .login-card { padding: 20px 16px !important; }
+  .stats-row { gap: 12px !important; }
+  .brand-name { font-size: 20px !important; }
+}

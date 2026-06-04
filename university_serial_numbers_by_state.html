@@ -1,0 +1,362 @@
+
+<h2 class="sr-only">University serial numbers correctly assigned by state</h2>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 1rem 0; }
+.state-block { margin-bottom: 2rem; }
+.state-header {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 6px 12px;
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--color-background-info);
+  color: var(--color-text-info);
+  padding: 2px 8px;
+  border-radius: var(--border-radius-md);
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  text-align: left;
+  padding: 6px 10px;
+  color: var(--color-text-secondary);
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  font-weight: 500;
+}
+td {
+  padding: 7px 10px;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  color: var(--color-text-primary);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+.sno {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  width: 48px;
+}
+.old-id {
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.name { font-weight: 500; }
+.type-badge {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: var(--border-radius-md);
+  white-space: nowrap;
+}
+.t-central { background: var(--color-background-info); color: var(--color-text-info); }
+.t-govt { background: var(--color-background-success); color: var(--color-text-success); }
+.t-private { background: var(--color-background-warning); color: var(--color-text-warning); }
+.t-deemed { background: #F4C0D1; color: #72243E; }
+.t-other { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.note { font-size: 12px; color: var(--color-text-tertiary); }
+</style>
+
+<div class="wrap">
+  <div id="content"></div>
+</div>
+
+<script>
+const raw = [
+  {state:'Punjab',name:'Panjab University',city:'Chandigarh',type:'Government',oldId:1},
+  {state:'Punjab',name:'Guru Nanak Dev University',city:'Amritsar',type:'Government',oldId:2},
+  {state:'Punjab',name:'Thapar Institute of Engineering & Technology',city:'Patiala',type:'Deemed',oldId:3},
+  {state:'Punjab',name:'Lovely Professional University',city:'Phagwara',type:'Private',oldId:4},
+  {state:'Punjab',name:'Chandigarh University',city:'Mohali',type:'Private',oldId:5},
+  {state:'Punjab',name:'IIT Ropar',city:'Rupnagar',type:'Central',oldId:6},
+  {state:'Punjab',name:'NIT Jalandhar',city:'Jalandhar',type:'Central',oldId:7},
+  {state:'Punjab',name:'Punjabi University',city:'Patiala',type:'Government',oldId:8},
+  {state:'Punjab',name:'Chitkara University',city:'Rajpura',type:'Private',oldId:9},
+  {state:'Punjab',name:'DAV University',city:'Jalandhar',type:'Private',oldId:10},
+  {state:'Punjab',name:'Central University of Punjab',city:'Bathinda',type:'Central',oldId:11},
+  {state:'Punjab',name:'Amity University Punjab',city:'Mohali',type:'Private',oldId:12},
+  {state:'Punjab',name:'GNA University',city:'Phagwara',type:'Private',oldId:13},
+  {state:'Punjab',name:'Punjab Agricultural University',city:'Ludhiana',type:'Government',oldId:14},
+  {state:'Punjab',name:'Baba Farid University of Health Sciences',city:'Faridkot',type:'Government',oldId:15},
+  {state:'Punjab',name:'Rayat Bahra University',city:'Mohali',type:'Private',oldId:16},
+  {state:'Punjab',name:'Sri Guru Ram Dass University of Health Sciences',city:'Amritsar',type:'Government',oldId:17},
+  {state:'Punjab',name:'Adesh University',city:'Bathinda',type:'Private',oldId:18},
+  {state:'Punjab',name:'Eternal University',city:'Sirmour',type:'Private',oldId:19},
+  {state:'Punjab',name:'UIET Panjab University',city:'Chandigarh',type:'Government',oldId:20},
+  {state:'Punjab',name:'Sri Guru Granth Sahib World University',city:'Fatehgarh Sahib',type:'Government',oldId:21},
+  {state:'Punjab',name:'IK Gujral Punjab Technical University',city:'Jalandhar',type:'Government',oldId:22},
+  {state:'Punjab',name:'RIMT University',city:'Fatehgarh Sahib',type:'Private',oldId:23},
+  {state:'Punjab',name:'Khalsa College',city:'Amritsar',type:'Government-Aided',oldId:24},
+  {state:'Punjab',name:'CT University',city:'Ludhiana',type:'Private',oldId:25},
+  {state:'Punjab',name:'Guru Angad Dev Veterinary and Animal Sciences University',city:'Ludhiana',type:'State',oldId:114},
+  {state:'Punjab',name:'Akal University',city:'Talwandi Sabo',type:'Private',oldId:133},
+
+  {state:'Haryana',name:'Kurukshetra University',city:'Kurukshetra',type:'Government',oldId:26},
+  {state:'Haryana',name:'Maharishi Dayanand University',city:'Rohtak',type:'Government',oldId:27},
+  {state:'Haryana',name:'Guru Jambheshwar University of Science & Tech',city:'Hisar',type:'Government',oldId:28},
+  {state:'Haryana',name:'NIT Kurukshetra',city:'Kurukshetra',type:'Central',oldId:29},
+  {state:'Haryana',name:'Ashoka University',city:'Sonipat',type:'Private',oldId:30},
+  {state:'Haryana',name:'O.P. Jindal Global University',city:'Sonipat',type:'Private',oldId:31},
+  {state:'Haryana',name:'Manav Rachna University',city:'Faridabad',type:'Private',oldId:32},
+  {state:'Haryana',name:'MM University Mullana',city:'Ambala',type:'Private',oldId:33},
+  {state:'Haryana',name:'YMCA University of Science & Technology',city:'Faridabad',type:'Government',oldId:34},
+  {state:'Haryana',name:'Chaudhary Devi Lal University',city:'Sirsa',type:'Government',oldId:35},
+  {state:'Haryana',name:'GD Goenka University',city:'Gurugram',type:'Private',oldId:36},
+  {state:'Haryana',name:'The NorthCap University',city:'Gurugram',type:'Private',oldId:37},
+  {state:'Haryana',name:'Lingayas Vidyapeeth',city:'Faridabad',type:'Private',oldId:38},
+  {state:'Haryana',name:'Amity University Haryana',city:'Gurugram',type:'Private',oldId:39},
+  {state:'Haryana',name:'SRM University Haryana',city:'Sonipat',type:'Private',oldId:40},
+  {state:'Haryana',name:'Starex University',city:'Gurugram',type:'Private',oldId:41},
+  {state:'Haryana',name:'Bhagat Phool Singh Mahila Vishwavidyalaya',city:'Sonipat',type:'Government',oldId:42},
+  {state:'Haryana',name:'Central University of Haryana',city:'Mahendergarh',type:'Central',oldId:43},
+  {state:'Haryana',name:'Deenbandhu Chhotu Ram University',city:'Murthal',type:'Government',oldId:44},
+  {state:'Haryana',name:'CCS Haryana Agricultural University',city:'Hisar',type:'Government',oldId:45},
+  {state:'Haryana',name:'NIFTEM Sonipat',city:'Sonipat',type:'Central',oldId:46},
+  {state:'Haryana',name:'Indira Gandhi University',city:'Meerpur',type:'Government',oldId:47},
+  {state:'Haryana',name:'MRIIRS University',city:'Faridabad',type:'Private',oldId:48},
+  {state:'Haryana',name:'SGT University',city:'Gurugram',type:'Private',oldId:49},
+  {state:'Haryana',name:'Panipat Institute of Engineering and Technology',city:'Panipat',type:'Private',oldId:50},
+
+  {state:'Uttar Pradesh',name:'University of Allahabad',city:'Prayagraj',type:'Central',oldId:51},
+  {state:'Uttar Pradesh',name:'Banaras Hindu University',city:'Varanasi',type:'Central',oldId:52},
+  {state:'Uttar Pradesh',name:'Aligarh Muslim University',city:'Aligarh',type:'Central',oldId:53},
+  {state:'Uttar Pradesh',name:'University of Lucknow',city:'Lucknow',type:'Government',oldId:54},
+  {state:'Uttar Pradesh',name:'IIT Kanpur',city:'Kanpur',type:'Central',oldId:55},
+  {state:'Uttar Pradesh',name:'IIT (BHU) Varanasi',city:'Varanasi',type:'Central',oldId:56},
+  {state:'Uttar Pradesh',name:'MNNIT Allahabad',city:'Prayagraj',type:'Central',oldId:57},
+  {state:'Uttar Pradesh',name:'Amity University Noida',city:'Noida',type:'Private',oldId:58},
+  {state:'Uttar Pradesh',name:'Sharda University',city:'Greater Noida',type:'Private',oldId:59},
+  {state:'Uttar Pradesh',name:'Galgotias University',city:'Greater Noida',type:'Private',oldId:60},
+  {state:'Uttar Pradesh',name:'HBTU Kanpur',city:'Kanpur',type:'Government',oldId:61},
+  {state:'Uttar Pradesh',name:'Dr. APJ Abdul Kalam Technical University',city:'Lucknow',type:'Government',oldId:62},
+  {state:'Uttar Pradesh',name:'Chaudhary Charan Singh University',city:'Meerut',type:'Government',oldId:63},
+  {state:'Uttar Pradesh',name:'Bundelkhand University',city:'Jhansi',type:'Government',oldId:64},
+  {state:'Uttar Pradesh',name:'Deen Dayal Upadhyaya Gorakhpur University',city:'Gorakhpur',type:'Government',oldId:65},
+  {state:'Uttar Pradesh',name:'King George Medical University',city:'Lucknow',type:'Government',oldId:66},
+  {state:'Uttar Pradesh',name:'Gautam Buddha University',city:'Greater Noida',type:'Government',oldId:67},
+  {state:'Uttar Pradesh',name:'Babu Banarasi Das University',city:'Lucknow',type:'Private',oldId:68},
+  {state:'Uttar Pradesh',name:'Dr. Ram Manohar Lohia Avadh University',city:'Ayodhya',type:'Government',oldId:69},
+  {state:'Uttar Pradesh',name:'Veer Bahadur Singh Purvanchal University',city:'Jaunpur',type:'Government',oldId:70},
+  {state:'Uttar Pradesh',name:'Integral University',city:'Lucknow',type:'Private',oldId:71},
+  {state:'Uttar Pradesh',name:'Mahatma Jyotiba Phule Rohilkhand University',city:'Bareilly',type:'Government',oldId:72},
+  {state:'Uttar Pradesh',name:'Noida International University',city:'Noida',type:'Private',oldId:73},
+  {state:'Uttar Pradesh',name:'Chhatrapati Shahu Ji Maharaj University',city:'Kanpur',type:'Government',oldId:74},
+  {state:'Uttar Pradesh',name:'Sanjay Gandhi Postgraduate Institute',city:'Lucknow',type:'Central',oldId:75},
+  {state:'Uttar Pradesh',name:'Rani Lakshmi Bai Central Agricultural University',city:'Jhansi',type:'Central',oldId:101},
+  {state:'Uttar Pradesh',name:'University of Lucknow (State)',city:'Lucknow',type:'State',oldId:108},
+  {state:'Uttar Pradesh',name:'Dr. A.P.J. Abdul Kalam Technical University',city:'Lucknow',type:'State',oldId:112},
+  {state:'Uttar Pradesh',name:'Babasaheb Bhimrao Ambedkar University',city:'Lucknow',type:'Central',oldId:113},
+
+  {state:'Bihar',name:'Patna University',city:'Patna',type:'Government',oldId:76},
+  {state:'Bihar',name:'Magadh University',city:'Bodh Gaya',type:'Government',oldId:77},
+  {state:'Bihar',name:'NIT Patna',city:'Patna',type:'Central',oldId:78},
+  {state:'Bihar',name:'IIT Patna',city:'Patna',type:'Central',oldId:79},
+  {state:'Bihar',name:'AIIMS Patna',city:'Patna',type:'Central',oldId:80},
+  {state:'Bihar',name:'Central University of South Bihar',city:'Gaya',type:'Central',oldId:81},
+  {state:'Bihar',name:'Nalanda University',city:'Rajgir',type:'Central',oldId:82},
+  {state:'Bihar',name:'Lalit Narayan Mithila University',city:'Darbhanga',type:'Government',oldId:83},
+  {state:'Bihar',name:'BR Ambedkar Bihar University',city:'Muzaffarpur',type:'Government',oldId:84},
+  {state:'Bihar',name:'Aryabhatta Knowledge University',city:'Patna',type:'Government',oldId:85},
+  {state:'Bihar',name:'Bihar Agricultural University',city:'Sabour',type:'Government',oldId:86},
+  {state:'Bihar',name:'Patliputra University',city:'Patna',type:'Government',oldId:87},
+  {state:'Bihar',name:'Veer Kunwar Singh University',city:'Ara',type:'Government',oldId:88},
+  {state:'Bihar',name:'Jai Prakash University',city:'Chapra',type:'Government',oldId:89},
+  {state:'Bihar',name:'Tilka Manjhi Bhagalpur University',city:'Bhagalpur',type:'Government',oldId:90},
+  {state:'Bihar',name:'Munger University',city:'Munger',type:'Government',oldId:91},
+  {state:'Bihar',name:'Purnea University',city:'Purnia',type:'Government',oldId:92},
+  {state:'Bihar',name:'Bhupendra Narayan Mandal University',city:'Madhepura',type:'Government',oldId:93},
+  {state:'Bihar',name:'Kameshwar Singh Darbhanga Sanskrit University',city:'Darbhanga',type:'Government',oldId:94},
+  {state:'Bihar',name:'Chandragupt Institute of Management',city:'Patna',type:'Government',oldId:95},
+  {state:'Bihar',name:'IGIMS Patna',city:'Patna',type:'Government',oldId:96},
+  {state:'Bihar',name:'AN Sinha Institute of Social Studies',city:'Patna',type:'Government',oldId:97},
+  {state:'Bihar',name:'Maulana Mazharul Haque Arabic Persian University',city:'Patna',type:'Government',oldId:98},
+  {state:'Bihar',name:'Babasaheb Bhimrao Ambedkar Bihar University',city:'Muzaffarpur',type:'Government',oldId:99},
+  {state:'Bihar',name:'Darbhanga Medical College & Hospital',city:'Darbhanga',type:'Government',oldId:100},
+  {state:'Bihar',name:'AIIMS Darbhanga',city:'Darbhanga',type:'Institute of National Importance',oldId:123},
+
+  {state:'Delhi',name:'University of Delhi',city:'New Delhi',type:'Central',oldId:201},
+  {state:'Delhi',name:'IIT Delhi',city:'New Delhi',type:'Central',oldId:202},
+  {state:'Delhi',name:'AIIMS Delhi',city:'New Delhi',type:'Central',oldId:203},
+  {state:'Delhi',name:'Delhi Technological University',city:'New Delhi',type:'Government',oldId:204},
+  {state:'Delhi',name:'Indraprastha Institute of Information Technology',city:'New Delhi',type:'Government',oldId:205},
+  {state:'Delhi',name:'Jawaharlal Nehru University',city:'New Delhi',type:'Central',oldId:109},
+  {state:'Delhi',name:'Jamia Millia Islamia',city:'New Delhi',type:'Central',oldId:110},
+  {state:'Delhi',name:'South Asian University',city:'New Delhi',type:'Central',oldId:104},
+  {state:'Delhi',name:'Central Sanskrit University',city:'New Delhi',type:'Central',oldId:105},
+  {state:'Delhi',name:'Shri Lal Bahadur Shastri National Sanskrit University',city:'New Delhi',type:'Central',oldId:124},
+
+  {state:'Rajasthan',name:'IIT Jodhpur',city:'Jodhpur',type:'Central',oldId:206},
+  {state:'Rajasthan',name:'NIT Jaipur (MNIT)',city:'Jaipur',type:'Central',oldId:207},
+  {state:'Rajasthan',name:'University of Rajasthan',city:'Jaipur',type:'Government',oldId:208},
+  {state:'Rajasthan',name:'BITS Pilani',city:'Pilani',type:'Deemed',oldId:209},
+  {state:'Rajasthan',name:'Manipal University Jaipur',city:'Jaipur',type:'Private',oldId:210},
+  {state:'Rajasthan',name:'Rajasthan University of Health Sciences',city:'Jaipur',type:'Government',oldId:211},
+
+  {state:'Madhya Pradesh',name:'IIT Indore',city:'Indore',type:'Central',oldId:212},
+  {state:'Madhya Pradesh',name:'NIT Bhopal',city:'Bhopal',type:'Central',oldId:213},
+  {state:'Madhya Pradesh',name:'Devi Ahilya Vishwavidyalaya',city:'Indore',type:'Government',oldId:214},
+  {state:'Madhya Pradesh',name:'Barkatullah University',city:'Bhopal',type:'Government',oldId:215},
+  {state:'Madhya Pradesh',name:'Indira Gandhi National Tribal University',city:'Amarkantak',type:'Central',oldId:128},
+
+  {state:'Gujarat',name:'IIT Gandhinagar',city:'Gandhinagar',type:'Central',oldId:216},
+  {state:'Gujarat',name:'NIT Surat',city:'Surat',type:'Central',oldId:217},
+  {state:'Gujarat',name:'Gujarat University',city:'Ahmedabad',type:'Government',oldId:218},
+  {state:'Gujarat',name:'Nirma University',city:'Ahmedabad',type:'Deemed',oldId:219},
+  {state:'Gujarat',name:'PDPU Gandhinagar',city:'Gandhinagar',type:'Government',oldId:220},
+
+  {state:'Maharashtra',name:'IIT Bombay',city:'Mumbai',type:'Central',oldId:221},
+  {state:'Maharashtra',name:'University of Mumbai',city:'Mumbai',type:'Government',oldId:222},
+  {state:'Maharashtra',name:'Savitribai Phule Pune University',city:'Pune',type:'Government',oldId:223},
+  {state:'Maharashtra',name:'COEP Technological University',city:'Pune',type:'Government',oldId:224},
+  {state:'Maharashtra',name:'Symbiosis International University',city:'Pune',type:'Deemed',oldId:225},
+  {state:'Maharashtra',name:'NIT Nagpur (VNIT)',city:'Nagpur',type:'Central',oldId:226},
+  {state:'Maharashtra',name:'Amity University Mumbai',city:'Mumbai',type:'Private',oldId:227},
+  {state:'Maharashtra',name:'Chhatrapati Shivaji Maharaj University',city:'Navi Mumbai',type:'Private',oldId:133},
+
+  {state:'Karnataka',name:'IISc Bangalore',city:'Bangalore',type:'Central',oldId:228},
+  {state:'Karnataka',name:'IIT Dharwad',city:'Dharwad',type:'Central',oldId:229},
+  {state:'Karnataka',name:'Bangalore University',city:'Bangalore',type:'Government',oldId:230},
+  {state:'Karnataka',name:'Manipal Academy of Higher Education',city:'Manipal',type:'Deemed',oldId:231},
+  {state:'Karnataka',name:'NIT Karnataka Surathkal',city:'Mangalore',type:'Central',oldId:232},
+  {state:'Karnataka',name:'Mysore University',city:'Mysore',type:'Government',oldId:233},
+  {state:'Karnataka',name:'Christ University',city:'Bangalore',type:'Deemed',oldId:234},
+
+  {state:'Tamil Nadu',name:'IIT Madras',city:'Chennai',type:'Central',oldId:235},
+  {state:'Tamil Nadu',name:'Anna University',city:'Chennai',type:'Government',oldId:236},
+  {state:'Tamil Nadu',name:'University of Madras',city:'Chennai',type:'Government',oldId:237},
+  {state:'Tamil Nadu',name:'NIT Tiruchirappalli',city:'Tiruchirappalli',type:'Central',oldId:238},
+  {state:'Tamil Nadu',name:'Vellore Institute of Technology',city:'Vellore',type:'Deemed',oldId:239},
+  {state:'Tamil Nadu',name:'SASTRA Deemed University',city:'Thanjavur',type:'Deemed',oldId:240},
+  {state:'Tamil Nadu',name:'Indian Maritime University',city:'Chennai',type:'Central',oldId:132},
+
+  {state:'Andhra Pradesh',name:'IIT Tirupati',city:'Tirupati',type:'Central',oldId:241},
+  {state:'Andhra Pradesh',name:'Andhra University',city:'Visakhapatnam',type:'Government',oldId:242},
+  {state:'Andhra Pradesh',name:'Sri Venkateswara University',city:'Tirupati',type:'Government',oldId:243},
+  {state:'Andhra Pradesh',name:'National Sanskrit University',city:'Tirupati',type:'Central',oldId:107},
+
+  {state:'Telangana',name:'University of Hyderabad',city:'Hyderabad',type:'Central',oldId:111},
+  {state:'Telangana',name:'IIT Hyderabad',city:'Hyderabad',type:'Central',oldId:244},
+  {state:'Telangana',name:'Osmania University',city:'Hyderabad',type:'Government',oldId:245},
+  {state:'Telangana',name:'BITS Pilani Hyderabad',city:'Hyderabad',type:'Deemed',oldId:246},
+  {state:'Telangana',name:'Maulana Azad National Urdu University',city:'Hyderabad',type:'Central',oldId:122},
+
+  {state:'Kerala',name:'IIT Palakkad',city:'Palakkad',type:'Central',oldId:247},
+  {state:'Kerala',name:'NIT Calicut',city:'Calicut',type:'Central',oldId:248},
+  {state:'Kerala',name:'University of Kerala',city:'Thiruvananthapuram',type:'Government',oldId:249},
+  {state:'Kerala',name:'Cochin University of Science & Technology',city:'Kochi',type:'Government',oldId:250},
+  {state:'Kerala',name:'Kerala University of Health Sciences',city:'Thrissur',type:'Government',oldId:251},
+
+  {state:'West Bengal',name:'IIT Kharagpur',city:'Kharagpur',type:'Central',oldId:252},
+  {state:'West Bengal',name:'Jadavpur University',city:'Kolkata',type:'Government',oldId:253},
+  {state:'West Bengal',name:'University of Calcutta',city:'Kolkata',type:'Government',oldId:254},
+  {state:'West Bengal',name:'NIT Durgapur',city:'Durgapur',type:'Central',oldId:255},
+  {state:'West Bengal',name:'Visva-Bharati University',city:'Santiniketan',type:'Central',oldId:120},
+
+  {state:'Odisha',name:'IIT Bhubaneswar',city:'Bhubaneswar',type:'Central',oldId:256},
+  {state:'Odisha',name:'NIT Rourkela',city:'Rourkela',type:'Central',oldId:257},
+  {state:'Odisha',name:'Utkal University',city:'Bhubaneswar',type:'Government',oldId:258},
+  {state:'Odisha',name:'AIIMS Bhubaneswar',city:'Bhubaneswar',type:'Central',oldId:259},
+
+  {state:'Jharkhand',name:'IIT (ISM) Dhanbad',city:'Dhanbad',type:'Central',oldId:260},
+  {state:'Jharkhand',name:'NIT Jamshedpur',city:'Jamshedpur',type:'Central',oldId:261},
+  {state:'Jharkhand',name:'Ranchi University',city:'Ranchi',type:'Government',oldId:262},
+
+  {state:'Chhattisgarh',name:'IIT Bhilai',city:'Raipur',type:'Central',oldId:263},
+  {state:'Chhattisgarh',name:'NIT Raipur',city:'Raipur',type:'Central',oldId:264},
+  {state:'Chhattisgarh',name:'Guru Ghasidas Vishwavidyalaya',city:'Bilaspur',type:'Central',oldId:125},
+
+  {state:'Uttarakhand',name:'IIT Roorkee',city:'Roorkee',type:'Central',oldId:265},
+  {state:'Uttarakhand',name:'NIT Uttarakhand',city:'Srinagar',type:'Central',oldId:266},
+  {state:'Uttarakhand',name:'Hemvati Nandan Bahuguna Garhwal University',city:'Srinagar',type:'Central',oldId:126},
+  {state:'Uttarakhand',name:'Kumaun University',city:'Nainital',type:'Government',oldId:267},
+
+  {state:'Himachal Pradesh',name:'IIT Mandi',city:'Mandi',type:'Central',oldId:268},
+  {state:'Himachal Pradesh',name:'NIT Hamirpur',city:'Hamirpur',type:'Central',oldId:269},
+  {state:'Himachal Pradesh',name:'Himachal Pradesh University',city:'Shimla',type:'Government',oldId:270},
+
+  {state:'Assam',name:'IIT Guwahati',city:'Guwahati',type:'Central',oldId:271},
+  {state:'Assam',name:'NIT Silchar',city:'Silchar',type:'Central',oldId:272},
+  {state:'Assam',name:'Gauhati University',city:'Guwahati',type:'Government',oldId:273},
+  {state:'Assam',name:'Assam University',city:'Silchar',type:'Central',oldId:103},
+  {state:'Assam',name:'Tezpur University',city:'Tezpur',type:'Central',oldId:115},
+
+  {state:'Manipur',name:'Central Agricultural University',city:'Imphal',type:'Central',oldId:102},
+  {state:'Manipur',name:'Manipur University',city:'Imphal',type:'Central',oldId:117},
+
+  {state:'Mizoram',name:'Mizoram University',city:'Aizawl',type:'Central',oldId:116},
+  {state:'Nagaland',name:'Nagaland University',city:'Lumami',type:'Central',oldId:118},
+  {state:'Tripura',name:'Tripura University',city:'Agartala',type:'Central',oldId:119},
+  {state:'Meghalaya',name:'North-Eastern Hill University',city:'Shillong',type:'Central',oldId:121},
+  {state:'Arunachal Pradesh',name:'Rajiv Gandhi University',city:'Itanagar',type:'Central',oldId:129},
+
+  {state:'Puducherry',name:'Pondicherry University',city:'Puducherry',type:'Central',oldId:131},
+
+  {state:'Goa',name:'NIT Goa',city:'Goa',type:'Central',oldId:274},
+  {state:'Goa',name:'Goa University',city:'Panaji',type:'Government',oldId:275},
+
+  {state:'Jammu & Kashmir',name:'IIT Jammu',city:'Jammu',type:'Central',oldId:276},
+  {state:'Jammu & Kashmir',name:'NIT Srinagar',city:'Srinagar',type:'Central',oldId:277},
+  {state:'Jammu & Kashmir',name:'University of Kashmir',city:'Srinagar',type:'Government',oldId:278},
+];
+
+function typeClass(t) {
+  if (t === 'Central' || t === 'Institute of National Importance') return 't-central';
+  if (t === 'Government' || t === 'Government-Aided' || t === 'State') return 't-govt';
+  if (t === 'Private') return 't-private';
+  if (t === 'Deemed') return 't-deemed';
+  return 't-other';
+}
+
+const byState = {};
+raw.forEach(u => {
+  if (!byState[u.state]) byState[u.state] = [];
+  byState[u.state].push(u);
+});
+
+let globalSno = 1;
+let html = '';
+
+Object.keys(byState).forEach(state => {
+  const unis = byState[state];
+  html += `<div class="state-block">
+    <div class="state-header">
+      <i class="ti ti-map-pin" aria-hidden="true"></i>
+      ${state}
+      <span class="badge">${unis.length} universities</span>
+    </div>
+    <table>
+      <thead><tr>
+        <th>S.No</th>
+        <th>University</th>
+        <th>City</th>
+        <th>Type</th>
+        <th class="note">Old ID</th>
+      </tr></thead>
+      <tbody>`;
+
+  unis.forEach(u => {
+    html += `<tr>
+      <td class="sno">${globalSno++}</td>
+      <td><span class="name">${u.name}</span></td>
+      <td style="color:var(--color-text-secondary)">${u.city}</td>
+      <td><span class="type-badge ${typeClass(u.type)}">${u.type}</span></td>
+      <td class="old-id">${u.oldId}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+});
+
+document.getElementById('content').innerHTML = html;
+</script>

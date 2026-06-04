@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Indian Institute of Technology Ropar – CollegeHunt</title>
+<title>IIT Ropar – CollegeHunt</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
+  
   :root {
     --navy: #0f1535;
     --navy-mid: #1a2250;
@@ -19,16 +20,16 @@
     --border: rgba(245,166,35,0.2);
     --tag-bg: rgba(245,166,35,0.12);
   }
- 
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
- 
+
   body {
     font-family: 'Poppins', sans-serif;
     background: var(--navy);
     color: var(--white);
     min-height: 100vh;
   }
- 
+
   /* ── NAV ── */
   nav {
     background: var(--navy);
@@ -84,8 +85,7 @@
   }
   .badge.pop { animation: badgePop 0.3s ease; }
   @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
- 
-  /* Stream Dropdown */
+
   .stream-dropdown {
     position: absolute;
     top: calc(100% + 8px);
@@ -111,8 +111,7 @@
   }
   .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
   .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
- 
-  /* ── TOAST ── */
+
   .toast {
     position: fixed;
     bottom: 28px; right: 28px;
@@ -131,8 +130,7 @@
     pointer-events: none;
   }
   .toast.show { transform: translateY(0); opacity: 1; }
- 
-  /* ── HERO ── */
+
   .hero {
     background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
     padding: 40px 48px 36px;
@@ -182,7 +180,7 @@
   .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
   .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
   .meta-chip strong { color: var(--white); }
- 
+
   .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
   .hero-badge {
     border-radius: 10px;
@@ -198,8 +196,7 @@
   .hb-naac .value { color: var(--accent-green); }
   .hb-central .value { color: var(--gold); }
   .hb-campus .value { color: #63b3ed; }
- 
-  /* ── TABS ── */
+
   .tabs-bar {
     background: var(--navy-mid);
     border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -221,8 +218,7 @@
   }
   .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
   .tab:hover:not(.active) { color: var(--white); }
- 
-  /* ── LAYOUT ── */
+
   .content-wrap {
     max-width: 1200px;
     margin: 0 auto;
@@ -232,12 +228,10 @@
     gap: 28px;
     align-items: start;
   }
- 
-  /* Tab Panels */
+
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
- 
-  /* ── CARDS ── */
+
   .card {
     background: var(--card-bg);
     border: 1px solid rgba(255,255,255,0.07);
@@ -255,8 +249,7 @@
     gap: 8px;
   }
   .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
- 
-  /* ── COURSE TABLE ── */
+
   .course-block { margin-bottom: 26px; }
   .course-block:last-child { margin-bottom: 0; }
   .course-type-label {
@@ -291,8 +284,7 @@
   .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
   .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
   .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
- 
-  /* ── GRID LIST ── */
+
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .info-chip {
@@ -304,8 +296,7 @@
   }
   .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
   .info-chip .val { font-weight: 600; color: var(--white); }
- 
-  /* ── RECRUITERS ── */
+
   .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
   .recruiter-tag {
     background: rgba(255,255,255,0.06);
@@ -318,8 +309,7 @@
     cursor: default;
   }
   .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
- 
-  /* ── FACILITIES ── */
+
   .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .fac-item {
     background: rgba(255,255,255,0.04);
@@ -333,8 +323,7 @@
   }
   .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
   .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
- 
-  /* ── SIDEBAR ── */
+
   .sidebar-card {
     background: var(--card-bg);
     border: 1px solid rgba(255,255,255,0.07);
@@ -360,12 +349,12 @@
   .key-val .k { color: var(--muted); }
   .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
   .v-gold { color: var(--gold) !important; }
- 
+
   .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
   .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
   .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
   .exam-table tr:last-child td { border-bottom: none; }
- 
+
   .cta-btn {
     display: block;
     width: 100%;
@@ -384,13 +373,11 @@
   .cta-primary.added { background: var(--accent-green); color: var(--white); }
   .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
   .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
- 
-  /* ── HOSTEL ── */
+
   .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
   .hostel-icon { font-size: 1.1rem; }
- 
-  /* ── PhD LIST ── */
+
   .phd-category { margin-bottom: 14px; }
   .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
   .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -402,29 +389,25 @@
     font-size: 0.72rem;
     color: var(--muted);
   }
- 
-  /* ── ADMISSIONS TAB ── */
+
   .timeline { position: relative; padding-left: 28px; }
   .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
   .tl-item { position:relative; margin-bottom:20px; }
   .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
   .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
   .tl-desc { font-size:0.75rem; color:var(--muted); }
- 
-  /* ── PLACEMENTS TAB ── */
+
   .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
   .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
   .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
   .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
- 
-  /* ── CAMPUS LIFE TAB ── */
+
   .campus-section { margin-bottom:22px; }
   .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
   .event-list { display:flex; flex-direction:column; gap:8px; }
   .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
   .event-icon { font-size:1.2rem; flex-shrink:0; }
- 
-  /* Logout modal */
+
   .modal-overlay {
     position:fixed; inset:0;
     background:rgba(0,0,0,0.6);
@@ -449,7 +432,7 @@
   .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
   .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
   .modal-confirm { background:#f56565; color:var(--white); }
- 
+
   @media (max-width: 768px) {
     .content-wrap { grid-template-columns: 1fr; }
     .hero { padding: 24px 20px; }
@@ -457,18 +440,61 @@
     .facility-grid { grid-template-columns: repeat(2,1fr); }
     .grid-3 { grid-template-columns: 1fr 1fr; }
     .stat-row { grid-template-columns:1fr 1fr; }
+  }@media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
   }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
 </style>
 </head>
 <body>
- 
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
-  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
   <div class="nav-right">
- 
-    <!-- Stream selector with dropdown -->
     <div style="position:relative;">
       <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
         ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
@@ -482,29 +508,27 @@
         <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
       </div>
     </div>
- 
     <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
       ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
     </button>
- 
     <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
   </div>
 </nav>
- 
+
 <!-- HERO -->
 <div class="hero">
   <div class="breadcrumb">
     <a onclick="showToast('🏠','Home')">Home</a> ›
     <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
-    Indian Institute of Technology Ropar
+    IIT Ropar
   </div>
   <div class="uni-header">
     <div class="uni-logo">🏛️</div>
     <div class="uni-title">
-      <h1>Indian Institute of Technology Ropar<span>Punjab</span></h1>
+      <h1>IIT <span>Ropar</span></h1>
       <div class="uni-meta">
-        <span class="meta-chip"><strong>Rupnagar, Punjab</strong></span>
-        <span class="meta-chip">🏛️ <strong>Institute of National Importance (IIT)</strong></span>
+        <span class="meta-chip"><strong>Rupnagar, Punjab, India</strong></span>
+        <span class="meta-chip">🏛️ <strong>Public / Institute of National Importance</strong></span>
         <span class="meta-chip">📅 Est. <strong>2008</strong></span>
         <span class="meta-chip clickable" onclick="window.open('https://www.iitrpr.ac.in/','_blank')" title="Open official website">🌐 <strong>iitrpr.ac.in ↗</strong></span>
       </div>
@@ -512,20 +536,20 @@
   </div>
   <div class="hero-badges">
     <div class="hero-badge hb-naac">
-      <span class="label">NAAC Grade</span>
-      <span class="value">A</span>
+      <span class="label">NIRF Ranked</span>
+      <span class="value">Top IIT</span>
     </div>
     <div class="hero-badge hb-central">
       <span class="label">Campus Area</span>
       <span class="value">500+ Acres</span>
     </div>
     <div class="hero-badge hb-campus">
-      <span class="label">Type</span>
-      <span class="value">Central</span>
+      <span class="label">Avg Package</span>
+      <span class="value">₹18–22 LPA</span>
     </div>
   </div>
 </div>
- 
+
 <!-- TABS -->
 <div class="tabs-bar">
   <div class="tab active" onclick="switchTab(0,this)">Overview</div>
@@ -536,341 +560,397 @@
   <div class="tab" onclick="switchTab(5,this)">Placements</div>
   <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
 </div>
- 
+
 <!-- MAIN CONTENT -->
 <div class="content-wrap">
-  <!-- LEFT COLUMN -->
   <div>
- 
-    <!-- ── TAB 0: OVERVIEW ── -->
+
+    <!-- TAB 0: OVERVIEW -->
     <div class="tab-panel active" id="panel-0">
       <div class="card">
         <div class="card-title"><span class="dot"></span>Basic Information</div>
         <div class="grid-3">
           <div class="info-chip"><div class="lbl">Established</div><div class="val">2008</div></div>
-          <div class="info-chip"><div class="lbl">Type</div><div class="val">Institute of National Importance (IIT)</div></div>
-          <div class="info-chip"><div class="lbl">Location</div><div class="val">Mahendergarh, HR</div></div>
-          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">Recognized by UGC & Ministry of Education</div></div>
-          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~500+ Acres</div></div>
-          <div class="info-chip"><div class="lbl">Admission</div><div class="val">CUET / JEE / NCET</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Public / Nat. Importance</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Rupnagar, Punjab</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">Ministry of Education, GoI</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">500+ Acres</div></div>
+          <div class="info-chip"><div class="lbl">Specialization</div><div class="val">Engg, Tech, Sciences, AI, BioMed</div></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-title"><span class="dot"></span>About Indian Institute of Technology Ropar</div>
+        <div class="card-title"><span class="dot"></span>About IIT Ropar</div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
-          Indian Institute of Technology Ropar (CUH) is a premier central university established in 2008 by an Act of Parliament. Located in Mahendergarh district, Haryana, the university offers a wide range of undergraduate, postgraduate, and doctoral programs across sciences, humanities, management, law, and engineering. CUH is accredited with <strong style="color:var(--white);">Recognized by UGC & Ministry of Education</strong> and is known for its research-oriented curriculum, modern infrastructure, and sprawling 484-acre green campus. Being a central university, tuition fees are highly subsidized, making quality education accessible to all.
+          Indian Institute of Technology Ropar (IIT Ropar / IITRPR) is a prestigious <strong style="color:var(--white);">Institute of National Importance</strong> established in 2008 under the Institutes of Technology Act, recognised by the Ministry of Education, Government of India. Located in Rupnagar (Ropar), Punjab, IIT Ropar is spread across a sprawling <strong style="color:var(--white);">500+ acre campus</strong> and is consistently ranked among India's top engineering institutions in the NIRF rankings. The institute offers cutting-edge programs in <strong style="color:var(--white);">Engineering, Technology, Sciences, Humanities, Management, Artificial Intelligence, Biomedical Engineering, and Data Science</strong>, backed by world-class research infrastructure, innovation centres, and international collaborations.
         </p>
       </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span>Campus Facilities</div>
         <div class="facility-grid">
           <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
-          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
           <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
           <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
-          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
-          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Facilities</div>
-          <div class="fac-item"><div class="fac-icon">💡</div>Innovation Hub</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeterias</div>
+          <div class="fac-item"><div class="fac-icon">💡</div>Innovation &amp; Incubation Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Centre</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Banking Facilities</div>
+          <div class="fac-item"><div class="fac-icon">💻</div>HPC Facilities</div>
+          <div class="fac-item"><div class="fac-icon">🚀</div>Startup Support</div>
+          <div class="fac-item"><div class="fac-icon">🌐</div>International Collab</div>
         </div>
         <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
         <div class="hostel-grid">
           <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
           <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
-          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi</div>
-          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess</div>
-          <div class="hostel-item"><span class="hostel-icon">⚽</span> Sports</div>
-          <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gym</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Enabled Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess / Dining</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">🎮</span> Recreation Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gymnasium</div>
           <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+          <div class="hostel-item"><span class="hostel-icon">🧺</span> Laundry Facilities</div>
         </div>
         <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
-          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
-          <span style="color:var(--muted);"> ₹8,000–15,000 approx. per semester</span>
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Charges:</span>
+          <span style="color:var(--muted);"> Hostel Fee: ₹8,000–15,000/semester &nbsp;|&nbsp; Mess Advance: ₹18,000–25,000/semester &nbsp;|&nbsp; Security Deposit: Refundable</span>
         </div>
       </div>
     </div>
- 
-    <!-- ── TAB 1: UG COURSES ── -->
+
+    <!-- TAB 1: UG COURSES -->
     <div class="tab-panel" id="panel-1">
       <div class="card">
         <div class="card-title"><span class="dot"></span>UG Courses</div>
- 
         <div class="course-block">
-          <span class="course-type-label">B.Tech · 4 Years · JEE Main</span>
+          <span class="course-type-label">B.Tech · 4 Years · JEE Main → JEE Advanced → JoSAA</span>
           <div class="course-row">
-            <div class="course-name">B.Tech Computer Science &amp; Engineering</div>
-            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-name">Computer Science and Engineering (CSE)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
             <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹2.4–2.6L</span>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
           </div>
           <div class="course-row">
-            <div class="course-name">B.Tech Civil Engineering</div>
-            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-name">Electrical Engineering (EE)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
             <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹2.4–2.6L</span>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
           </div>
           <div class="course-row">
-            <div class="course-name">B.Tech Electrical Engineering</div>
-            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-name">Mechanical Engineering (ME)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
             <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹2.4–2.6L</span>
-          </div>
-          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 12th with Physics + Mathematics · Admission: JoSAA / CSAB Counselling</div>
-        </div>
- 
-        <div class="course-block">
-          <span class="course-type-label">Integrated B.Sc–M.Sc · 5 Years · CUET-UG</span>
-          <div class="course-row">
-            <div class="course-name">Integrated B.Sc–M.Sc Chemistry</div>
-            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
-            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹20–40K</span>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
           </div>
           <div class="course-row">
-            <div class="course-name">Integrated B.Sc–M.Sc Mathematics</div>
-            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
-            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹20–40K</span>
-          </div>
-          <div class="course-row">
-            <div class="course-name">Integrated B.Sc–M.Sc Physics</div>
-            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
-            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹20–40K</span>
-          </div>
-          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 12th Science stream · Careers: Research · Teaching · Data Analysis</div>
-        </div>
- 
-        <div class="course-block">
-          <span class="course-type-label">B.Voc · 3 Years · CUET-UG</span>
-          <div class="course-row">
-            <div class="course-name">B.Voc Biomedical Sciences</div>
-            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
-            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹60–90K</span>
-          </div>
-          <div class="course-row">
-            <div class="course-name">B.Voc Retail &amp; Logistics Management</div>
-            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
-            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹60–90K</span>
-          </div>
-          <div class="course-row">
-            <div class="course-name">B.Voc Industrial Waste Management</div>
-            <div class="course-meta"><strong>CUET-UG</strong>Entrance</div>
-            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
-            <span class="tag tag-fees">₹60–90K</span>
-          </div>
-          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Focus: Skill-based industry training</div>
-        </div>
- 
-        <div class="course-block">
-          <span class="course-type-label">B.A.–B.Ed. (ITEP) · 4 Years · NCET/CUET</span>
-          <div class="course-row">
-            <div class="course-name">B.A.–B.Ed. Integrated Teacher Education Programme</div>
-            <div class="course-meta"><strong>NCET / CUET</strong>Entrance</div>
+            <div class="course-name">Civil Engineering (CE)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
             <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
-            <span class="tag tag-exam">Teaching</span>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
           </div>
+          <div class="course-row">
+            <div class="course-name">Chemical Engineering (CHE)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Metallurgical and Materials Engineering (MME)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Engineering Physics (EP)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Mathematics and Computing (MnC)</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Artificial Intelligence and Data Engineering</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Biomedical Engineering</div>
+            <div class="course-meta"><strong>JEE Adv.</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–3.0L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Physics, Chemistry &amp; Mathematics · Admission via JEE Main → JEE Advanced → JoSAA Counselling · SC/ST fee concessions as per GoI norms · Tuition fee ₹1L/semester + ₹15K–25K other charges + ₹30K–45K hostel &amp; mess</div>
         </div>
       </div>
     </div>
- 
-    <!-- ── TAB 2: PG COURSES ── -->
+
+    <!-- TAB 2: PG COURSES -->
     <div class="tab-panel" id="panel-2">
       <div class="card">
         <div class="card-title"><span class="dot"></span>PG Courses</div>
- 
         <div class="course-block">
-          <span class="course-type-label">M.Sc · 2 Years · CUET-PG · ₹20–50K</span>
+          <span class="course-type-label">M.Tech · 2 Years · GATE + COAP · ₹1–2L total</span>
           <div class="phd-tags" style="margin-bottom:6px;">
-            <span class="phd-tag">Physics &amp; Astrophysics</span><span class="phd-tag">Chemistry</span>
-            <span class="phd-tag">Mathematics</span><span class="phd-tag">Statistics</span>
-            <span class="phd-tag">Biotechnology</span><span class="phd-tag">Microbiology</span>
-            <span class="phd-tag">Biochemistry</span><span class="phd-tag">Data Science</span>
-            <span class="phd-tag">Geography</span><span class="phd-tag">Geoinformatics</span>
-            <span class="phd-tag">Nutrition Biology</span><span class="phd-tag">Yoga</span>
+            <span class="phd-tag">Computer Science and Engineering</span>
+            <span class="phd-tag">Artificial Intelligence</span>
+            <span class="phd-tag">Electrical Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Chemical Engineering</span>
+            <span class="phd-tag">Biomedical Engineering</span>
+            <span class="phd-tag">Materials Engineering</span>
+            <span class="phd-tag">Manufacturing Engineering</span>
+            <span class="phd-tag">Data Science</span>
           </div>
-          <div style="font-size:0.73rem;color:var(--muted);">Placement: Research labs · Pharma · IT · Analytics</div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: B.E./B.Tech in relevant discipline · Admission via GATE score + COAP Counselling · GATE Scholarship available for eligible candidates</div>
         </div>
- 
         <div class="course-block">
-          <span class="course-type-label">M.A. · 2 Years · CUET-PG · ₹15–35K</span>
+          <span class="course-type-label">M.Sc · 2 Years · IIT JAM · ₹50,000–2L total</span>
           <div class="phd-tags" style="margin-bottom:6px;">
-            <span class="phd-tag">English</span><span class="phd-tag">Hindi</span>
-            <span class="phd-tag">History</span><span class="phd-tag">Political Science</span>
-            <span class="phd-tag">Psychology</span><span class="phd-tag">Sociology</span>
-            <span class="phd-tag">Sanskrit</span><span class="phd-tag">Economics</span>
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Data Science</span>
           </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Bachelor's degree in relevant field · Admission via IIT JAM followed by JAM Counselling</div>
         </div>
- 
         <div class="course-block">
-          <span class="course-type-label">Other PG Programs · CUET-PG · ₹25K–1L</span>
-          <div class="phd-tags">
-            <span class="phd-tag">MBA</span><span class="phd-tag">MCA</span><span class="phd-tag">M.Com</span>
-            <span class="phd-tag">LLM</span><span class="phd-tag">M.Ed</span><span class="phd-tag">M.P.Ed</span>
-            <span class="phd-tag">M.Tech</span><span class="phd-tag">MHMCT</span>
-            <span class="phd-tag">MTTM</span><span class="phd-tag">M.Lib.I.Sc</span>
+          <span class="course-type-label">MBA / Specialized PG Programs · Institute Selection</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Interdisciplinary Management Programs</span>
+            <span class="phd-tag">Technology Management Programs</span>
           </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Relevant graduation degree · Admission via Institute Selection Process · Fee varies by course</div>
         </div>
       </div>
     </div>
- 
-    <!-- ── TAB 3: PhD ── -->
+
+    <!-- TAB 3: PhD -->
     <div class="tab-panel" id="panel-3">
       <div class="card">
         <div class="card-title"><span class="dot"></span>PhD Programs</div>
         <div class="phd-category">
-          <div class="phd-cat-label">Science</div>
+          <div class="phd-cat-label">Engineering &amp; Technology</div>
           <div class="phd-tags">
-            <span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span>
-            <span class="phd-tag">Mathematics</span><span class="phd-tag">Biotechnology</span>
-            <span class="phd-tag">Microbiology</span><span class="phd-tag">Biochemistry</span>
-            <span class="phd-tag">Environmental Science</span><span class="phd-tag">Statistics</span>
-          </div>
-        </div>
-        <div class="phd-category">
-          <div class="phd-cat-label">Engineering</div>
-          <div class="phd-tags">
-            <span class="phd-tag">Computer Science</span><span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Computer Science and Engineering</span>
+            <span class="phd-tag">Artificial Intelligence</span>
+            <span class="phd-tag">Data Science</span>
             <span class="phd-tag">Electrical Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Chemical Engineering</span>
+            <span class="phd-tag">Biomedical Engineering</span>
+            <span class="phd-tag">Materials Engineering</span>
           </div>
         </div>
         <div class="phd-category">
-          <div class="phd-cat-label">Humanities &amp; Social Sciences</div>
+          <div class="phd-cat-label">Basic Sciences</div>
           <div class="phd-tags">
-            <span class="phd-tag">English</span><span class="phd-tag">Hindi</span>
-            <span class="phd-tag">History</span><span class="phd-tag">Political Science</span>
-            <span class="phd-tag">Psychology</span><span class="phd-tag">Sociology</span>
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
           </div>
         </div>
         <div class="phd-category">
-          <div class="phd-cat-label">Management, Commerce &amp; Law</div>
+          <div class="phd-cat-label">Humanities &amp; Management</div>
           <div class="phd-tags">
-            <span class="phd-tag">Management</span><span class="phd-tag">Commerce</span>
-            <span class="phd-tag">Economics</span><span class="phd-tag">Law</span>
-            <span class="phd-tag">Education</span><span class="phd-tag">Physical Education</span>
+            <span class="phd-tag">Humanities and Social Sciences</span>
+            <span class="phd-tag">Management Studies</span>
           </div>
         </div>
         <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
-          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
-          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree (55% General)</span></div>
-          <div class="key-val"><span class="k">Relaxation</span><span class="v">SC/ST/OBC/PwD as per rules</span></div>
-          <div class="key-val" style="border:none"><span class="k">Entrance</span><span class="v">UGC-NET / CSIR-NET / GATE / GPAT / University Test + Interview</span></div>
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Selection Process</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree in relevant discipline</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">Generally 55% or equivalent CGPA</span></div>
+          <div class="key-val"><span class="k">Entrance Requirement</span><span class="v">GATE / NET / JRF or Institute Written Test</span></div>
+          <div class="key-val"><span class="k">Selection Process</span><span class="v">Written Test + Interview</span></div>
+          <div class="key-val"><span class="k">Registration Fee</span><span class="v">₹5,000 – ₹10,000</span></div>
+          <div class="key-val" style="border:none"><span class="k">Semester Fee</span><span class="v">₹15,000 – ₹30,000 per semester</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Fellowships:</span>
+          <span style="color:var(--muted);"> UGC-NET JRF · CSIR-JRF · DST INSPIRE Fellowship · PMRF (Prime Minister's Research Fellowship) · Institute Research Assistantships &amp; Teaching Assistantships available.</span>
         </div>
       </div>
     </div>
- 
-    <!-- ── TAB 4: ADMISSIONS ── -->
+
+    <!-- TAB 4: ADMISSIONS -->
     <div class="tab-panel" id="panel-4">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="card-title"><span class="dot"></span>B.Tech Admission Process</div>
         <div class="timeline">
           <div class="tl-item">
-            <div class="tl-title">Step 1 — Register for Entrance Exam</div>
-            <div class="tl-desc">Register for CUET-UG / CUET-PG / JEE Main / NCET as applicable. Deadlines typically Feb–Apr each year.</div>
+            <div class="tl-title">Step 1 — Appear for JEE Main</div>
+            <div class="tl-desc">Register and appear for JEE Main conducted by NTA. Qualify to become eligible for JEE Advanced.</div>
           </div>
           <div class="tl-item">
-            <div class="tl-title">Step 2 — Appear for Exam</div>
-            <div class="tl-desc">Exams conducted by NTA. CUH accepts scores from all NTA-conducted national entrance tests.</div>
+            <div class="tl-title">Step 2 — Qualify JEE Advanced</div>
+            <div class="tl-desc">Appear for JEE Advanced. A valid rank in JEE Advanced is mandatory for admission to IIT Ropar.</div>
           </div>
           <div class="tl-item">
-            <div class="tl-title">Step 3 — Merit List / Counselling</div>
-            <div class="tl-desc">B.Tech via JoSAA/CSAB counselling. Other programs via CUH's own merit-based counselling.</div>
+            <div class="tl-title">Step 3 — Register via JoSAA Counselling</div>
+            <div class="tl-desc">Register on the JoSAA portal, fill in your choices, and participate in the seat allotment process. Select IIT Ropar and preferred branch.</div>
           </div>
           <div class="tl-item">
-            <div class="tl-title">Step 4 — Document Verification</div>
-            <div class="tl-desc">Submit originals: 10th, 12th marksheets, category certificate, ID proof, and photographs.</div>
+            <div class="tl-title">Step 4 — Seat Allotment &amp; Acceptance</div>
+            <div class="tl-desc">Lock your seat after allotment. Accept the seat and proceed with the provisional admission process online.</div>
           </div>
           <div class="tl-item">
-            <div class="tl-title">Step 5 — Fee Payment &amp; Enrolment</div>
-            <div class="tl-desc">Pay semester fees online via university portal and complete enrolment formalities.</div>
+            <div class="tl-title">Step 5 — Document Verification &amp; Fee Payment</div>
+            <div class="tl-desc">Submit 10th &amp; 12th marksheets, category certificate, JEE scorecard, and ID proof. Pay semester fees to confirm admission.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG / PhD Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">M.Tech — Qualify GATE</div>
+            <div class="tl-desc">Obtain a valid GATE score in the relevant discipline. GATE Scholarship is available to eligible admitted candidates.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">M.Tech — Apply via COAP &amp; IIT Ropar Portal</div>
+            <div class="tl-desc">Register on COAP and the IIT Ropar admissions portal. Submit GATE scorecard, academic credentials, and complete seat allotment formalities.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">M.Sc — Qualify IIT JAM</div>
+            <div class="tl-desc">Appear for IIT JAM in your relevant subject (Physics, Chemistry, Mathematics, or Data Science) and participate in JAM Counselling.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">PhD — Apply Online via IIT Ropar Portal</div>
+            <div class="tl-desc">Apply through the official IIT Ropar admissions portal. Appear for written test (if applicable) and interview. Merit list publication followed by registration.</div>
           </div>
         </div>
       </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
         <div class="course-row">
-          <div class="course-name">UG (Non-Engineering)</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">CUET-UG</span>
+          <div class="course-name">B.Tech (All Branches)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">JEE Main → JEE Advanced → JoSAA</span>
         </div>
         <div class="course-row">
-          <div class="course-name">B.Tech Programs</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">JEE Main</span>
+          <div class="course-name">M.Tech</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">GATE + COAP</span>
         </div>
         <div class="course-row">
-          <div class="course-name">PG Programs</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">CUET-PG</span>
-        </div>
-        <div class="course-row">
-          <div class="course-name">B.Ed ITEP</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">NCET</span>
+          <div class="course-name">M.Sc</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">IIT JAM</span>
         </div>
         <div class="course-row">
           <div class="course-name">PhD</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">NET / GATE / Univ. Test</span>
+          <div></div><div></div>
+          <span class="tag tag-exam">GATE / NET / JRF + Interview</span>
         </div>
       </div>
     </div>
- 
-    <!-- ── TAB 5: PLACEMENTS ── -->
+
+    <!-- TAB 5: PLACEMENTS -->
     <div class="tab-panel" id="panel-5">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Placement Overview (B.Tech)</div>
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
         <div class="stat-row">
           <div class="stat-box">
-            <div class="s-val" style="color:var(--accent-green);">₹4–6 LPA</div>
-            <div class="s-lbl">Avg Package</div>
+            <div class="s-val" style="color:var(--gold);">₹50 LPA+</div>
+            <div class="s-lbl">Highest Package</div>
           </div>
           <div class="stat-box">
-            <div class="s-val" style="color:var(--gold);">4+</div>
-            <div class="s-lbl">Recruiters</div>
+            <div class="s-val" style="color:var(--accent-green);">₹18–22 LPA</div>
+            <div class="s-lbl">Average Package</div>
           </div>
           <div class="stat-box">
-            <div class="s-val" style="color:#63b3ed;">JoSAA</div>
-            <div class="s-lbl">Admission Mode</div>
+            <div class="s-val" style="color:#63b3ed;">CSE, AI, EE</div>
+            <div class="s-lbl">Top Branches</div>
           </div>
         </div>
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Recruiters</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Major Recruiters</div>
         <div class="recruiter-list">
-          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Google</span>
+          <span class="recruiter-tag">Microsoft</span>
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Adobe</span>
+          <span class="recruiter-tag">Samsung</span>
+          <span class="recruiter-tag">Qualcomm</span>
+          <span class="recruiter-tag">Intel</span>
+          <span class="recruiter-tag">NVIDIA</span>
+          <span class="recruiter-tag">Goldman Sachs</span>
+          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">Flipkart</span>
+          <span class="recruiter-tag">Oracle</span>
           <span class="recruiter-tag">Infosys</span>
-          <span class="recruiter-tag">Nagarro</span>
-          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">TCS Research</span>
+          <span class="recruiter-tag">Accenture</span>
+          <span class="recruiter-tag">Paytm</span>
         </div>
       </div>
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Placement Notes</div>
-        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
-          CUH's placement cell actively facilitates campus recruitment drives for B.Tech students. Companies from IT, ITES, and core engineering domains visit the campus. The average package ranges between <strong style="color:var(--white);">₹4–6 LPA</strong> for B.Tech graduates. For PG and PhD students, opportunities exist in research institutions, academia, government jobs, and private enterprises.
-        </p>
+        <div class="card-title"><span class="dot"></span>B.Tech Cutoff Trends (Competition Level)</div>
+        <div class="course-row">
+          <div class="course-name">Computer Science &amp; Engineering</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Extremely High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Mathematics &amp; Computing</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Very High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Artificial Intelligence &amp; Data Engineering</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Very High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Electrical Engineering</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Mechanical Engineering</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Chemical Engineering</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Moderate to High</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Civil Engineering</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Moderate</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Biomedical Engineering</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Moderate</span>
+        </div>
       </div>
     </div>
- 
-    <!-- ── TAB 6: CAMPUS LIFE ── -->
+
+    <!-- TAB 6: CAMPUS LIFE -->
     <div class="tab-panel" id="panel-6">
       <div class="card">
         <div class="card-title"><span class="dot"></span>Campus Life</div>
- 
         <div class="campus-section">
           <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
           <div class="event-list">
-            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Udbhav</strong> — Annual Cultural Fest with music, dance, drama, and art competitions</div></div>
-            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Spandan</strong> — Annual Sports Meet with inter-department competitions</div></div>
-            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Technovation</strong> — Technical symposium and project expo</div></div>
-            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony for graduating students</div></div>
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Cultural Fest</strong> — Annual cultural festival featuring music, dance, drama, and inter-hostel competitions across creative disciplines</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Sports Meet</strong> — Inter-hostel and inter-IIT athletic competitions spanning cricket, football, badminton, volleyball, and more</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Technical Fest</strong> — Annual tech symposium with hackathons, paper presentations, robotics competitions, and innovation showcases</div></div>
+            <div class="event-item"><span class="event-icon">🚀</span><div><strong>Startup Demo Day</strong> — Entrepreneurship Cell event showcasing student startups and incubated ventures to investors and industry leaders</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony honouring graduating students across all programs and research scholars</div></div>
           </div>
         </div>
- 
         <div class="campus-section">
           <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
           <div class="facility-grid">
@@ -879,81 +959,87 @@
             <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
             <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
             <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
-            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga Centre</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga &amp; Wellness</div>
           </div>
         </div>
- 
         <div class="campus-section">
-          <div class="campus-section-title">🎓 Student Clubs</div>
+          <div class="campus-section-title">🎓 Student Clubs &amp; Activities</div>
           <div class="phd-tags">
             <span class="phd-tag">Coding Club</span>
-            <span class="phd-tag">Literary Society</span>
-            <span class="phd-tag">Eco Club</span>
+            <span class="phd-tag">Robotics Club</span>
+            <span class="phd-tag">AI / ML Club</span>
             <span class="phd-tag">NSS</span>
             <span class="phd-tag">NCC</span>
+            <span class="phd-tag">Literary Society</span>
             <span class="phd-tag">Debate Society</span>
             <span class="phd-tag">Photography Club</span>
             <span class="phd-tag">Music Club</span>
+            <span class="phd-tag">Entrepreneurship Cell</span>
+            <span class="phd-tag">Eco Club</span>
+            <span class="phd-tag">Student Activity Centre</span>
           </div>
         </div>
       </div>
     </div>
- 
+
   </div><!-- /left -->
- 
+
   <!-- SIDEBAR -->
   <div>
-    <!-- Quick Action -->
     <div class="sidebar-card">
       <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
       <button class="cta-btn cta-outline" onclick="window.open('https://www.iitrpr.ac.in/','_blank')">🌐 Visit Official Website</button>
     </div>
- 
-    <!-- Key Facts -->
+
     <div class="sidebar-card">
       <div class="sidebar-title">Key Facts</div>
       <div class="key-val"><span class="k">Established</span><span class="v">2008</span></div>
-      <div class="key-val"><span class="k">University Type</span><span class="v">Institute of National Importance (IIT)</span></div>
-      <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">A Grade</span></div>
-      <div class="key-val"><span class="k">Campus</span><span class="v">~500+ Acres</span></div>
-      <div class="key-val"><span class="k">Location</span><span class="v">Mahendergarh, HR</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">Public / Nat. Importance</span></div>
+      <div class="key-val"><span class="k">NIRF</span><span class="v v-gold">Top IIT Ranked</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">500+ Acres</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">IIT Ropar / IITRPR</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Rupnagar, Punjab</span></div>
     </div>
- 
-    <!-- Entrance Exams -->
+
     <div class="sidebar-card">
       <div class="sidebar-title">Entrance Exams</div>
       <table class="exam-table">
-        <tr><th>Course Type</th><th>Exam</th></tr>
-        <tr><td>UG Courses</td><td><span class="tag tag-exam">CUET-UG</span></td></tr>
-        <tr><td>B.Tech</td><td><span class="tag tag-exam">JEE Main</span></td></tr>
-        <tr><td>PG Courses</td><td><span class="tag tag-exam">CUET-PG</span></td></tr>
-        <tr><td>B.Ed ITEP</td><td><span class="tag tag-exam">NCET</span></td></tr>
-        <tr><td>PhD</td><td><span class="tag tag-exam">NET/GATE/Test</span></td></tr>
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.Tech</td><td><span class="tag tag-exam">JEE Advanced</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE + COAP</span></td></tr>
+        <tr><td>M.Sc</td><td><span class="tag tag-exam">IIT JAM</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">GATE / NET / JRF</span></td></tr>
       </table>
     </div>
- 
-    <!-- Approx Fees Summary -->
+
     <div class="sidebar-card">
       <div class="sidebar-title">Approx. Fees</div>
-      <div class="key-val"><span class="k">B.Tech (total)</span><span class="v v-gold">₹2.4–2.6L</span></div>
-      <div class="key-val"><span class="k">Integrated B.Sc–M.Sc</span><span class="v v-gold">₹20–40K</span></div>
-      <div class="key-val"><span class="k">B.Voc</span><span class="v v-gold">₹60–90K</span></div>
-      <div class="key-val"><span class="k">M.Sc</span><span class="v v-gold">₹20–50K</span></div>
-      <div class="key-val"><span class="k">MA</span><span class="v v-gold">₹15–35K</span></div>
-      <div class="key-val"><span class="k">MBA / MCA etc.</span><span class="v v-gold">₹25K–1L</span></div>
-      <div class="key-val"><span class="k">Hostel / sem</span><span class="v v-gold">₹8–15K</span></div>
+      <div class="key-val"><span class="k">B.Tech (Annual)</span><span class="v v-gold">₹2.2 – 3.0 Lakhs</span></div>
+      <div class="key-val"><span class="k">M.Tech (Total)</span><span class="v v-gold">₹1 – 2 Lakhs</span></div>
+      <div class="key-val"><span class="k">M.Sc (Total)</span><span class="v v-gold">₹50,000 – 2 Lakhs</span></div>
+      <div class="key-val"><span class="k">PhD Sem Fee</span><span class="v v-gold">₹15,000 – 30,000</span></div>
+      <div class="key-val"><span class="k">Hostel / Sem</span><span class="v v-gold">₹8,000 – 15,000</span></div>
+      <div class="key-val"><span class="k">Mess Advance / Sem</span><span class="v v-gold">₹18,000 – 25,000</span></div>
     </div>
- 
-    <!-- Placement Snapshot -->
+
     <div class="sidebar-card">
       <div class="sidebar-title">Placement Snapshot</div>
-      <div class="key-val"><span class="k">Avg. Package</span><span class="v" style="color:var(--accent-green);">₹4–6 LPA</span></div>
-      <div class="key-val"><span class="k">Top Recruiters</span><span class="v">TCS, Infosys, Wipro, Nagarro</span></div>
-      <div class="key-val"><span class="k">Mode</span><span class="v">JoSAA / CSAB</span></div>
+      <div class="key-val"><span class="k">Highest Package</span><span class="v v-gold">₹50 LPA+</span></div>
+      <div class="key-val"><span class="k">Average Package</span><span class="v" style="color:var(--accent-green);">₹18 – 22 LPA</span></div>
+      <div class="key-val"><span class="k">Top Branches</span><span class="v">CSE, AI, EE, MnC</span></div>
+      <div class="key-val"><span class="k">Top Recruiters</span><span class="v">Google, Microsoft, Amazon</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Scholarships</div>
+      <div class="key-val"><span class="k">UG</span><span class="v">Merit-cum-Means, SC/ST, NSP</span></div>
+      <div class="key-val"><span class="k">M.Tech</span><span class="v">GATE Scholarship / TA</span></div>
+      <div class="key-val"><span class="k">M.Sc</span><span class="v">IIT JAM Scholarship</span></div>
+      <div class="key-val"><span class="k">PhD</span><span class="v">PMRF, CSIR-JRF, DST INSPIRE</span></div>
     </div>
   </div><!-- /sidebar -->
 </div><!-- /content-wrap -->
- 
+
 <!-- LOGOUT MODAL -->
 <div class="modal-overlay" id="logoutModal">
   <div class="modal">
@@ -966,33 +1052,32 @@
     </div>
   </div>
 </div>
- 
+
 <!-- TOAST -->
 <div class="toast" id="toast">
   <span id="toastIcon"></span>
   <span id="toastMsg"></span>
 </div>
- 
+
 <script>
-  /* ── SHORTLIST STATE ── */
   let shortlisted = false;
- 
+
   function toggleShortlist() {
     shortlisted = !shortlisted;
     const badge   = document.getElementById('shortlistBadge');
     const navBtn  = document.getElementById('navShortlistBtn');
     const sideBtn = document.getElementById('sidebarShortlistBtn');
- 
+
     badge.textContent = shortlisted ? '1' : '0';
     badge.classList.add('pop');
     setTimeout(() => badge.classList.remove('pop'), 300);
- 
+
     if (shortlisted) {
       navBtn.classList.add('added');
       navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
       sideBtn.classList.add('added');
       sideBtn.textContent = '✅ Shortlisted';
-      showToast('⭐', 'Indian Institute of Technology Ropar added to shortlist!');
+      showToast('⭐', 'IIT Ropar added to shortlist!');
     } else {
       navBtn.classList.remove('added');
       navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
@@ -1001,8 +1086,7 @@
       showToast('🗑️', 'Removed from shortlist.');
     }
   }
- 
-  /* ── TABS ── */
+
   function switchTab(index, el) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -1010,13 +1094,12 @@
     document.getElementById('panel-' + index).classList.add('active');
     window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
   }
- 
-  /* ── STREAM DROPDOWN ── */
+
   function toggleStream(e) {
     e.stopPropagation();
     document.getElementById('streamDropdown').classList.toggle('open');
   }
- 
+
   function selectStream(el, name, icon) {
     document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
     el.classList.add('active');
@@ -1024,19 +1107,17 @@
     document.getElementById('streamDropdown').classList.remove('open');
     showToast(icon, 'Stream changed to ' + name);
   }
- 
+
   document.addEventListener('click', function(e) {
     const dd = document.getElementById('streamDropdown');
     if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
       dd.classList.remove('open');
     }
   });
- 
-  /* ── LOGOUT MODAL ── */
+
   function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
   function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
- 
-  /* ── TOAST ── */
+
   let toastTimer;
   function showToast(icon, msg) {
     const t = document.getElementById('toast');

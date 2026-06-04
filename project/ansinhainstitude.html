@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>A.N. Sinha Institute of Social Studies – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-warn { background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid var(--border); }
+  .tag-red  { background: rgba(245,101,101,0.15); color: #fc8181; border: 1px solid rgba(245,101,101,0.3); }
+
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* ── RECRUITERS ── */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-red { color: #fc8181 !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* ── PhD LIST ── */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── ADMISSIONS TAB ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* ── PLACEMENTS TAB ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ── CAMPUS LIFE TAB ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* ── CUTOFF TABLE ── */
+  .cutoff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  .cutoff-table thead tr {
+    background: rgba(245,166,35,0.1);
+    border-bottom: 1px solid var(--border);
+  }
+  .cutoff-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .cutoff-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--white);
+    font-size: 0.79rem;
+  }
+  .cutoff-table tbody tr:hover {
+    background: rgba(245,166,35,0.04);
+  }
+  .cutoff-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .cutoff-mark {
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .mark-gen  { color: var(--accent-green); }
+  .mark-obc  { color: #63b3ed; }
+  .mark-sc   { color: var(--gold); }
+  .mark-st   { color: #fc8181; }
+
+  .cutoff-note {
+    background: rgba(245,166,35,0.06);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 14px;
+  }
+  .cutoff-note strong { color: var(--white); }
+
+  .merit-formula {
+    background: rgba(99,179,237,0.07);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.78rem;
+    margin-bottom: 18px;
+  }
+  .merit-formula .mf-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #63b3ed;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .merit-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 0.79rem;
+  }
+  .merit-step:last-child { margin-bottom: 0; }
+  .step-num {
+    background: rgba(99,179,237,0.2);
+    color: #63b3ed;
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-val { color: var(--white); font-weight: 600; }
+  .step-desc { color: var(--muted); }
+
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome, User</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Arts &amp; Humanities</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Institutes list')">Institutes</a> ›
+    A.N. Sinha Institute of Social Studies
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>A.N. Sinha Institute of <span>Social Studies</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Patna, Bihar</strong></span>
+        <span class="meta-chip">🔬 <strong>Autonomous Research Institute</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1958</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.ansiss.res.in','_blank')" title="Open official website">🌐 <strong>ansiss.res.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Funding</span>
+      <span class="value">ICSSR</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Location</span>
+      <span class="value">Gandhi Maidan</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Type</span>
+      <span class="value">Autonomous</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">Research Divisions</div>
+  <div class="tab" onclick="switchTab(2,this)">Programs</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Cutoff</div>
+  <div class="tab" onclick="switchTab(6,this)">Career Paths</div>
+  <div class="tab" onclick="switchTab(7,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1958</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Autonomous Institute</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Patna, Bihar</div></div>
+          <div class="info-chip"><div class="lbl">Funding</div><div class="val">Govt. of Bihar &amp; ICSSR</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">Urban Research Campus</div></div>
+          <div class="info-chip"><div class="lbl">Focus</div><div class="val">Social Science Research</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About A.N. Sinha Institute of Social Studies</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          A.N. Sinha Institute of Social Studies (ANSISS) is one of the oldest and most prestigious social science research institutions in India. Inaugurated on <strong style="color:var(--white);">31 January 1958 by President Rajendra Prasad</strong>, it was named after Bihar leader Dr. Anugrah Narayan Sinha. The institute was later granted statutory autonomous status through the A.N. Sinha Institute of Social Studies Act, 1964 by the Government of Bihar. Located near Gandhi Maidan, Patna — on the southern bank of the River Ganga — it serves as a major centre for social science research in eastern India. The institute is funded by the <strong style="color:var(--white);">Department of Education, Government of Bihar</strong> and the <strong style="color:var(--white);">Indian Council of Social Science Research (ICSSR)</strong>. The Ph.D. course is affiliated with <strong style="color:var(--white);">Aryabhatta Knowledge University (AKU), Patna</strong>.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Centres</div>
+          <div class="fac-item"><div class="fac-icon">🏛️</div>Seminar Halls</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Lab</div>
+          <div class="fac-item"><div class="fac-icon">📡</div>Internet Facilities</div>
+          <div class="fac-item"><div class="fac-icon">🤝</div>Conference Facilities</div>
+          <div class="fac-item"><div class="fac-icon">📖</div>Reading Rooms</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel &amp; Residential Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">☕</span> Cafeteria</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gym</div>
+          <div class="hostel-item"><span class="hostel-icon">🏟️</span> Sports Complex</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Availability:</span>
+          <span style="color:var(--muted);"> Available for Researchers &amp; Trainees (Subject to Availability) — 3-storey hostel-cum-guest house</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Mission &amp; Objectives</div>
+        <div class="phd-tags" style="gap:8px;">
+          <span class="phd-tag">📖 Research in Social Sciences</span>
+          <span class="phd-tag">🏛️ Study Social &amp; Economic Problems</span>
+          <span class="phd-tag">🔬 Research &amp; Training Facilities</span>
+          <span class="phd-tag">📰 Publish Journals &amp; Books</span>
+          <span class="phd-tag">🎙️ Organize Seminars &amp; Conferences</span>
+          <span class="phd-tag">🔗 Interdisciplinary Studies</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: RESEARCH DIVISIONS ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic Divisions &amp; Research Centres</div>
+
+        <div class="course-block">
+          <span class="course-type-label">Division of Economics &amp; Agricultural Economics</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Rural Development</span>
+            <span class="phd-tag">Agricultural Economics</span>
+            <span class="phd-tag">Economic Policy</span>
+            <span class="phd-tag">Poverty Studies</span>
+            <span class="phd-tag">Development Economics</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Division of Sociology &amp; Social Anthropology</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Social Structure</span>
+            <span class="phd-tag">Rural Society</span>
+            <span class="phd-tag">Tribal Studies</span>
+            <span class="phd-tag">Social Change</span>
+            <span class="phd-tag">Community Development</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Division of Social Psychology</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Behavioural Studies</span>
+            <span class="phd-tag">Social Psychology</span>
+            <span class="phd-tag">Mental Health Research</span>
+            <span class="phd-tag">Human Development</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Division of Political Science &amp; Public Administration</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Governance</span>
+            <span class="phd-tag">Public Policy</span>
+            <span class="phd-tag">Political Systems</span>
+            <span class="phd-tag">Administrative Reforms</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Division of Statistics</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Statistical Analysis</span>
+            <span class="phd-tag">Data Research</span>
+            <span class="phd-tag">Survey Methodology</span>
+            <span class="phd-tag">Quantitative Social Research</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Centre for Social Geography</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Population Studies</span>
+            <span class="phd-tag">Regional Development</span>
+            <span class="phd-tag">Geographic Analysis</span>
+            <span class="phd-tag">Urban &amp; Rural Planning</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Centre for Non-Violence &amp; Peace</span>
+          <div class="phd-tags">
+            <span class="phd-tag">Peace Studies</span>
+            <span class="phd-tag">Gandhian Thought</span>
+            <span class="phd-tag">Conflict Resolution</span>
+            <span class="phd-tag">Social Harmony Studies</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PROGRAMS ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Certificate &amp; Training Programs</div>
+
+        <div class="course-block">
+          <span class="course-type-label">Certificate &amp; Short-Term Programs</span>
+          <div class="course-row">
+            <div class="course-name">Certificate Courses (Social Science)</div>
+            <div class="course-meta"><strong>Institute</strong>Entrance</div>
+            <div class="course-meta"><strong>Short-Term</strong>Duration</div>
+            <span class="tag tag-exam">Open</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Research Methodology Programs</div>
+            <div class="course-meta"><strong>Institute</strong>Selection</div>
+            <div class="course-meta"><strong>Short-Term</strong>Duration</div>
+            <span class="tag tag-exam">Research</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Survey Research Training</div>
+            <div class="course-meta"><strong>Institute</strong>Selection</div>
+            <div class="course-meta"><strong>Short-Term</strong>Duration</div>
+            <span class="tag tag-exam">Training</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Policy Analysis Training</div>
+            <div class="course-meta"><strong>Institute</strong>Selection</div>
+            <div class="course-meta"><strong>Short-Term</strong>Duration</div>
+            <span class="tag tag-exam">Policy</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Social Science Workshops</div>
+            <div class="course-meta"><strong>Institute</strong>Selection</div>
+            <div class="course-meta"><strong>Variable</strong>Duration</div>
+            <span class="tag tag-exam">Workshop</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Development Studies Programs</div>
+            <div class="course-meta"><strong>Institute</strong>Selection</div>
+            <div class="course-meta"><strong>Short-Term</strong>Duration</div>
+            <span class="tag tag-exam">Studies</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Programs announced through official notifications · Open to researchers &amp; students nationwide</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Research Publications</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Working Papers</span>
+            <span class="phd-tag">Monographs</span>
+            <span class="phd-tag">Policy Briefs</span>
+            <span class="phd-tag">Annual Reports</span>
+            <span class="phd-tag">Research Journals</span>
+            <span class="phd-tag">Conference Proceedings</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Major themes: Rural Development · Governance · Poverty Alleviation · Social Justice</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Internship &amp; Research Opportunities</span>
+          <div class="phd-tags">
+            <span class="phd-tag">Research Internships</span>
+            <span class="phd-tag">Project Assistance</span>
+            <span class="phd-tag">Field Survey Opportunities</span>
+            <span class="phd-tag">Social Science Exposure</span>
+            <span class="phd-tag">Academic Collaboration</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Doctoral Research (Ph.D.) Programs</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Economics &amp; Statistics</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Agricultural Economics</span>
+            <span class="phd-tag">Statistics</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Sociology</span>
+            <span class="phd-tag">Social Anthropology</span>
+            <span class="phd-tag">Social Psychology</span>
+            <span class="phd-tag">Social Geography</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Political Science &amp; Governance</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Political Science</span>
+            <span class="phd-tag">Public Administration</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">PG in Social Sciences (55% General)</span></div>
+          <div class="key-val"><span class="k">Relaxation</span><span class="v">5% for OBC / EBC / SC / ST candidates</span></div>
+          <div class="key-val"><span class="k">Affiliation</span><span class="v">Aryabhatta Knowledge University (AKU)</span></div>
+          <div class="key-val"><span class="k">Duration</span><span class="v">6 Years (incl. 6-month coursework)</span></div>
+          <div class="key-val" style="border:none"><span class="k">Reservation</span><span class="v">As per Govt. of Bihar rules (Bihar domicile only)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Check Official Notification</div>
+            <div class="tl-desc">Visit ansiss.res.in for PhD admission notifications. Applications typically open between March–April each year.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Download &amp; Submit Application</div>
+            <div class="tl-desc">Download the application form from the official website. Submit with self-attested documents, ID proof, and academic certificates before the last date.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — PhD Admission Test (PAT)</div>
+            <div class="tl-desc">Shortlisted candidates appear for the PAT — a 200-mark written test. Paper I: MCQ on GS, GK, Teaching &amp; Research Aptitude (100 marks). Paper II: Subjective — subject-specific Masters-level paper (100 marks).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Interview</div>
+            <div class="tl-desc">Candidates clearing the PAT cutoff are called for an interview worth 20 marks. Research background and proposal are evaluated by the selection panel.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Merit List &amp; Enrolment</div>
+            <div class="tl-desc">Final merit is calculated using PG percentage + PAT score (5 pts) + interview marks (20 marks). Document verification and fee payment completes enrolment.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Program &amp; Admission Summary</div>
+        <div class="course-row">
+          <div class="course-name">PhD Programs</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">PAT + Interview</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Certificate Programs</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">Official Notification</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Research Internships</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">Application Based</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Training Workshops</div>
+          <div></div>
+          <div></div>
+          <span class="tag tag-exam">Open / Invitational</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: CUTOFF ── -->
+    <div class="tab-panel" id="panel-5">
+
+      <!-- Merit Formula -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>How the Merit List is Calculated</div>
+        <div class="merit-formula">
+          <div class="mf-title">Final Merit Formula — PhD Admission (PAT-based)</div>
+          <div class="merit-step">
+            <div class="step-num">1</div>
+            <div><span class="step-val">PG Percentage Weightage</span> <span class="step-desc">— based on marks obtained in Master's degree</span></div>
+          </div>
+          <div class="merit-step">
+            <div class="step-num">2</div>
+            <div><span class="step-val">+ PAT Score (up to 5 points)</span> <span class="step-desc">— weighted points from PhD Admission Test</span></div>
+          </div>
+          <div class="merit-step">
+            <div class="step-num">3</div>
+            <div><span class="step-val">+ Interview Score (out of 20)</span> <span class="step-desc">— panel assessment of research proposal &amp; aptitude</span></div>
+          </div>
+        </div>
+
+        <!-- PAT Cutoff -->
+        <div class="card-title" style="margin-top: 4px;"><span class="dot"></span>PhD Admission Test (PAT) — Minimum Qualifying Marks</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:14px;">The PAT is 200 marks total (Paper I: 100 + Paper II: 100). Candidates must score at least the following to qualify:</p>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Min. Qualifying %</th>
+              <th>Min. Marks (out of 200)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>General (UR)</td>
+              <td><span class="cutoff-mark mark-gen">50%</span></td>
+              <td><span class="cutoff-mark mark-gen">100 / 200</span></td>
+              <td><span class="tag tag-fees">Qualifying</span></td>
+            </tr>
+            <tr>
+              <td>OBC / EBC</td>
+              <td><span class="cutoff-mark mark-obc">45%</span></td>
+              <td><span class="cutoff-mark mark-obc">90 / 200</span></td>
+              <td><span class="tag tag-exam">Qualifying</span></td>
+            </tr>
+            <tr>
+              <td>SC</td>
+              <td><span class="cutoff-mark mark-sc">45%</span></td>
+              <td><span class="cutoff-mark mark-sc">90 / 200</span></td>
+              <td><span class="tag tag-exam">Qualifying</span></td>
+            </tr>
+            <tr>
+              <td>ST</td>
+              <td><span class="cutoff-mark mark-st">45%</span></td>
+              <td><span class="cutoff-mark mark-st">90 / 200</span></td>
+              <td><span class="tag tag-exam">Qualifying</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ⚠️ <strong>Note:</strong> Clearing the PAT minimum does not guarantee admission. Final selection is merit-based — combining PG percentage, PAT score (5 pts), and interview marks (20 marks). The institute reserves the right to fill or not fill seats.
+        </div>
+      </div>
+
+      <!-- PG Eligibility Cutoff -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Eligibility Cutoff (Academic Requirement)</div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:14px;">Before applying, candidates must have secured the following minimum marks in their Master's degree:</p>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Min. PG Marks Required</th>
+              <th>Relaxation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>General (UR)</td>
+              <td><span class="cutoff-mark mark-gen">55%</span></td>
+              <td><span style="color:var(--muted);font-size:0.75rem;">No relaxation</span></td>
+            </tr>
+            <tr>
+              <td>OBC / EBC</td>
+              <td><span class="cutoff-mark mark-obc">50%</span></td>
+              <td><span style="color:#63b3ed;font-size:0.75rem;">5% relaxation</span></td>
+            </tr>
+            <tr>
+              <td>SC</td>
+              <td><span class="cutoff-mark mark-sc">50%</span></td>
+              <td><span style="color:var(--gold);font-size:0.75rem;">5% relaxation</span></td>
+            </tr>
+            <tr>
+              <td>ST</td>
+              <td><span class="cutoff-mark mark-st">50%</span></td>
+              <td><span style="color:#fc8181;font-size:0.75rem;">5% relaxation</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAT Structure -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Admission Test (PAT) — Paper Structure</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Paper</th>
+              <th>Type</th>
+              <th>Topics</th>
+              <th>Marks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Paper I</strong></td>
+              <td><span class="tag tag-exam">MCQ</span></td>
+              <td style="color:var(--muted);font-size:0.75rem;">General Studies, GK, Teaching Aptitude, Research Aptitude</td>
+              <td><span class="cutoff-mark mark-gen">100</span></td>
+            </tr>
+            <tr>
+              <td><strong>Paper II</strong></td>
+              <td><span class="tag tag-warn">Subjective</span></td>
+              <td style="color:var(--muted);font-size:0.75rem;">Subject-specific · Based on Masters-level syllabus of applied discipline</td>
+              <td><span class="cutoff-mark mark-obc">100</span></td>
+            </tr>
+            <tr>
+              <td><strong>Interview</strong></td>
+              <td><span class="tag tag-fees">Viva</span></td>
+              <td style="color:var(--muted);font-size:0.75rem;">Research proposal, subject knowledge, academic background</td>
+              <td><span class="cutoff-mark mark-sc">20</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note" style="margin-top:14px;">
+          📌 <strong>Reservation Policy:</strong> Applicable as per Govt. of Bihar rules. <strong>Only Bihar domicile candidates</strong> are eligible for reserved category benefits. The institute may or may not fill all available seats based on the merit pool.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── TAB 6: CAREER PATHS ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Career Opportunities for Researchers</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">Academia</div>
+            <div class="s-lbl">Primary Path</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">Policy</div>
+            <div class="s-lbl">Research &amp; Gov</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">NGOs</div>
+            <div class="s-lbl">Development Sector</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Career Destinations</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Universities &amp; Colleges</span>
+          <span class="recruiter-tag">Research Institutions</span>
+          <span class="recruiter-tag">Government Departments</span>
+          <span class="recruiter-tag">NGOs</span>
+          <span class="recruiter-tag">Public Policy Organizations</span>
+          <span class="recruiter-tag">International Development Agencies</span>
+          <span class="recruiter-tag">Think Tanks</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic Benefits</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          ANSISS provides researchers with access to high-impact social science projects, policy-oriented fieldwork, and academic networking with scholars from Indian and international institutions. The institute's affiliation with <strong style="color:var(--white);">ICSSR</strong> opens doors to fellowship funding, collaborative research grants, and national-level recognition. Scholars also benefit from the institute's specialized 3-floor library — visited by former PM Indira Gandhi during its Silver Jubilee in 1984 — and decades of archival social science research data.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── TAB 7: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Academic &amp; Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎙️ Academic Events &amp; Programs</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🏛️</span><div><strong>National Seminars</strong> — Regular seminars on governance, social policy, and development issues</div></div>
+            <div class="event-item"><span class="event-icon">🌍</span><div><strong>International Conferences</strong> — Hosting scholars and researchers from global institutions including Stanford University</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Memorial Lectures</strong> — Annual lectures honouring the legacy of Dr. Anugrah Narayan Sinha</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research Workshops</strong> — Hands-on training in survey methodology and data analysis</div></div>
+            <div class="event-item"><span class="event-icon">💼</span><div><strong>Faculty Development Programs</strong> — Academic interaction for faculty and visiting researchers</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">📚 Library &amp; Resources</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">📖</div>Research Journals</div>
+            <div class="fac-item"><div class="fac-icon">📗</div>Books &amp; Monographs</div>
+            <div class="fac-item"><div class="fac-icon">🏛️</div>Govt. Publications</div>
+            <div class="fac-item"><div class="fac-icon">📊</div>Statistical Documents</div>
+            <div class="fac-item"><div class="fac-icon">🎓</div>Thesis Collections</div>
+            <div class="fac-item"><div class="fac-icon">💻</div>Digital Resources</div>
+          </div>
+          <div style="margin-top:12px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;color:var(--muted);">
+            🏛️ The 3-floor central library was visited by <strong style="color:var(--white);">former PM Indira Gandhi</strong> during the institute's Silver Jubilee celebrations in 1984.
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Research Community</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Social Science Talent Search</span>
+            <span class="phd-tag">Policy Discussion Forums</span>
+            <span class="phd-tag">Academic Interaction Programs</span>
+            <span class="phd-tag">Gender Studies Groups</span>
+            <span class="phd-tag">Development Studies Circle</span>
+            <span class="phd-tag">Gandhian Studies Network</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏙️ Location Advantage</div>
+          <p style="font-size:0.8rem;color:var(--muted);line-height:1.7;">
+            Located near <strong style="color:var(--white);">Gandhi Maidan</strong> in the heart of Patna, Bihar — on the southern bank of the River Ganga — the institute enjoys proximity to Bihar government offices, the Patna High Court, and key administrative institutions, making it ideal for policy-oriented social science research. The campus holds special historical significance as <strong style="color:var(--white);">Mahatma Gandhi stayed here in 1947</strong>, a heritage the institute proudly preserves.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.ansiss.res.in','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1958</span></div>
+      <div class="key-val"><span class="k">Institute Type</span><span class="v">Autonomous Research Institute</span></div>
+      <div class="key-val"><span class="k">Funding</span><span class="v v-gold">ICSSR &amp; Govt. of Bihar</span></div>
+      <div class="key-val"><span class="k">Affiliation</span><span class="v">AKU, Patna</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Patna, Bihar</span></div>
+      <div class="key-val"><span class="k">Named After</span><span class="v">Dr. Anugrah Narayan Sinha</span></div>
+    </div>
+
+    <!-- Cutoff Snapshot in Sidebar -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cutoff Snapshot (PAT)</div>
+      <div class="key-val"><span class="k">General — PAT</span><span class="v v-green">50% (100/200)</span></div>
+      <div class="key-val"><span class="k">OBC/EBC — PAT</span><span class="v" style="color:#63b3ed;">45% (90/200)</span></div>
+      <div class="key-val"><span class="k">SC — PAT</span><span class="v v-gold">45% (90/200)</span></div>
+      <div class="key-val"><span class="k">ST — PAT</span><span class="v v-red">45% (90/200)</span></div>
+      <div class="key-val"><span class="k">PG Eligibility (Gen)</span><span class="v v-green">55% in Masters</span></div>
+      <div class="key-val"><span class="k">PG Eligibility (Res.)</span><span class="v v-gold">50% in Masters</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Administration</div>
+      <div class="key-val"><span class="k">Director (I/C)</span><span class="v">Rajiv Raushan, IAS</span></div>
+      <div class="key-val"><span class="k">Registrar (I/C)</span><span class="v">Dr. Habibullah Ansari</span></div>
+      <div class="key-val"><span class="k">Administrator</span><span class="v">Vikrant Kumar</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Admission Modes</div>
+      <table class="exam-table">
+        <tr><th>Program</th><th>Mode</th></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">PAT + Interview</span></td></tr>
+        <tr><td>Certificate</td><td><span class="tag tag-exam">Notification</span></td></tr>
+        <tr><td>Internship</td><td><span class="tag tag-exam">Application</span></td></tr>
+        <tr><td>Workshops</td><td><span class="tag tag-exam">Open / Invite</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Research Focus Areas</div>
+      <div class="key-val"><span class="k">Economics</span><span class="v v-gold">Rural &amp; Agricultural</span></div>
+      <div class="key-val"><span class="k">Sociology</span><span class="v v-gold">Tribal &amp; Social Change</span></div>
+      <div class="key-val"><span class="k">Political Sci.</span><span class="v v-gold">Governance &amp; Policy</span></div>
+      <div class="key-val"><span class="k">Statistics</span><span class="v v-gold">Survey &amp; Data Research</span></div>
+      <div class="key-val"><span class="k">Geography</span><span class="v v-gold">Population &amp; Regional</span></div>
+      <div class="key-val"><span class="k">Peace Studies</span><span class="v v-gold">Gandhian Thought</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Career Snapshot</div>
+      <div class="key-val"><span class="k">Top Sectors</span><span class="v">Academia, Policy, NGO</span></div>
+      <div class="key-val"><span class="k">Govt. Roles</span><span class="v v-green">IAS / Research Depts</span></div>
+      <div class="key-val"><span class="k">Intl. Agencies</span><span class="v">UN, World Bank, UNDP</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted institutes will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'A.N. Sinha Institute added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@
 <title>I.K. Gujral Punjab Technical University – CollegeHunt</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
+  
   :root {
     --navy: #0f1535;--navy-mid: #1a2250;--navy-card: #1e2a5e;--gold: #f5a623;
     --gold-light: #ffc152;--white: #ffffff;--muted: #a0aec0;--accent-green: #48bb78;
@@ -163,7 +164,52 @@
     .grid-3 { grid-template-columns: 1fr 1fr; }
     .stat-row { grid-template-columns:1fr 1fr; }
     .course-row { grid-template-columns: 1fr; gap: 6px; }
+  }@media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
   }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
 </style>
 </head>
 <body>

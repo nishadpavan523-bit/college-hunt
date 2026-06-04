@@ -603,3 +603,476 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--nav
   .ish-stats{display:none}
   .all-univ-header{padding:20px 16px 8px}
 }
+
+
+
+
+
+
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+/* ── LOGIN PAGE MOBILE FIX ─────────────────────────── */
+@media (max-width: 768px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    padding: 0;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px 20px;
+  }
+
+  .login-card {
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .login-card h3 {
+    font-size: 1.6rem;
+  }
+
+  /* Show mini brand on mobile since left panel is hidden */
+  .login-right::before {
+    content: '🎓 Collegehunt';
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #e8a020;
+    text-align: center;
+    margin-bottom: 20px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .login-right::after {
+  content: 'University Counselling Portal';
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #9ba8c3;
+  text-align: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+  
+}
+
+/* ── NAVBAR MOBILE FIX ─────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 12px;
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .nav-brand {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .nav-center {
+    display: none;
+  }
+
+  .nav-right {
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .stream-badge-nav {
+    display: none !important;
+  }
+
+  .shortlist-badge {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+  }
+
+  .btn-logout {
+    padding: 5px 10px;
+    font-size: 0.78rem;
+  }
+}
+@media (max-width: 768px) {
+
+  /* ── NAVBAR FIX ── */
+  .navbar {
+    padding: 0 8px !important;
+    height: 52px !important;
+    flex-wrap: nowrap !important;
+    overflow: visible;
+    gap: 4px;
+  }
+
+  .nav-brand {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    gap: 4px;
+  }
+
+  .nav-center {
+    font-size: 0.65rem;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Keep stream badge visible but smaller */
+  .stream-badge-nav {
+    display: flex !important;
+    padding: 3px 7px !important;
+    font-size: 0.62rem !important;
+    gap: 3px !important;
+    max-width: 95px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .shortlist-badge {
+    padding: 3px 8px !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+  }
+
+  .shortlist-badge span {
+    padding: 1px 5px !important;
+    font-size: 0.68rem !important;
+  }
+
+  .btn-logout {
+    padding: 4px 8px !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+  }
+
+  /* ── SEARCH BAR FIX — reduce grey gap ── */
+  .scroll-search-standalone {
+    padding: 8px 12px !important;
+    top: 52px !important;
+  }
+
+  /* ── FILTER BAR FIX ── */
+  #scrollFilterBar {
+    top: 100px !important;
+  }
+
+  #scrollFilterBar .scroll-filter-inner {
+    padding: 5px 8px !important;
+    gap: 5px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+  }
+
+  #scrollFilterBar .scroll-filter-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Keep location tag visible */
+  #navLocationTag {
+    display: flex !important;
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap;
+  }
+
+  #scrollFilterBar .scroll-filter-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    gap: 4px !important;
+    scrollbar-width: none;
+  }
+
+  #scrollFilterBar .scroll-filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  #scrollFilterBar .scroll-tab {
+    padding: 3px 8px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+}
+/* ── SEARCH BAR MOBILE FIX ─────────────────────────── */
+@media (max-width: 768px) {
+  .scroll-search-standalone {
+    top: 56px !important;
+    padding: 10px 12px !important;
+  }
+
+  #scrollSearchInput {
+    font-size: 14px !important;
+  }
+}
+
+/* ── FILTER BAR MOBILE FIX ─────────────────────────── */
+@media (max-width: 768px) {
+  #scrollFilterBar {
+    top: 110px !important;
+  }
+
+  #scrollFilterBar .scroll-filter-inner {
+    padding: 6px 10px !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #scrollFilterBar .scroll-filter-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  #navLocationTag {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+    flex-shrink: 0 !important;
+  }
+
+  #scrollFilterBar .scroll-filter-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    gap: 4px !important;
+    scrollbar-width: none;
+  }
+
+  #scrollFilterBar .scroll-filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  #scrollFilterBar .scroll-tab {
+    padding: 4px 9px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ── HERO BANNER MOBILE ────────────────────────────── */
+@media (max-width: 768px) {
+  .hero-banner {
+    padding: 24px 16px 20px;
+  }
+
+  .hero-banner h1 {
+    font-size: 1.4rem;
+  }
+
+  .hero-banner p {
+    font-size: 0.85rem;
+  }
+
+  .hero-decoration {
+    display: none;
+  }
+}
+
+/* ── SECTION JUMPER MOBILE ─────────────────────────── */
+@media (max-width: 768px) {
+  .section-jumper {
+    padding: 8px 12px;
+    gap: 6px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+
+  .section-jumper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-jumper button {
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* ── COLLEGE GRID MOBILE ───────────────────────────── */
+@media (max-width: 768px) {
+  .college-grid {
+    grid-template-columns: 1fr;
+    padding: 12px 12px 32px;
+    gap: 12px;
+  }
+
+  .institute-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .institute-section {
+    padding: 16px 12px 0;
+  }
+
+  .results-bar {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .all-univ-header {
+    padding: 16px 12px 8px;
+  }
+
+  .filter-bar {
+    padding: 10px 12px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .filter-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 5px;
+  }
+
+  .tab {
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .sort-wrap select {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}
+
+/* ── FEEDBACK MOBILE ───────────────────────────────── */
+@media (max-width: 768px) {
+  .feedback-section {
+    padding: 32px 16px;
+  }
+
+  .feedback-form-wrap {
+    padding: 20px 16px;
+  }
+
+  .feedback-name-row {
+    grid-template-columns: 1fr;
+  }
+
+  .fb-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .fb-stat-card {
+    padding: 14px 10px;
+  }
+
+  .fb-stat-num {
+    font-size: 22px;
+  }
+
+  .fb-thoughts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fb-recommend {
+    flex-direction: column;
+  }
+
+  .fb-rec-btn {
+    min-width: unset;
+  }
+}
+
+/* ── CONTACT SECTION MOBILE ────────────────────────── */
+@media (max-width: 768px) {
+  .contact-section {
+    margin: 32px 0 0;
+    padding: 1.25rem 1rem 1rem;
+    border-radius: 16px;
+  }
+
+  .cs-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .cs-name {
+    font-size: 13px;
+  }
+}
+
+/* ── FOOTER MOBILE ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .footer {
+    padding: 16px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ── MODAL MOBILE ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal {
+    border-radius: 18px 18px 0 0;
+    max-width: 100%;
+  }
+
+  .modal-lg {
+    max-width: 100%;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 768px) {
+  .login-card {
+    display: flex;
+    flex-direction: column;
+  }
+}

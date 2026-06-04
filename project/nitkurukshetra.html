@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NIT Kurukshetra – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    NIT Kurukshetra
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>NIT <span>Kurukshetra</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Kurukshetra, Haryana</strong></span>
+        <span class="meta-chip">🏛️ <strong>Public Technical University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1963</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://nitkkr.ac.in','_blank')" title="Open official website">🌐 <strong>nitkkr.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NIRF Rank 2024</span>
+      <span class="value">#81</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">~300 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Status</span>
+      <span class="value">Nat. Importance</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1963</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Public Technical University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Kurukshetra, Haryana</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Rank</div><div class="val">#81 Engineering (2024)</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~300 Acres</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">UGC · AICTE · NBA</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About NIT Kurukshetra</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          National Institute of Technology Kurukshetra (NITKKR) is one of India's premier engineering institutions. Established in <strong style="color:var(--white);">1963</strong> as Regional Engineering College (REC) Kurukshetra, it was granted the status of a National Institute of Technology in <strong style="color:var(--white);">2002</strong> and is recognized as an <strong style="color:var(--white);">Institute of National Importance</strong> under the NIT Act. Recognized by the Ministry of Education, Government of India, and approved by UGC and AICTE with multiple programs accredited by NBA, the institute is known for strong engineering education, active research, industry collaborations, and national-level placements. It features <strong style="color:var(--white);">7+ engineering departments</strong> with emerging focus areas including AI, Data Science, Cyber Security, Robotics, and Machine Learning.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">💻</div>Digital Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Centre</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeterias</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Bank &amp; ATM</div>
+          <div class="fac-item"><div class="fac-icon">🛍️</div>Shopping Complex</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> High-Speed Internet</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess Facilities</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">⚽</span> Indoor Sports</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹20,000 – ₹45,000/year &nbsp;|&nbsp; Mess charges billed separately</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+        <div class="course-block">
+          <span class="course-type-label">B.Tech · 4 Years · JEE Main + JoSAA Counselling</span>
+          <div class="course-row">
+            <div class="course-name">B.Tech Computer Engineering</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">JoSAA</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Information Technology</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">JoSAA</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Electronics &amp; Communication Engineering</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">JoSAA</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Electrical Engineering</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">JoSAA</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Mechanical Engineering</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">JoSAA</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Civil Engineering</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">JoSAA</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Production &amp; Industrial Engineering</div>
+            <div class="course-meta"><strong>JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">JoSAA</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Physics, Chemistry &amp; Mathematics · Valid JEE Main score · Admission via JoSAA Counselling · Total Fee: ₹5–6.5 Lakh (4 years)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Approximate JEE Main Cutoffs · General Category (Closing Rank)</span>
+          <div class="course-row">
+            <div class="course-name">Computer Engineering</div>
+            <div class="course-meta"><strong>Gen</strong>Category</div>
+            <div class="course-meta"><strong>JoSAA</strong>Route</div>
+            <span class="tag tag-fees">8K – 18K</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Information Technology</div>
+            <div class="course-meta"><strong>Gen</strong>Category</div>
+            <div class="course-meta"><strong>JoSAA</strong>Route</div>
+            <span class="tag tag-fees">12K – 22K</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Electronics &amp; Communication Engineering</div>
+            <div class="course-meta"><strong>Gen</strong>Category</div>
+            <div class="course-meta"><strong>JoSAA</strong>Route</div>
+            <span class="tag tag-fees">15K – 28K</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Electrical Engineering</div>
+            <div class="course-meta"><strong>Gen</strong>Category</div>
+            <div class="course-meta"><strong>JoSAA</strong>Route</div>
+            <span class="tag tag-fees">22K – 38K</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Mechanical Engineering</div>
+            <div class="course-meta"><strong>Gen</strong>Category</div>
+            <div class="course-meta"><strong>JoSAA</strong>Route</div>
+            <span class="tag tag-fees">30K – 45K</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Civil Engineering</div>
+            <div class="course-meta"><strong>Gen</strong>Category</div>
+            <div class="course-meta"><strong>JoSAA</strong>Route</div>
+            <span class="tag tag-fees">40K – 60K</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Production &amp; Industrial Engineering</div>
+            <div class="course-meta"><strong>Gen</strong>Category</div>
+            <div class="course-meta"><strong>JoSAA</strong>Route</div>
+            <span class="tag tag-fees">45K – 65K</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Cutoffs vary each year based on seat availability, category, Home State Quota, and JoSAA counselling rounds.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech · 2 Years · GATE + CCMT · ₹1–2L total</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Computer Engineering</span>
+            <span class="phd-tag">Cyber Security</span>
+            <span class="phd-tag">VLSI Design</span>
+            <span class="phd-tag">Communication Systems</span>
+            <span class="phd-tag">Embedded Systems</span>
+            <span class="phd-tag">Structural Engineering</span>
+            <span class="phd-tag">Transportation Engineering</span>
+            <span class="phd-tag">Machine Design</span>
+            <span class="phd-tag">Thermal Engineering</span>
+            <span class="phd-tag">Power Systems</span>
+            <span class="phd-tag">Control Systems</span>
+            <span class="phd-tag">Industrial Engineering</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: B.Tech/B.E. in relevant discipline · Valid GATE score preferred · Admission via CCMT Counselling</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA · 2 Years · CAT/MAT/CMAT · ₹2–3L total</span>
+          <div class="course-row">
+            <div class="course-name">MBA (Master of Business Administration)</div>
+            <div class="course-meta"><strong>CAT/MAT</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2–3L total</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Graduation in any discipline · Qualifying CAT/MAT/CMAT score + Institute Selection Process</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MCA · 2 Years · NIMCET</span>
+          <div class="course-row">
+            <div class="course-name">MCA (Master of Computer Applications)</div>
+            <div class="course-meta"><strong>NIMCET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">NIMCET</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Bachelor's degree with Mathematics · Admission through NIMCET national counselling</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc · 2 Years · IIT JAM</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.Sc Physics</span>
+            <span class="phd-tag">M.Sc Chemistry</span>
+            <span class="phd-tag">M.Sc Mathematics</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Bachelor's in relevant science stream · Admission through IIT JAM score</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Engineering Departments</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Computer Engineering</span>
+            <span class="phd-tag">Information Technology</span>
+            <span class="phd-tag">Electronics &amp; Communication Engineering</span>
+            <span class="phd-tag">Electrical Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Production Engineering</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Basic Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Management &amp; Humanities</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Management</span>
+            <span class="phd-tag">Humanities</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission Process</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree in relevant subject</span></div>
+          <div class="key-val"><span class="k">Selection Process</span><span class="v">Written Test + Interview + Research Proposal</span></div>
+          <div class="key-val"><span class="k">Duration</span><span class="v">As per UGC norms</span></div>
+          <div class="key-val" style="border:none"><span class="k">Recognition</span><span class="v">Institute of National Importance</span></div>
+        </div>
+
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Research Focus Areas:</span>
+          <span style="color:var(--muted);"> AI &amp; ML · Cyber Security · VLSI · Robotics · Renewable Energy · Smart Infrastructure · Advanced Manufacturing</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (B.Tech)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear for JEE Main</div>
+            <div class="tl-desc">Register and appear for JEE Main conducted by NTA. The score is valid for JoSAA counselling for all NIT admissions.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — JoSAA Counselling Registration</div>
+            <div class="tl-desc">Register on the JoSAA portal, fill in college and branch preferences, and lock choices before the deadline.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Seat Allotment &amp; Acceptance</div>
+            <div class="tl-desc">Accept the allotted seat online and pay the seat acceptance fee within the specified window to confirm your seat at NIT KKR.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification</div>
+            <div class="tl-desc">Report to the designated centre with original 10th, 12th marksheets, JEE scorecard, category certificate, and ID proof.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; Enrolment</div>
+            <div class="tl-desc">Complete academic fee payment and all enrolment formalities at NIT Kurukshetra to begin your program.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process (PG / PhD)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear for Relevant National Exam</div>
+            <div class="tl-desc">Appear for GATE (M.Tech), IIT JAM (M.Sc), NIMCET (MCA), CAT/MAT/CMAT (MBA), or Institute Entrance Test (PhD) as applicable.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register on CCMT / Institute Portal</div>
+            <div class="tl-desc">M.Tech candidates register on CCMT. MBA and MCA candidates apply directly through the NIT KKR admission portal.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Seat Allotment / Institute Selection</div>
+            <div class="tl-desc">M.Tech seats allotted via CCMT rounds. MBA candidates attend institute-level group discussion and interview after shortlisting.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification &amp; Fee Payment</div>
+            <div class="tl-desc">Submit degree certificates, entrance scorecards, category certificate, and ID proof. Pay program fees to complete enrolment.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">B.Tech (All Branches)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">JEE Main + JoSAA</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Tech (All Specializations)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">GATE + CCMT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CAT / MAT / CMAT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MCA</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NIMCET</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Sc (Physics / Chemistry / Maths)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">IIT JAM</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Ph.D.</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Institute Entrance + Interview</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">IT / Tech</div>
+            <div class="s-lbl">Top Sector</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">High</div>
+            <div class="s-lbl">Placement Rate</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">Active</div>
+            <div class="s-lbl">T&amp;P Cell</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Major Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Microsoft</span>
+          <span class="recruiter-tag">Google</span>
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Adobe</span>
+          <span class="recruiter-tag">Oracle</span>
+          <span class="recruiter-tag">Samsung</span>
+          <span class="recruiter-tag">Goldman Sachs</span>
+          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">Accenture</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Highlights</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          NIT Kurukshetra's dedicated Training &amp; Placement Cell facilitates strong campus recruitment across all departments. Computer Engineering and IT branches lead placements in top tech companies including Microsoft, Google, and Amazon. Core engineering disciplines — Mechanical, Civil, and Electrical — attract recruitment from core sector and PSU organizations. Internship programs are available with major technology and engineering firms. The institute's government status, national importance recognition, and NIRF ranking ensure strong credibility with both national and multinational recruiters.
+        </p>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🔧</span><div><strong>Techspardha</strong> — Major annual technical festival featuring hackathons, coding competitions, robotics events, and technical workshops</div></div>
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Confluence</strong> — Annual cultural festival featuring music, dance, literary events, and celebrity performances</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Sports Week</strong> — Inter-department athletic competitions covering cricket, football, basketball, tennis, and more</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research &amp; Innovation</strong> — Sponsored research projects, government-funded research, innovation &amp; incubation activities, and patent development programs</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🎾</div>Tennis Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏃</div>Athletics Track</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🎳</div>Indoor Sports Complex</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Societies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Coding Club</span>
+            <span class="phd-tag">Robotics Club</span>
+            <span class="phd-tag">Entrepreneurship Cell</span>
+            <span class="phd-tag">Literary Society</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Music Club</span>
+            <span class="phd-tag">Dramatics Society</span>
+            <span class="phd-tag">NSS</span>
+            <span class="phd-tag">NCC</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🔬 International Collaborations</div>
+          <p style="font-size:0.8rem;color:var(--muted);line-height:1.7;">NIT Kurukshetra has academic and research collaborations with international universities and research institutions. These support student exchange programs, joint research, faculty development, and international conferences.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://nitkkr.ac.in','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1963</span></div>
+      <div class="key-val"><span class="k">Former Name</span><span class="v">REC Kurukshetra</span></div>
+      <div class="key-val"><span class="k">Status</span><span class="v v-gold">Institute of National Importance</span></div>
+      <div class="key-val"><span class="k">NIRF Rank 2024</span><span class="v v-gold">#81 (Engineering)</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">~300 Acres</span></div>
+      <div class="key-val"><span class="k">Approvals</span><span class="v">UGC · AICTE · NBA</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Kurukshetra, Haryana</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.Tech</td><td><span class="tag tag-exam">JEE Main</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT / MAT</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-exam">NIMCET</span></td></tr>
+        <tr><td>M.Sc</td><td><span class="tag tag-exam">IIT JAM</span></td></tr>
+        <tr><td>Ph.D.</td><td><span class="tag tag-exam">Institute Test</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">B.Tech (4 Yrs)</span><span class="v v-gold">₹5–6.5 Lakh</span></div>
+      <div class="key-val"><span class="k">M.Tech Total</span><span class="v v-gold">₹1–2 Lakh</span></div>
+      <div class="key-val"><span class="k">MBA Total</span><span class="v v-gold">₹2–3 Lakh</span></div>
+      <div class="key-val"><span class="k">Hostel/Year</span><span class="v v-gold">₹20,000–₹45,000</span></div>
+      <div class="key-val"><span class="k">Mess Charges</span><span class="v v-gold">Billed Separately</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">JEE Cutoff Snapshot</div>
+      <div class="key-val"><span class="k">Computer Engg</span><span class="v" style="color:var(--accent-green);">8K – 18K</span></div>
+      <div class="key-val"><span class="k">IT</span><span class="v" style="color:var(--accent-green);">12K – 22K</span></div>
+      <div class="key-val"><span class="k">ECE</span><span class="v" style="color:var(--gold);">15K – 28K</span></div>
+      <div class="key-val"><span class="k">Electrical</span><span class="v" style="color:var(--gold);">22K – 38K</span></div>
+      <div class="key-val"><span class="k">Mechanical</span><span class="v">30K – 45K</span></div>
+      <div class="key-val"><span class="k">Civil</span><span class="v">40K – 60K</span></div>
+      <div class="key-val"><span class="k">Production</span><span class="v">45K – 65K</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'NIT Kurukshetra added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
