@@ -1605,8 +1605,17 @@ const COLLEGES = [
   {id:241, state:'Punjab', name:'Jagat Guru Nanak Dev Punjab State Open University', city:'Patiala', type:'State', estd:2019, rating:4.1, courses:['BA','BCom','BBA','MA','MSc'], page:'jgndpsou.html', fees:'₹5,000 – ₹25,000 / yr', intake:10000, accreditation:'UGC'},
   {id:242, state:'Punjab', name:'Guru Ravidas Ayurved University', city:'Hoshiarpur', type:'State', estd:2011, rating:4.0, courses:['BAMS','BHMS','BUMS','MD Ayurveda','MD Homeopathy'], page:'gururavidasayurveduniversity.html', fees:'₹50,000 – ₹2,00,000 / yr', intake:2000, accreditation:'UGC'}, 
   {id:243, state:'Tamil Nadu', name:'Rajiv Gandhi National Institute of Youth Development', city:'Sriperumbudur', type:'Institute of National Importance', estd:1993, rating:4.3, courses:['MA','MSc','MBA','PG Diploma','PhD'], page:'rajivgandhinationalinstitude.html', fees:'₹20,000 – ₹1,20,000 / yr', intake:1500, accreditation:'Ministry of Youth Affairs & Sports'},
-  
-  
+  {id:244, state:'Punjab', name:'Shaheed Bhagat Singh State University', city:'Ferozepur', type:'State', estd:1995, rating:4.2, courses:['BTech','MTech','MBA','BCA','MCA','PhD'], page:'SBSSU.html', fees:'₹35,000 – ₹1,20,000 / yr', intake:3500, accreditation:'UGC, AICTE'},
+{id:245, state:'Punjab', name:'Sri Guru Teg Bahadur State University of Law', city:'Patiala', type:'State', estd:2020, rating:4.2, courses:['LLB','BA LLB','BCom LLB','LLM','PhD'], page:'sgtbsul.html', fees:'₹40,000 – ₹1,50,000 / yr', intake:1200, accreditation:'UGC, BCI'},
+{id:246, state:'Punjab', name:'National Institute of Electronics and Information Technology', city:'Ropar', type:'Institute', estd:1995, rating:4.3, courses:['BTech','MTech','PG Diploma','Certificate','PhD'], page:'nielitropar.html', fees:'₹15,000 – ₹1,00,000 / yr', intake:1000, accreditation:'Ministry of Electronics & Information Technology'},
+{id:247, state:'Punjab', name:'Maharaja Ranjit Singh Punjab Technical University', city:'Bathinda', type:'State', estd:2015, rating:4.2, courses:['BTech','MBA','BCA','MCA','BSc','MSc','PhD'], page:'mrsptubhatinda.html', fees:'₹25,000 – ₹1,20,000 / yr', intake:10000, accreditation:'UGC, AICTE'},
+{id:248, state:'Uttar Pradesh', name:'Noida International University', city:'Greater Noida', type:'Private', estd:2010, rating:4.2, courses:['BTech','MBA','MBBS','BDS','BBA','BCA','MCA','LLB','BSc','MSc','PhD'], page:'niu.html', fees:'₹40,000 – ₹12,00,000 / yr', intake:12000, accreditation:'UGC, AICTE, NMC, DCI, BCI'},
+{id:249, state:'Punjab', name:'Maharaja Bhupinder Singh Punjab Sports University', city:'Patiala', type:'State', estd:2019, rating:4.3, courses:['BPEd','MPEd','BSc Sports Science','MBA Sports Management','PhD'], page:'mbspsu.html', fees:'₹30,000 – ₹1,50,000 / yr', intake:1500, accreditation:'UGC'},
+{id:250, state:'Punjab', name:'Guru Kashi University', city:'Talwandi Sabo', type:'Private', estd:2011, rating:4.3, courses:['BTech','MBA','BBA','BCA','MCA','BSc','MSc','PhD'], page:'gurukashiuniversity.html', fees:'₹25,000 – ₹2,00,000 / yr', intake:12000, accreditation:'UGC, AICTE, NAAC A+'},
+{id:251, state:'Punjab', name:'Desh Bhagat University', city:'Mandi Gobindgarh', type:'Private', estd:2012, rating:4.2, courses:['BTech','MBA','MBBS','BDS','BCA','MCA','LLB','PhD'], page:'deshbhagatuniversity.html', fees:'₹30,000 – ₹8,00,000 / yr', intake:15000, accreditation:'UGC, AICTE, NMC'},
+{id:252, state:'Punjab', name:'Sant Longowal Institute of Engineering and Technology', city:'Longowal', type:'Institute of National Importance', estd:1989, rating:4.4, courses:['BTech','MTech','MBA','MSc','PhD'], page:'sliet.html', fees:'₹35,000 – ₹1,00,000 / yr', intake:2500, accreditation:'Ministry of Education, AICTE'},
+{id:253, state:'Punjab', name:'Sant Baba Bhag Singh University', city:'Jalandhar', type:'Private', estd:2015, rating:4.2, courses:['BTech','MBA','BBA','BCA','MCA','BSc','MSc','LLB','PhD'], page:'santbababhagsinghuniversity.html', fees:'₹30,000 – ₹2,00,000 / yr', intake:8000, accreditation:'UGC, AICTE, NAAC'},
+{id:254, state:'Uttar Pradesh', name:'Integral University', city:'Lucknow', type:'Private', estd:2004, rating:4.1, courses:['BTech','MBA','BBA','BCA','MCA','MBBS','BPharma','LLB','BSc','MSc','PhD'], page:'iuniversity.html', fees:'₹80,000 – ₹2,50,000 / yr', intake:5000, accreditation:'UGC, NAAC A+'},
   // ==================== HARYANA ====================
   {id:28, state:'Haryana',name:'Kurukshetra University',city:'Kurukshetra',type:'Government',estd:1956,rating:4.4,courses:['BA','BSc','BCom','MA','MBA','LLB','PhD'],page:'kurukshetrauniversity.html',fees:'₹10,000 – ₹35,000 / yr',intake:5000,accreditation:'NAAC A+'},
   {id:29, state:'Haryana',name:'Maharishi Dayanand University',city:'Rohtak',type:'Government',estd:1976,rating:4.2,courses:['BA','BCom','BSc','BEd','MBA','LLB','PhD'],page:'mdurohtak.html',fees:'₹12,000 – ₹40,000 / yr',intake:4500,accreditation:'NAAC A'},
@@ -1700,6 +1709,10 @@ const COLLEGES = [
   // ==================== ASSAM ====================
   {id:110, state:'Assam',name:'Assam University',city:'Silchar',type:'Central',estd:1994,rating:4.4,courses:['B.Tech','B.Sc','B.A','B.Com','M.Sc','M.A','MBA','PhD'],page:'centraluniversityofassam.html',fees:'₹8,000 – ₹60,000 / yr',intake:1500,accreditation:'NAAC A'},
   {id:111, state:'Assam',name:'Tezpur University',city:'Tezpur',type:'Central',estd:1994,rating:4.5,courses:['BTech','MTech','MBA','MCA','MSc','MA','PhD','Diploma'],page:'tezpuruniversity.html',fees:'₹18,000 – ₹1,60,000 / yr',intake:5000,accreditation:'NAAC A+'},
+
+
+
+
 
   // ==================== DELHI ====================
   {id:112, state:'Delhi',name:'South Asian University',city:'New Delhi',type:'Central',estd:2010,rating:4.4,courses:['B.Tech CSE','M.Sc','M.Tech','M.A','MBA','LLM','PhD'],page:'southasiauniversitydelhi.html',fees:'₹40,000 – ₹1,50,000 / yr',intake:1600,accreditation:'UGC'},

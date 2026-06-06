@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Integral University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    #streamBtn span { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Integral University
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏫</div>
+    <div class="uni-title">
+      <h1>Integral <span>University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Lucknow, Uttar Pradesh, India</strong></span>
+        <span class="meta-chip">🏛️ <strong>Private University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2004</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.iul.ac.in','_blank')" title="Open official website">🌐 <strong>iul.ac.in ↗️</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC Grade</span>
+      <span class="value">A+</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Programs</span>
+      <span class="value">225+</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Students</span>
+      <span class="value">15,000+</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2004</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Private University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Lucknow, UP</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC 2(f) &amp; 12(B)</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC A+ Grade</div></div>
+          <div class="info-chip"><div class="lbl">Faculties</div><div class="val">11 Faculties / 225+ Programs</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About Integral University</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Integral University, Lucknow is a premier <strong style="color:var(--white);">NAAC A+ accredited private university</strong> established in 2004, recognized by UGC under Sections 2(f) and 12(B). Located in Lucknow, Uttar Pradesh, the university offers over <strong style="color:var(--white);">225 programs</strong> across 11 faculties including Engineering, Medical Sciences, Pharmacy, Architecture, Law, Management, Commerce, Humanities, Sciences, Agriculture, and Nursing. With a student strength of <strong style="color:var(--white);">15,000+</strong> and over 3,500 hostellers, the university is NIRF ranked and holds multiple statutory approvals including NMC, PCI, BCI, COA, and INC. It is also recognized as a <strong style="color:var(--white);">Scientific &amp; Industrial Research Organisation (SIRO)</strong> by DSIR with NABL-accredited laboratories and a NABH-accredited hospital.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Approvals &amp; Recognitions</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">✅</div>UGC Approved</div>
+          <div class="fac-item"><div class="fac-icon">🏅</div>NAAC A+ Accredited</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>NMC Approved</div>
+          <div class="fac-item"><div class="fac-icon">💊</div>PCI Approved</div>
+          <div class="fac-item"><div class="fac-icon">⚖️</div>BCI Approved</div>
+          <div class="fac-item"><div class="fac-icon">🏛️</div>COA Approved</div>
+          <div class="fac-item"><div class="fac-icon">🩺</div>INC Approved</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>SIRO by DSIR</div>
+          <div class="fac-item"><div class="fac-icon">🏆</div>NBA Accredited Programs</div>
+          <div class="fac-item"><div class="fac-icon">🧪</div>NABL Accredited Labs</div>
+          <div class="fac-item"><div class="fac-icon">🏨</div>NABH Accredited Hospital</div>
+          <div class="fac-item"><div class="fac-icon">📊</div>NIRF Ranked</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Laboratories</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeterias &amp; Food Courts</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical &amp; Hospital</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🌐</div>International Collaborations</div>
+          <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security &amp; Surveillance</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">❄️</span> Air-Conditioned Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Enabled Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess / Dining</div>
+          <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gymnasium</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Charges:</span>
+          <span style="color:var(--muted);"> Hostel Fee: ₹70,000 – ₹1.5 lakh/year &nbsp;|&nbsp; Hostellers: 3,500+ &nbsp;|&nbsp; Varies by room type (AC / Non-AC)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG COURSES -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+        <div class="course-block">
+          <span class="course-type-label">B.Tech · 4 Years · IUET / Merit · ₹1–1.5L/yr</span>
+          <div class="course-row">
+            <div class="course-name">B.Tech (All Engineering Branches)</div>
+            <div class="course-meta"><strong>IUET / Merit</strong>Admission</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1–1.5L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Physics, Chemistry &amp; Mathematics · Admission via IUET or merit · NBA Accredited programs available</div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Medical · MBBS / BDS · 4.5–5 Years · NEET · ₹15–18L/yr</span>
+          <div class="course-row">
+            <div class="course-name">MBBS (Bachelor of Medicine &amp; Bachelor of Surgery)</div>
+            <div class="course-meta"><strong>NEET</strong>Entrance</div>
+            <div class="course-meta"><strong>4.5+1 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹15–18L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BDS (Bachelor of Dental Surgery)</div>
+            <div class="course-meta"><strong>NEET</strong>Entrance</div>
+            <div class="course-meta"><strong>4+1 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Varies</span>
+          </div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Pharmacy · B.Pharm · 4 Years · NEET / Merit · ₹80K–1L/yr</span>
+          <div class="course-row">
+            <div class="course-name">B.Pharm (Bachelor of Pharmacy)</div>
+            <div class="course-meta"><strong>NEET / Merit</strong>Admission</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹80K–1L/yr</span>
+          </div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Management &amp; Commerce · 3 Years · Merit · ₹50K–90K/yr</span>
+          <div class="course-row">
+            <div class="course-name">BBA (Bachelor of Business Administration)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹50K–90K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BCA (Bachelor of Computer Applications)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹50K–90K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Com (Bachelor of Commerce)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Merit-Based</span>
+          </div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Other UG Programs</span>
+          <div class="course-row">
+            <div class="course-name">BA LL.B. (Integrated Law)</div>
+            <div class="course-meta"><strong>Merit / CLAT</strong>Admission</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Varies</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Arch (Bachelor of Architecture)</div>
+            <div class="course-meta"><strong>NATA</strong>Admission</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Varies</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. (Science Disciplines)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Merit-Based</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. Nursing</div>
+            <div class="course-meta"><strong>NEET / Merit</strong>Admission</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Varies</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG COURSES -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+        <div class="course-block">
+          <span class="course-type-label">M.Tech · 2 Years · GATE / Merit · ₹1–1.5L/yr</span>
+          <div class="course-row">
+            <div class="course-name">M.Tech (Engineering Disciplines)</div>
+            <div class="course-meta"><strong>GATE / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1–1.5L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: B.E./B.Tech in relevant discipline · Admission via GATE score or merit</div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">MBA · 2 Years · CAT / MAT / IUET · ₹1–2L/yr</span>
+          <div class="course-row">
+            <div class="course-name">MBA (Master of Business Administration)</div>
+            <div class="course-meta"><strong>CAT / MAT / IUET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1–2L/yr</span>
+          </div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Medical PG · MD / MS · 3 Years · NEET PG</span>
+          <div class="course-row">
+            <div class="course-name">MD / MS (Medical Specializations)</div>
+            <div class="course-meta"><strong>NEET PG</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">Varies</span>
+          </div>
+        </div>
+        <div class="course-block">
+          <span class="course-type-label">Other PG Programs · 2 Years · Merit / Entrance</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">MCA (Computer Applications)</span>
+            <span class="phd-tag">M.Pharm (Pharmacy)</span>
+            <span class="phd-tag">M.Sc. (Science Disciplines)</span>
+            <span class="phd-tag">M.A. (Humanities)</span>
+            <span class="phd-tag">M.Com. (Commerce)</span>
+            <span class="phd-tag">LL.M. (Law)</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">Eligibility: Relevant bachelor's degree · Admission via merit and/or IUET / national entrance exams · Fee varies by program</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Engineering &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Engineering &amp; Technology</span>
+            <span class="phd-tag">Computer Science</span>
+            <span class="phd-tag">Biotechnology</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Medical &amp; Allied Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Medical Sciences</span>
+            <span class="phd-tag">Pharmacy</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Basic Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Management, Law &amp; Humanities</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Management</span>
+            <span class="phd-tag">Law</span>
+            <span class="phd-tag">Humanities</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Selection Process</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree in relevant discipline</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">55% or equivalent CGPA</span></div>
+          <div class="key-val"><span class="k">Admission Mode</span><span class="v">Online Application (IUET)</span></div>
+          <div class="key-val"><span class="k">Selection Process</span><span class="v">Entrance Exam + Interview</span></div>
+          <div class="key-val" style="border:none"><span class="k">Scholarships</span><span class="v">Merit &amp; Category-based available</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Research Highlights:</span>
+          <span style="color:var(--muted);"> SIRO recognized by DSIR · NABL Accredited Laboratories · NABH Accredited Hospital · Strong research culture in medical and technical fields · International MoUs &amp; collaborations.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Online Application</div>
+            <div class="tl-desc">Visit the official Integral University website (iul.ac.in) and fill out the online application form for your desired program.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — IUET / Merit / National Entrance Exam</div>
+            <div class="tl-desc">Appear for IUET (Integral University Entrance Test) or submit relevant national exam scores. Medical programs require NEET; B.Arch requires NATA; Law may use CLAT.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Document Submission</div>
+            <div class="tl-desc">Upload 10th &amp; 12th marksheets, transfer certificate, category certificate (if applicable), entrance scorecard, and ID proof to the admissions portal.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Merit List &amp; Seat Confirmation</div>
+            <div class="tl-desc">Merit list is published on the university website. Confirm your seat by paying the admission fee within the stipulated time.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Scholarship Assessment</div>
+            <div class="tl-desc">Apply for applicable scholarships at the time of admission — merit-based, minority, sports, EWS, and government scholarship schemes are available.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG / PhD Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">M.Tech — GATE Score / IUET</div>
+            <div class="tl-desc">Apply with a valid GATE score in the relevant engineering discipline, or via IUET / merit where applicable.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">MBA — CAT / MAT / IUET + GD/PI</div>
+            <div class="tl-desc">Submit CAT / MAT / CMAT scores or appear for IUET. Group Discussion and Personal Interview may be conducted for final selection.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">MD / MS — NEET PG</div>
+            <div class="tl-desc">Medical PG admissions are based on NEET PG scores and centralized counselling by the respective authority.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">PhD — Entrance Exam + Interview</div>
+            <div class="tl-desc">Apply via the official portal. Appear for the PhD entrance examination followed by an interview before the departmental selection committee. Merit list published after evaluation.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">B.Tech</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">IUET / Merit / JEE Main</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBBS / BDS / B.Sc. Nursing</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NEET</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Arch</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NATA</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">BA LL.B.</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Merit / CLAT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CAT / MAT / IUET</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Tech</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">GATE / IUET / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MD / MS</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NEET PG</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">IU Entrance Test + Interview</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">TCS, Infosys</div>
+            <div class="s-lbl">Top Recruiters</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">Active Cell</div>
+            <div class="s-lbl">Career &amp; Guidance Cell</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">Engg, Med, Mgmt</div>
+            <div class="s-lbl">Key Departments</div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:0.78rem;color:var(--muted);">
+          Integral University has a dedicated <strong style="color:var(--white);">Career Guidance &amp; Development Cell</strong> that facilitates campus recruitment, internship opportunities, skill development, and soft-skill training. Placements are considered average to moderate depending on the branch, with students advised to develop additional skills for better career outcomes.
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Major Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">HCL</span>
+          <span class="recruiter-tag">Deloitte</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Training &amp; Development Initiatives</div>
+        <div class="course-row">
+          <div class="course-name">Soft Skills &amp; Personality Development Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Regular Sessions</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Internship Opportunities</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Available</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Technical Skill Development Training</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Conducted Regularly</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">Industry-Oriented Education Model</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Active</span>
+        </div>
+        <div style="margin-top:12px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--gold);font-weight:600;">Student Insight:</span>
+          <span style="color:var(--muted);"> Engineering and medical infrastructure is considered good. Placements vary by department — students are encouraged to develop additional skills for stronger career outcomes.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Cultural Fest</strong> — Annual celebrations with music, dance, drama, and inter-faculty competitions across creative disciplines</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Sports Meet</strong> — University-level athletic competitions across cricket, football, badminton, volleyball, and more</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Technical Symposium</strong> — Seminars, workshops, paper presentations, and innovation showcases across engineering and science faculties</div></div>
+            <div class="event-item"><span class="event-icon">🏥</span><div><strong>Medical &amp; Health Events</strong> — Health camps, awareness drives, and clinical activities organized by the Faculty of Medical Sciences</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony honouring graduating students across all 11 faculties and doctoral scholars</div></div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Wellness &amp; Yoga</div>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">🏫 Faculties &amp; Academic Community</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Faculty of Engineering &amp; IT</span>
+            <span class="phd-tag">Faculty of Medical Sciences</span>
+            <span class="phd-tag">Faculty of Pharmacy</span>
+            <span class="phd-tag">Faculty of Architecture</span>
+            <span class="phd-tag">Faculty of Law</span>
+            <span class="phd-tag">Faculty of Management</span>
+            <span class="phd-tag">Faculty of Commerce</span>
+            <span class="phd-tag">Faculty of Humanities &amp; Social Sciences</span>
+            <span class="phd-tag">Faculty of Science</span>
+            <span class="phd-tag">Faculty of Agriculture</span>
+            <span class="phd-tag">Faculty of Nursing &amp; Allied Health Sciences</span>
+          </div>
+        </div>
+        <div class="campus-section">
+          <div class="campus-section-title">💬 Student Insights</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">⭐</span><div>Students appreciate the <strong>infrastructure and campus facilities</strong>, particularly in engineering and medical disciplines</div></div>
+            <div class="event-item"><span class="event-icon">🏥</span><div>Engineering and medical infrastructure is considered <strong>good and well-equipped</strong></div></div>
+            <div class="event-item"><span class="event-icon">💼</span><div>Placements are considered <strong>average to moderate</strong> depending on the branch and individual skill sets</div></div>
+            <div class="event-item"><span class="event-icon">🔧</span><div>Students recommend <strong>developing additional skills</strong> for better career opportunities</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.iul.ac.in','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2004</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">Private University</span></div>
+      <div class="key-val"><span class="k">NAAC</span><span class="v v-gold">A+ Grade</span></div>
+      <div class="key-val"><span class="k">NIRF</span><span class="v v-gold">Ranked Institution</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">IU / IUL</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Lucknow, UP</span></div>
+      <div class="key-val"><span class="k">Students</span><span class="v">15,000+</span></div>
+      <div class="key-val"><span class="k">Faculties</span><span class="v">11</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.Tech</td><td><span class="tag tag-exam">IUET / Merit</span></td></tr>
+        <tr><td>MBBS / BDS</td><td><span class="tag tag-exam">NEET</span></td></tr>
+        <tr><td>B.Arch</td><td><span class="tag tag-exam">NATA</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT / MAT / IUET</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE / IUET</span></td></tr>
+        <tr><td>MD / MS</td><td><span class="tag tag-exam">NEET PG</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">IU Entrance + Interview</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">B.Tech (Annual)</span><span class="v v-gold">₹1 – 1.5 Lakhs</span></div>
+      <div class="key-val"><span class="k">MBA (Annual)</span><span class="v v-gold">₹1 – 2 Lakhs</span></div>
+      <div class="key-val"><span class="k">MBBS (Annual)</span><span class="v v-gold">₹15 – 18 Lakhs</span></div>
+      <div class="key-val"><span class="k">B.Pharm (Annual)</span><span class="v v-gold">₹80,000 – 1 Lakh</span></div>
+      <div class="key-val"><span class="k">BBA / BCA (Annual)</span><span class="v v-gold">₹50,000 – 90,000</span></div>
+      <div class="key-val"><span class="k">Hostel (Annual)</span><span class="v v-gold">₹70,000 – 1.5 Lakhs</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Career Cell</span><span class="v v-gold">Active &amp; Dedicated</span></div>
+      <div class="key-val"><span class="k">Top Recruiters</span><span class="v">TCS, Infosys, Wipro, HCL</span></div>
+      <div class="key-val"><span class="k">Internships</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+      <div class="key-val"><span class="k">Skill Training</span><span class="v">Regular Sessions</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Scholarships</div>
+      <div class="key-val"><span class="k">Merit-based</span><span class="v">Academic Performance</span></div>
+      <div class="key-val"><span class="k">Minority</span><span class="v">Minority Scholarships</span></div>
+      <div class="key-val"><span class="k">EWS</span><span class="v">Economically Weaker Students</span></div>
+      <div class="key-val"><span class="k">Sports</span><span class="v">Sports Achievers</span></div>
+      <div class="key-val"><span class="k">Government</span><span class="v">Govt. Scholarship Schemes</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approvals</div>
+      <div class="key-val"><span class="k">UGC</span><span class="v v-gold">2(f) &amp; 12(B)</span></div>
+      <div class="key-val"><span class="k">NAAC</span><span class="v v-gold">A+ Grade</span></div>
+      <div class="key-val"><span class="k">NMC (Medical)</span><span class="v v-gold">Approved</span></div>
+      <div class="key-val"><span class="k">PCI (Pharmacy)</span><span class="v v-gold">Approved</span></div>
+      <div class="key-val"><span class="k">BCI (Law)</span><span class="v v-gold">Approved</span></div>
+      <div class="key-val"><span class="k">COA (Architecture)</span><span class="v v-gold">Approved</span></div>
+      <div class="key-val"><span class="k">INC (Nursing)</span><span class="v v-gold">Approved</span></div>
+      <div class="key-val"><span class="k">DSIR</span><span class="v v-gold">SIRO Recognized</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'Integral University added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
