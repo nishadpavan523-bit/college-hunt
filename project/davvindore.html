@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Devi Ahilya Vishwavidyalaya – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --accent-blue: #63b3ed;
+    --accent-red: #fc8181;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy); color: var(--gold); border-radius: 50%;
+    width: 18px; height: 18px; font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown {
+    position: absolute; top: calc(100% + 8px); left: 0;
+    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 8px; min-width: 220px; display: none; z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999;
+    display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero {
+    background: linear-gradient(135deg, #0d1f3c 0%, #1a3a6e 40%, #0d2a52 100%);
+    padding: 40px 48px 36px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+    width: 300px; height: 300px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.15);
+  }
+  .hero::after {
+    content: ''; position: absolute; right: 95px; top: 50%; transform: translateY(-50%);
+    width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.08);
+  }
+  .hero-ring3 {
+    position: absolute; right: 130px; top: 50%; transform: translateY(-50%);
+    width: 140px; height: 140px; border-radius: 50%; border: 1px solid rgba(99,179,237,0.12);
+  }
+
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px; background: var(--white); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .meta-chip strong { color: var(--white); }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px; padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center; min-width: 110px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-rank { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-institute { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-research { background: rgba(159,122,234,0.15); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-rank .value { color: var(--gold); }
+  .hb-institute .value { color: var(--accent-blue); }
+  .hb-research .value { color: #b794f4; }
+
+  .elite-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .elite-badge {
+    background: rgba(252,129,74,0.12); border: 1px solid rgba(252,129,74,0.3);
+    border-radius: 6px; padding: 3px 12px; font-size: 0.7rem; font-weight: 700;
+    color: #fbd38d; letter-spacing: 0.03em;
+  }
+  .elite-badge.blue { background: rgba(99,179,237,0.1); border-color: rgba(99,179,237,0.3); color: var(--accent-blue); }
+  .elite-badge.green { background: rgba(72,187,120,0.1); border-color: rgba(72,187,120,0.3); color: var(--accent-green); }
+  .elite-badge.purple { background: rgba(159,122,234,0.1); border-color: rgba(159,122,234,0.3); color: #b794f4; }
+
+  .tabs-bar {
+    background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; padding: 0 48px; gap: 4px; overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer;
+    border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 36px 32px;
+    display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 24px; margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 10px 14px; font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px;
+    align-items: center; padding: 11px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px; transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-gate { background: rgba(159,122,234,0.15); color: #b794f4; border: 1px solid rgba(159,122,234,0.25); }
+  .tag-elite { background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid var(--border); }
+  .tag-mp { background: rgba(252,129,74,0.15); color: #fc8181; border: 1px solid rgba(252,129,74,0.3); }
+  .tag-merit { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem;
+    transition: all 0.2s;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted);
+  }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 18px; }
+  .stat-box {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 16px; text-align: center;
+  }
+  .stat-box .s-val { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+  .stat-box .s-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--card-bg); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); line-height: 1.6; }
+
+  .rank-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .rank-table th {
+    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .rank-table td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted); vertical-align: middle;
+  }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .rank-table td:first-child { color: var(--white); font-weight: 500; }
+  .rank-1 { color: var(--gold) !important; font-weight: 700; font-size: 1rem; }
+  .rank-top { color: var(--accent-green) !important; font-weight: 600; }
+  .rank-mid { color: var(--accent-blue) !important; font-weight: 600; }
+
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th {
+    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .cutoff-table td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted); vertical-align: middle;
+  }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-very-high { color: #fc8181 !important; font-weight: 700; }
+  .level-high { color: #f6ad55 !important; font-weight: 600; }
+  .level-moderate { color: var(--accent-green) !important; font-weight: 600; }
+
+  .sidebar-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 22px; margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 60%; }
+  .v-gold { color: var(--gold) !important; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-blue { color: var(--accent-blue) !important; }
+  .v-purple { color: #b794f4 !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block; width: 100%; padding: 12px; border-radius: 10px; border: none;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+    transition: all 0.2s; font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .campus-section { margin-bottom: 22px; }
+  .campus-section-title { font-size: 0.78rem; font-weight: 600; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .event-list { display: flex; flex-direction: column; gap: 8px; }
+  .event-item { display: flex; align-items: flex-start; gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; }
+  .event-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+  .cutoff-note {
+    background: rgba(99,179,237,0.08); border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 10px; padding: 12px 16px; font-size: 0.75rem; color: #90cdf4;
+    margin-top: 14px; line-height: 1.6;
+  }
+
+  .research-highlight {
+    background: linear-gradient(135deg, rgba(159,122,234,0.1) 0%, rgba(99,179,237,0.08) 100%);
+    border: 1px solid rgba(159,122,234,0.25); border-radius: 12px; padding: 16px;
+    margin-bottom: 14px;
+  }
+  .research-highlight .rh-title { font-size: 0.78rem; font-weight: 700; color: #b794f4; margin-bottom: 6px; }
+  .research-highlight .rh-val { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+  .research-highlight .rh-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+    z-index:999; display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card); border:1px solid var(--border); border-radius:20px;
+    padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Multi-Stream</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Multi-Stream','📖')">📖 Multi-Stream</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+        <div class="stream-opt" onclick="selectStream(this,'Medical &amp; Health Sciences','🏥')">🏥 Medical &amp; Health Sciences</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-ring3"></div>
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Devi Ahilya Vishwavidyalaya, Indore
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>Devi Ahilya <span>Vishwavidyalaya, Indore</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Indore, Madhya Pradesh</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Central University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1964</strong></span>
+        <span class="meta-chip">🏷️ <strong>DAVV</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.dauniv.ac.in/','_blank')">🌐 <strong>dauniv.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC</span>
+      <span class="value">A+ Grade</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">NIRF 2024</span>
+      <span class="value">#51–100</span>
+    </div>
+    <div class="hero-badge hb-institute">
+      <span class="label">Affiliated Colleges</span>
+      <span class="value">800+ Colleges</span>
+    </div>
+    <div class="hero-badge hb-research">
+      <span class="label">Campus Area</span>
+      <span class="value">~130 Acres</span>
+    </div>
+  </div>
+  <div class="elite-strip">
+    <span class="elite-badge">Named After Maharani Ahilyabai Holkar</span>
+    <span class="elite-badge blue">NAAC A+ Accredited</span>
+    <span class="elite-badge green">800+ Affiliated Colleges</span>
+    <span class="elite-badge purple">UGC Recognized – State Univ.</span>
+    <span class="elite-badge">NIRF Ranked University</span>
+    <span class="elite-badge blue">Established 1964 – Indore, M.P.</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Programs</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Programs</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD / Research</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Rankings &amp; Cut-Off</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1964</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Central University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Indore, Madhya Pradesh</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC / AICTE / Govt. of M.P.</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~130 Acres (Takshashila)</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Rank</div><div class="val" style="color:var(--gold);">#51–100 (University, 2024)</div></div>
+          <div class="info-chip"><div class="lbl">Affiliated Colleges</div><div class="val">800+ Colleges</div></div>
+          <div class="info-chip"><div class="lbl">Teaching Departments</div><div class="val">35+ Departments</div></div>
+          <div class="info-chip"><div class="lbl">Total Students</div><div class="val">~5 Lakh+ (Affiliated)</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About DAVV, Indore</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.8;">
+          <strong style="color:var(--white);">Devi Ahilya Vishwavidyalaya (DAVV)</strong>, established in <strong style="color:var(--white);">1964</strong> in <strong style="color:var(--white);">Indore, Madhya Pradesh</strong>, is named after the revered <strong style="color:var(--white);">Maharani Ahilyabai Holkar</strong>, the legendary queen of Indore who transformed the city into a cultural and administrative powerhouse. DAVV is one of the largest and most prestigious universities in central India, affiliating over <strong style="color:var(--white);">800+ colleges</strong> across the <strong style="color:var(--white);">Indore and Ujjain divisions</strong> of Madhya Pradesh, serving more than <strong style="color:var(--white);">5 lakh students</strong>. Accredited by <strong style="color:var(--white);">NAAC with A+ Grade</strong> and ranked by NIRF, DAVV's main teaching campus at <strong style="color:var(--white);">Takshashila (Khandwa Road, Indore)</strong> houses 35+ departments offering programs across Engineering, Science, Commerce, Law, Management, Arts, Social Sciences, Pharmacy, Library Science, and Journalism. DAVV is especially known for its flagship institutes — <strong style="color:var(--white);">SGSITS (Engineering)</strong>, <strong style="color:var(--white);">IMS (Management)</strong>, and the <strong style="color:var(--white);">School of Computer Science &amp; IT (SCSIT)</strong> — which produce graduates recruited by top national and multinational companies. The university plays a central role in making <strong style="color:var(--white);">Indore</strong> — India's cleanest city — a growing hub for education, startup culture, and economic development in central India.
+        </p>
+      </div>
+
+      <!-- Research Highlights -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Research &amp; Innovation Highlights</div>
+        <div class="grid-2" style="margin-bottom:14px;">
+          <div class="research-highlight">
+            <div class="rh-title">Annual Research Publications</div>
+            <div class="rh-val">3,000+</div>
+            <div class="rh-sub">Indexed Journals &amp; Conferences / Year</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">PhD Scholars Enrolled</div>
+            <div class="rh-val">2,500+</div>
+            <div class="rh-sub">Active PhD Research Scholars</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Recognized Research Centres</div>
+            <div class="rh-val">40+</div>
+            <div class="rh-sub">Research Centres &amp; Labs across departments</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Industry / Govt. Projects</div>
+            <div class="rh-val">₹50+ Cr</div>
+            <div class="rh-sub">Funded Research Projects (DST, DBT, UGC, SERB)</div>
+          </div>
+        </div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🤖</span><div><strong>Artificial Intelligence &amp; Data Science</strong> — SCSIT runs advanced research in machine learning, NLP, computer vision, and cloud computing with industry collaborations</div></div>
+          <div class="event-item"><span class="event-icon">🧬</span><div><strong>Pharmaceutical &amp; Life Sciences Research</strong> — School of Pharmacy conducts cutting-edge drug discovery, pharmacognosy, and bioinformatics research</div></div>
+          <div class="event-item"><span class="event-icon">⚗️</span><div><strong>Chemistry &amp; Material Science</strong> — Active research in nanomaterials, green chemistry, and applied chemistry funded by DST and SERB grants</div></div>
+          <div class="event-item"><span class="event-icon">📡</span><div><strong>Electronics &amp; Communication Research</strong> — SGSITS and Electronics department pursue research in VLSI, wireless systems, and embedded technology</div></div>
+          <div class="event-item"><span class="event-icon">📊</span><div><strong>Economics, Finance &amp; Social Sciences</strong> — School of Economics and IMS conduct applied research in development economics, behavioral finance, and public policy</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities (Takshashila Campus)</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library (DAVV)</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research &amp; Science Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centres / Labs</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex &amp; Ground</div>
+          <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Seminar Hall &amp; Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🩺</div>Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria &amp; Canteen</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>Green Takshashila Campus</div>
+          <div class="fac-item"><div class="fac-icon">🚀</div>Innovation &amp; Startup Cell</div>
+          <div class="fac-item"><div class="fac-icon">📡</div>e-Learning &amp; SWAYAM Portal</div>
+          <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security &amp; CCTV</div>
+        </div>
+
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span>🏠</span> Boys Hostels (On-Campus)</div>
+          <div class="hostel-item"><span>🏡</span> Girls Hostels (Separate Blocks)</div>
+          <div class="hostel-item"><span>📶</span> Wi-Fi Enabled Hostels</div>
+          <div class="hostel-item"><span>🍽️</span> Mess &amp; Dining Facilities</div>
+          <div class="hostel-item"><span>📖</span> Common Reading Rooms</div>
+          <div class="hostel-item"><span>🏆</span> Sports &amp; Recreation Spaces</div>
+          <div class="hostel-item"><span>🩺</span> On-Campus Health Centre</div>
+          <div class="hostel-item"><span>🔒</span> Secure Campus Environment</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹10,000 – ₹30,000/year (hostel rent) + Mess charges separate · Fees vary by block/sharing · SC/ST students eligible for full fee reimbursement · Fellowship-holders receive additional support</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG PROGRAMS -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Programs</div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;font-size:0.8rem;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--gold);">Note:</strong> DAVV offers UG programs both at its <strong style="color:var(--white);">constituent teaching departments</strong> (direct admission) and through <strong style="color:var(--white);">800+ affiliated colleges</strong> across Indore and Ujjain divisions. Admission is through <strong style="color:var(--white);">MP DTE online counselling (Engineering)</strong>, <strong style="color:var(--white);">DAVV CET (Science/Commerce/Arts)</strong>, and <strong style="color:var(--white);">merit-based direct admission</strong> for some programs.
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.E. / B.Tech · 4 Years · MP DTE / JEE Main</span>
+          <div class="course-row">
+            <div class="course-name">B.E. – Computer Science &amp; Engineering</div>
+            <div class="course-meta"><strong>MP DTE / JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-mp">₹70K – ₹1.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Electronics &amp; Communication</div>
+            <div class="course-meta"><strong>MP DTE / JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-mp">₹70K – ₹1.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Mechanical Engineering</div>
+            <div class="course-meta"><strong>MP DTE / JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-mp">₹70K – ₹1.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Civil Engineering</div>
+            <div class="course-meta"><strong>MP DTE / JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-mp">₹70K – ₹1.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Electrical &amp; Electronics Engg.</div>
+            <div class="course-meta"><strong>MP DTE / JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-mp">₹70K – ₹1.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Information Technology</div>
+            <div class="course-meta"><strong>MP DTE / JEE Main</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-mp">₹70K – ₹1.5L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:6px;">Primary Engg. College: SGSITS (Shri G.S. Institute of Technology &amp; Science, Indore) — one of the top engineering colleges in M.P., affiliated to DAVV</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Sc. · 3 Years · DAVV CET / Merit</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Physics / Chemistry / Mathematics</div>
+            <div class="course-meta"><strong>Merit / DAVV CET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹10K – ₹40K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Computer Science</div>
+            <div class="course-meta"><strong>Merit / DAVV CET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹15K – ₹50K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Biotechnology</div>
+            <div class="course-meta"><strong>Merit / DAVV CET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹15K – ₹50K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Electronics</div>
+            <div class="course-meta"><strong>Merit / DAVV CET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹15K – ₹50K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Microbiology</div>
+            <div class="course-meta"><strong>Merit / DAVV CET</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹15K – ₹50K/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Com. / BBA / BCA · 3 Years · Merit / DAVV CET</span>
+          <div class="course-row">
+            <div class="course-name">B.Com. – General / Hons.</div>
+            <div class="course-meta"><strong>Merit Based</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹8K – ₹30K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BBA – Bachelor of Business Administration</div>
+            <div class="course-meta"><strong>DAVV CET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹20K – ₹60K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BCA – Bachelor of Computer Applications</div>
+            <div class="course-meta"><strong>DAVV CET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹20K – ₹60K/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">BA / B.Lib / LLB / B.J.M.C. · 3–5 Years · Merit</span>
+          <div class="course-row">
+            <div class="course-name">BA – Arts &amp; Humanities (Multiple Subjects)</div>
+            <div class="course-meta"><strong>Merit Based</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹5K – ₹20K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">LLB – Bachelor of Law (Integrated / 3-Year)</div>
+            <div class="course-meta"><strong>CLAT / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3–5 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹15K – ₹40K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.J.M.C. – Journalism &amp; Mass Communication</div>
+            <div class="course-meta"><strong>DAVV CET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹20K – ₹50K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Lib – Library &amp; Information Science</div>
+            <div class="course-meta"><strong>Merit Based</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Yr</strong>Duration</div>
+            <span class="tag tag-merit">₹10K – ₹20K/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Pharm – Pharmacy</div>
+            <div class="course-meta"><strong>MP DTE / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-merit">₹40K – ₹1L/yr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG PROGRAMS -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Programs</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech / M.E. · 2 Years · GATE / MP PG DTE</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.Tech – Computer Science &amp; Engineering</span>
+            <span class="phd-tag">M.Tech – Software Engineering</span>
+            <span class="phd-tag">M.Tech – Electronics &amp; Communication</span>
+            <span class="phd-tag">M.Tech – VLSI Design</span>
+            <span class="phd-tag">M.Tech – Power Electronics</span>
+            <span class="phd-tag">M.Tech – Structural Engineering</span>
+            <span class="phd-tag">M.Tech – Machine Design</span>
+            <span class="phd-tag">M.Tech – Thermal Engineering</span>
+            <span class="phd-tag">M.Tech – Environmental Engineering</span>
+            <span class="phd-tag">M.Tech – Information Technology</span>
+            <span class="phd-tag">M.Tech – Nano Technology</span>
+            <span class="phd-tag">M.Tech – Artificial Intelligence &amp; ML</span>
+            <span class="phd-tag">M.Tech – Data Science</span>
+            <span class="phd-tag">M.Tech – Cyber Security</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.E./B.Tech · Admission: GATE Score / MP PG DTE Counselling · GATE Scholarship: ₹12,400/month · Fee: ₹30,000 – ₹1 Lakh/year (varies by institute)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. · 2 Years · DAVV CET / IIT JAM / Merit</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.Sc. – Physics</span>
+            <span class="phd-tag">M.Sc. – Chemistry</span>
+            <span class="phd-tag">M.Sc. – Mathematics</span>
+            <span class="phd-tag">M.Sc. – Statistics</span>
+            <span class="phd-tag">M.Sc. – Computer Science</span>
+            <span class="phd-tag">M.Sc. – Biotechnology</span>
+            <span class="phd-tag">M.Sc. – Microbiology</span>
+            <span class="phd-tag">M.Sc. – Biochemistry</span>
+            <span class="phd-tag">M.Sc. – Electronics</span>
+            <span class="phd-tag">M.Sc. – Environmental Science</span>
+            <span class="phd-tag">M.Sc. – Geography</span>
+            <span class="phd-tag">M.Sc. – Food Technology</span>
+            <span class="phd-tag">M.Sc. – Applied Geology</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Sc. in relevant subject · Admission: DAVV CET / IIT JAM (some programs) / Merit · Fee: ₹15,000 – ₹50,000/year</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA / PGDM · 2 Years · CAT / MAT / DAVV CET</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">MBA – Marketing</span>
+            <span class="phd-tag">MBA – Finance</span>
+            <span class="phd-tag">MBA – Human Resource Management</span>
+            <span class="phd-tag">MBA – Operations Management</span>
+            <span class="phd-tag">MBA – International Business</span>
+            <span class="phd-tag">MBA – IT Management</span>
+            <span class="phd-tag">MBA – Retail Management</span>
+            <span class="phd-tag">MBA – Agribusiness</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Any graduate · Admission: CAT / MAT / CMAT / DAVV CET · Primary Institute: IMS (Institute of Management Studies), DAVV — Top-ranked B-school in M.P. · Fee: ₹80,000 – ₹2 Lakh/year</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MCA / M.Com / MA / LLM / M.Pharm · 1–2 Years</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">MCA – Computer Applications</span>
+            <span class="phd-tag">MCA – Data Science Specialization</span>
+            <span class="phd-tag">M.Com – Commerce &amp; Finance</span>
+            <span class="phd-tag">MA – Economics</span>
+            <span class="phd-tag">MA – English</span>
+            <span class="phd-tag">MA – Hindi</span>
+            <span class="phd-tag">MA – History</span>
+            <span class="phd-tag">MA – Political Science</span>
+            <span class="phd-tag">MA – Sociology</span>
+            <span class="phd-tag">MA – Social Work (MSW)</span>
+            <span class="phd-tag">MA – Journalism &amp; Mass Communication</span>
+            <span class="phd-tag">MA – Public Administration</span>
+            <span class="phd-tag">LLM – Master of Law</span>
+            <span class="phd-tag">M.Lib – Library Science</span>
+            <span class="phd-tag">M.Pharm – Pharmacy</span>
+            <span class="phd-tag">M.Ed – Education</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Relevant UG degree · Admission: DAVV CET / Merit / CLAT PG (LLM) · Fee: ₹10,000 – ₹60,000/year depending on program</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD / RESEARCH -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs — Research Areas</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Engineering &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Computer Science &amp; Engineering</span>
+            <span class="phd-tag">Information Technology</span>
+            <span class="phd-tag">Electronics &amp; Communication</span>
+            <span class="phd-tag">Electrical Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Artificial Intelligence &amp; ML</span>
+            <span class="phd-tag">Nano Technology</span>
+            <span class="phd-tag">Data Science</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Basic &amp; Applied Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics &amp; Statistics</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Microbiology</span>
+            <span class="phd-tag">Biochemistry</span>
+            <span class="phd-tag">Environmental Science</span>
+            <span class="phd-tag">Food Technology</span>
+            <span class="phd-tag">Applied Geology</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce, Management &amp; Law</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Business Administration (MBA/PhD)</span>
+            <span class="phd-tag">Commerce &amp; Finance</span>
+            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Law (LLM to PhD)</span>
+            <span class="phd-tag">Public Administration</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Humanities &amp; Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">English Literature</span>
+            <span class="phd-tag">Hindi Literature</span>
+            <span class="phd-tag">History &amp; Archaeology</span>
+            <span class="phd-tag">Political Science</span>
+            <span class="phd-tag">Sociology</span>
+            <span class="phd-tag">Social Work</span>
+            <span class="phd-tag">Geography</span>
+            <span class="phd-tag">Mass Communication</span>
+            <span class="phd-tag">Library &amp; Information Science</span>
+            <span class="phd-tag">Education</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Pharmacy &amp; Health Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Pharmaceutical Sciences</span>
+            <span class="phd-tag">Pharmacognosy</span>
+            <span class="phd-tag">Pharmaceutics</span>
+            <span class="phd-tag">Pharmacology</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.25);border-radius:10px;padding:16px;">
+          <div style="font-size:0.78rem;font-weight:600;color:#b794f4;margin-bottom:10px;">PhD Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree in relevant subject (55%+)</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">55% in PG (50% for SC/ST/OBC)</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">DAVV Research Entrance Test (RET) / UGC-NET / GATE</span></div>
+          <div class="key-val"><span class="k">Selection</span><span class="v">RET Exam + Research Interview by Department</span></div>
+          <div class="key-val" style="border:none"><span class="k">Duration</span><span class="v">3 Years (Full-Time) / 5 Years (Part-Time)</span></div>
+        </div>
+
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Fellowships &amp; Stipends</div>
+          <div class="key-val"><span class="k">UGC-NET JRF Fellowship</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
+          <div class="key-val"><span class="k">CSIR JRF Fellowship</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
+          <div class="key-val"><span class="k">GATE Scholarship (M.Tech)</span><span class="v" style="color:var(--accent-green);">₹12,400/month</span></div>
+          <div class="key-val"><span class="k">DAVV Research Fellowship</span><span class="v" style="color:var(--accent-green);">₹8,000 – ₹15,000/month</span></div>
+          <div class="key-val"><span class="k">DST INSPIRE / SERB Grant</span><span class="v" style="color:var(--accent-green);">Applicable</span></div>
+          <div class="key-val" style="border:none"><span class="k">MP State Research Fellowship</span><span class="v" style="color:var(--accent-green);">Applicable (M.P. Govt.)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear for Relevant Entrance Exam</div>
+            <div class="tl-desc">Engineering (B.E./B.Tech): Appear in JEE Main (national) or MP Pre-Engineering Test (MPET) if conducted. PG Engineering (M.Tech): Appear in GATE. Science/Commerce/Arts UG-PG: Appear in DAVV CET (Common Entrance Test), conducted by DAVV online every year. MBA: CAT / MAT / CMAT / DAVV CET. LLB/LLM: CLAT / Merit. PhD: DAVV Research Entrance Test (RET) or qualify UGC-NET/GATE (exempted from written test).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register on DAVV / MP DTE Portal</div>
+            <div class="tl-desc">For Engineering programs: register on the MP DTE online portal (dte.mponline.gov.in). For all other programs at DAVV constituent departments: register on the official DAVV admission portal (dauniv.ac.in). Fill all personal, academic, and entrance details and upload required documents within the announced application window.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Fill College / Department Preferences</div>
+            <div class="tl-desc">For Engineering via MP DTE: fill college and branch preferences during online counselling. For DAVV direct programs: fill department preferences in the DAVV online portal. Seat allotment is based on entrance rank / merit, category (General/OBC/SC/ST/EWS), and number of available seats. Multiple counselling rounds are conducted.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification</div>
+            <div class="tl-desc">After seat allotment, report to the designated college/department for physical document verification. Carry originals of 10th and 12th marksheets, entrance scorecard (JEE/DAVV CET/GATE/CAT etc.), category certificate, domicile certificate (M.P. domicile for state quota), income certificate (if applying for scholarship), and passport-size photographs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; Enrollment</div>
+            <div class="tl-desc">Pay tuition fees online or at the college as per the seat allotment letter. SC/ST students of M.P. domicile are eligible for full fee reimbursement under state scholarship schemes. After fee payment, complete the enrollment process at the college/department and collect your student ID card and academic schedule.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — DAVV Enrollment Number &amp; Exam Registration</div>
+            <div class="tl-desc">Upon enrollment, students receive a unique DAVV enrollment/registration number. This is used for semester exam registration, admit card generation, result access, and degree issuance. Ensure timely registration for each semester's examination on the DAVV exam portal to avoid any academic penalty.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">B.E. / B.Tech – Engineering Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-mp">JEE Main / MP DTE</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Sc. / BCA / BBA / BA / B.Com</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">DAVV CET / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Tech – Engineering PG Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-gate">GATE / MP PG DTE</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Sc. – Science PG Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">DAVV CET / IIT JAM</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA – Management Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CAT / MAT / CMAT / DAVV CET</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">LLB / LLM – Law Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CLAT / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MCA – Computer Applications</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">DAVV CET / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD – All Departments</div>
+          <div></div><div></div>
+          <span class="tag tag-gate">DAVV RET / UGC-NET / GATE</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Fee Support</div>
+        <div class="phd-tags">
+          <span class="phd-tag">SC/ST Fee Reimbursement (M.P. Govt.)</span>
+          <span class="phd-tag">OBC Scholarship (State &amp; Central)</span>
+          <span class="phd-tag">National Scholarship Portal (NSP)</span>
+          <span class="phd-tag">Post-Matric Scholarship (Minority)</span>
+          <span class="phd-tag">GATE Scholarship (M.Tech GATE students)</span>
+          <span class="phd-tag">UGC-NET JRF (PhD)</span>
+          <span class="phd-tag">CSIR JRF (PhD – Science)</span>
+          <span class="phd-tag">DST INSPIRE Fellowship</span>
+          <span class="phd-tag">DAVV Research Fellowship (PhD)</span>
+          <span class="phd-tag">Chief Minister Medhavi Vidyarthi Yojana (M.P.)</span>
+          <span class="phd-tag">Gaon Ki Beti Yojana (M.P. – Girls)</span>
+          <span class="phd-tag">Pratibha Kiran Yojana (Urban Girls – M.P.)</span>
+          <span class="phd-tag">AICTE Pragati Scholarship (Girls)</span>
+          <span class="phd-tag">EWS Scholarship</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement &amp; Career Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹20–50 LPA</div>
+            <div class="s-lbl">Highest Package (SGSITS/IMS)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹4–10 LPA</div>
+            <div class="s-lbl">Average Package</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">70–85%</div>
+            <div class="s-lbl">Placement Rate (Top Institutes)</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">IT / Core / Finance</div>
+            <div class="s-lbl">Top Career Sectors</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">300+</div>
+            <div class="s-lbl">Companies Visiting Annually</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">CAT / GATE / GRE</div>
+            <div class="s-lbl">Higher Studies Pathway</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Career Pathways</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">💻</span><div><strong>IT &amp; Software Companies</strong> — Infosys, Wipro, TCS, Cognizant, Capgemini, HCL, Tech Mahindra recruit extensively from SGSITS and SCSIT. Top performers secure offers from Accenture, Amazon, and other product companies at ₹15–50 LPA</div></div>
+          <div class="event-item"><span class="event-icon">📈</span><div><strong>Management &amp; Consulting</strong> — IMS (Institute of Management Studies) DAVV, one of central India's top B-schools, produces MBA graduates recruited at EY, KPMG, Deloitte, HDFC Bank, Axis Bank, Flipkart at ₹8–30 LPA</div></div>
+          <div class="event-item"><span class="event-icon">🏭</span><div><strong>Core Engineering &amp; Manufacturing</strong> — BHEL, L&amp;T, Crompton, Mahindra, Tata Motors, and Thermax recruit mechanical, civil, and electrical engineers from SGSITS and affiliated colleges</div></div>
+          <div class="event-item"><span class="event-icon">🏦</span><div><strong>Banking, Finance &amp; Insurance</strong> — HDFC, ICICI, Axis, SBI, LIC, and Kotak Mahindra Bank recruit B.Com, MBA-Finance, and Economics graduates for roles in wealth management, banking operations, and corporate finance</div></div>
+          <div class="event-item"><span class="event-icon">🎓</span><div><strong>Higher Studies (CAT / GATE / UPSC)</strong> — Large proportion of DAVV graduates pursue IIM-level MBA (via CAT), M.Tech at IITs/NITs (via GATE), Civil Services (IAS/IPS), or MS/MBA abroad. Indore is home to India's top CAT coaching ecosystem, which benefits DAVV students</div></div>
+          <div class="event-item"><span class="event-icon">💊</span><div><strong>Pharmaceutical Industry</strong> — M.Pharm and B.Pharm graduates from DAVV's pharmacy school are recruited by Sun Pharma, Cipla, Dr. Reddy's, Lupin, and domestic pharmaceutical companies for R&amp;D and production roles</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Cognizant</span>
+          <span class="recruiter-tag">Capgemini</span>
+          <span class="recruiter-tag">HCL Technologies</span>
+          <span class="recruiter-tag">Tech Mahindra</span>
+          <span class="recruiter-tag">Accenture</span>
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">EY</span>
+          <span class="recruiter-tag">KPMG</span>
+          <span class="recruiter-tag">HDFC Bank</span>
+          <span class="recruiter-tag">ICICI Bank</span>
+          <span class="recruiter-tag">Axis Bank</span>
+          <span class="recruiter-tag">L&amp;T</span>
+          <span class="recruiter-tag">BHEL</span>
+          <span class="recruiter-tag">Mahindra &amp; Mahindra</span>
+          <span class="recruiter-tag">Sun Pharma</span>
+          <span class="recruiter-tag">Cipla</span>
+          <span class="recruiter-tag">Crompton Greaves</span>
+          <span class="recruiter-tag">Flipkart</span>
+          <span class="recruiter-tag">Byju's</span>
+          <span class="recruiter-tag">Mphasis</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at DAVV</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Utsav – Annual Cultural &amp; Technical Festival</strong> — DAVV's flagship university-level annual fest featuring cultural performances, technical competitions, hackathons, street plays, and music events drawing thousands of students across Indore</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Youth Festival (Yuva Utsav)</strong> — Inter-university cultural youth festival held under AIU guidelines with competitions in classical music, folk dance, drama, fine arts, and literary events across departments</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>DAVV Research Conference &amp; Science Symposium</strong> — Annual research showcase and symposium where faculty and PhD scholars present papers, posters, and innovation projects with industry experts and academicians as keynote speakers</div></div>
+            <div class="event-item"><span class="event-icon">💡</span><div><strong>Startup &amp; Innovation Conclave</strong> — Annual event organized by DAVV's entrepreneurship cell inviting Indore-based startups, investors, and industry leaders to interact with students and support new ventures from campus</div></div>
+            <div class="event-item"><span class="event-icon">⚽</span><div><strong>Inter-Department Sports Championships</strong> — University-level sports tournaments across cricket, football, volleyball, kabaddi, athletics, badminton, and chess among all DAVV departments and affiliated college teams</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Modern Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Court</div>
+            <div class="fac-item"><div class="fac-icon">♟️</div>Chess &amp; Indoor Games</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Societies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Student Council (DAVV)</span>
+            <span class="phd-tag">IEEE Student Branch (SGSITS)</span>
+            <span class="phd-tag">CSI Chapter (SGSITS/SCSIT)</span>
+            <span class="phd-tag">Entrepreneurship Cell (E-Cell)</span>
+            <span class="phd-tag">Robotics &amp; Innovation Club</span>
+            <span class="phd-tag">Photography &amp; Film Club</span>
+            <span class="phd-tag">Cultural &amp; Dance Society</span>
+            <span class="phd-tag">Music Club</span>
+            <span class="phd-tag">Debate &amp; Elocution Society</span>
+            <span class="phd-tag">Literary Circle</span>
+            <span class="phd-tag">NSS Unit</span>
+            <span class="phd-tag">NCC Platoon</span>
+            <span class="phd-tag">Coding &amp; Competitive Programming Club</span>
+            <span class="phd-tag">Quiz Club</span>
+            <span class="phd-tag">Trekking &amp; Adventure Society</span>
+            <span class="phd-tag">Science &amp; Environment Club</span>
+          </div>
+        </div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:0.78rem;margin-top:8px;">
+          <span style="color:var(--gold);font-weight:600;">📍 Indore City Advantage:</span>
+          <span style="color:var(--muted);"> DAVV is located in <strong style="color:var(--white);">Indore</strong> — India's cleanest city (7 consecutive years), a major commercial and educational hub. Students benefit from excellent connectivity, a thriving startup ecosystem, top CAT coaching institutes, affordable cost of living, and one of the safest and most student-friendly city environments in central India. The Indore metro project further improves campus accessibility.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: RANKINGS & CUT-OFF -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Rankings &amp; Recognition</div>
+        <table class="rank-table">
+          <thead>
+            <tr>
+              <th>Ranking Body</th>
+              <th>Category</th>
+              <th>Rank / Score</th>
+              <th>Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>NIRF India Rankings</td>
+              <td>University</td>
+              <td><span class="rank-top">#51–100</span></td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>NIRF India Rankings</td>
+              <td>Management (IMS)</td>
+              <td><span class="rank-top">#51–75</span></td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>NAAC Accreditation</td>
+              <td>National</td>
+              <td><span class="rank-1">A+ Grade</span></td>
+              <td>2023</td>
+            </tr>
+            <tr>
+              <td>UGC Recognition</td>
+              <td>State University</td>
+              <td><span class="rank-top">Fully Recognized (Sec. 12B)</span></td>
+              <td>Ongoing</td>
+            </tr>
+            <tr>
+              <td>MP Govt. &amp; AIU</td>
+              <td>Central India</td>
+              <td><span class="rank-top">Top University in M.P.</span></td>
+              <td>Ongoing</td>
+            </tr>
+            <tr>
+              <td>Outlook / India Today</td>
+              <td>University Rankings</td>
+              <td><span class="rank-mid">Top 50 State Universities</span></td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>AICTE Approval</td>
+              <td>Technical Programs</td>
+              <td><span class="rank-top">All Technical Programs Approved</span></td>
+              <td>Ongoing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off — B.E. (MP DTE / JEE Main 2024)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Branch / College</th>
+              <th>Category</th>
+              <th>JEE Main / MP DTE Rank</th>
+              <th>Competition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CSE – SGSITS Indore (Top DAVV College)</td>
+              <td>General (UR)</td>
+              <td>JEE Main: Top 30,000 – 60,000</td>
+              <td><span class="level-very-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>ECE – SGSITS Indore</td>
+              <td>General (UR)</td>
+              <td>JEE Main: Top 50,000 – 90,000</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>Mechanical / Civil – SGSITS Indore</td>
+              <td>General (UR)</td>
+              <td>JEE Main: Top 80,000 – 1,50,000</td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>CSE – Other Affiliated Engg. Colleges</td>
+              <td>General (UR)</td>
+              <td>MP DTE Rank: Top 5,000 – 30,000</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>All Branches – SC / ST Quota</td>
+              <td>SC / ST</td>
+              <td>Lower ranks / category-specific cutoffs</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ SGSITS (Shri G.S. Institute of Technology &amp; Science) is the premier DAVV-affiliated engineering college with highly competitive JEE Main cutoffs comparable to top NITs in state quota. Other DAVV-affiliated private colleges have less competitive cutoffs. Refer to MP DTE (dte.mponline.gov.in) for official college-wise previous-year cutoffs by branch and category.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off — DAVV CET (UG/PG Science &amp; Management)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Admission Route</th>
+              <th>Expected Score / %ile</th>
+              <th>Competition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>MBA – IMS DAVV (Top B-School M.P.)</td>
+              <td>CAT / DAVV CET</td>
+              <td>CAT: 85–95 %ile / DAVV CET: Top Scores</td>
+              <td><span class="level-very-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc. – Computer Science / Biotech</td>
+              <td>DAVV CET</td>
+              <td>DAVV CET: 70–90 Percentile</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc. – Physics / Chemistry / Maths</td>
+              <td>DAVV CET / Merit</td>
+              <td>DAVV CET: 60–80 Percentile</td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>MCA – SCSIT (School of CS &amp; IT)</td>
+              <td>DAVV CET</td>
+              <td>DAVV CET: 75–90 Percentile</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – GATE Route (SGSITS)</td>
+              <td>GATE Score</td>
+              <td>GATE Score: 600–800+</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.Sc. / B.Com / BA – Direct</td>
+              <td>Merit / DAVV CET</td>
+              <td>12th Marks: 60–85%+ (Dept. dependent)</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ DAVV CET is conducted online by Devi Ahilya Vishwavidyalaya for direct admissions to its constituent departments. Cutoffs vary year-to-year based on number of applicants. Refer to dauniv.ac.in for official DAVV CET previous-year merit lists and cutoff scores by department and category.</div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.dauniv.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1964</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State Central University</span></div>
+      <div class="key-val"><span class="k">Named After</span><span class="v v-purple">Maharani Ahilyabai Holkar</span></div>
+      <div class="key-val"><span class="k">NIRF 2024</span><span class="v v-gold">#51–100 (University)</span></div>
+      <div class="key-val"><span class="k">NAAC</span><span class="v v-green">A+ Accredited</span></div>
+      <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v v-blue">800+</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">~130 Acres, Indore</span></div>
+      <div class="key-val"><span class="k">Departments</span><span class="v">35+</span></div>
+      <div class="key-val"><span class="k">Total Students</span><span class="v">~5 Lakh+ (Affiliated)</span></div>
+      <div class="key-val"><span class="k">City</span><span class="v">Indore – India's Cleanest City</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Program</th><th>Exam</th></tr>
+        <tr><td>B.E./B.Tech</td><td><span class="tag tag-mp">JEE Main / MP DTE</span></td></tr>
+        <tr><td>B.Sc./BCA/BBA</td><td><span class="tag tag-exam">DAVV CET</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-gate">GATE / MP PG DTE</span></td></tr>
+        <tr><td>M.Sc.</td><td><span class="tag tag-exam">DAVV CET / JAM</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT / MAT / DAVV CET</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-exam">DAVV CET</span></td></tr>
+        <tr><td>LLB/LLM</td><td><span class="tag tag-exam">CLAT / Merit</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-gate">DAVV RET / NET / GATE</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Per Year)</div>
+      <div class="key-val"><span class="k">B.E. (Affiliated Colleges)</span><span class="v v-gold">₹70K – ₹1.5L/yr</span></div>
+      <div class="key-val"><span class="k">B.Sc. / BA / B.Com</span><span class="v v-gold">₹5K – ₹40K/yr</span></div>
+      <div class="key-val"><span class="k">BCA / BBA</span><span class="v v-gold">₹20K – ₹60K/yr</span></div>
+      <div class="key-val"><span class="k">M.Tech</span><span class="v v-gold">₹30K – ₹1L/yr</span></div>
+      <div class="key-val"><span class="k">M.Sc.</span><span class="v v-gold">₹15K – ₹50K/yr</span></div>
+      <div class="key-val"><span class="k">MBA (IMS)</span><span class="v v-gold">₹80K – ₹2L/yr</span></div>
+      <div class="key-val"><span class="k">MCA</span><span class="v v-gold">₹20K – ₹60K/yr</span></div>
+      <div class="key-val"><span class="k">PhD</span><span class="v v-gold">Nominal + Fellowship</span></div>
+      <div class="key-val"><span class="k">Hostel/yr</span><span class="v v-gold">₹10,000 – ₹30,000</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cut-Off Snapshot</div>
+      <div class="key-val"><span class="k">CSE – SGSITS (JEE Main)</span><span class="v" style="color:#fc8181;">Top 30K–60K Rank</span></div>
+      <div class="key-val"><span class="k">MBA – IMS (CAT)</span><span class="v" style="color:#fc8181;">85–95 %ile</span></div>
+      <div class="key-val"><span class="k">M.Sc. CS / Biotech (CET)</span><span class="v" style="color:#f6ad55;">70–90 %ile</span></div>
+      <div class="key-val"><span class="k">M.Tech GATE (SGSITS)</span><span class="v" style="color:#f6ad55;">600–800+ Score</span></div>
+      <div class="key-val"><span class="k">MCA – SCSIT (CET)</span><span class="v" style="color:#f6ad55;">75–90 %ile</span></div>
+      <div class="key-val"><span class="k">B.Sc. / BA / B.Com</span><span class="v" style="color:var(--accent-green);">60–85%+ (12th Marks)</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">JEE Main Rank / CAT %ile / DAVV CET %ile (indicative)</div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Highest Package</span><span class="v v-gold">₹20L – ₹50L+</span></div>
+      <div class="key-val"><span class="k">Average Package</span><span class="v v-gold">₹4 – ₹10 LPA</span></div>
+      <div class="key-val"><span class="k">Top Sectors</span><span class="v v-green">IT / Finance / Pharma</span></div>
+      <div class="key-val"><span class="k">Top IT Recruiters</span><span class="v v-green">Infosys / TCS / HCL</span></div>
+      <div class="key-val"><span class="k">Top Mgmt. Recruiters</span><span class="v v-blue">Deloitte / EY / HDFC</span></div>
+      <div class="key-val"><span class="k">Higher Studies</span><span class="v v-purple">CAT / GATE / GRE / UPSC</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Notable DAVV Institutes</div>
+      <div class="key-val"><span class="k">SGSITS</span><span class="v v-gold">Top Engg. College M.P.</span></div>
+      <div class="key-val"><span class="k">IMS DAVV</span><span class="v v-gold">Top MBA in M.P.</span></div>
+      <div class="key-val"><span class="k">SCSIT</span><span class="v v-gold">School of CS &amp; IT</span></div>
+      <div class="key-val"><span class="k">School of Law</span><span class="v v-gold">LLB / LLM Programs</span></div>
+      <div class="key-val"><span class="k">School of Pharmacy</span><span class="v v-gold">B.Pharm / M.Pharm</span></div>
+      <div class="key-val"><span class="k">School of Economics</span><span class="v v-gold">MA / PhD Economics</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">All these are constituent/affiliated institutes under DAVV. SGSITS and IMS are autonomous institutes with separate admission processes.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'DAVV Indore added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      document.getElementById('streamDropdown').classList.remove('open');
+    }
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

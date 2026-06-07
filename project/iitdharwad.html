@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IIT Dharwad – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --accent-blue: #63b3ed;
+    --accent-red: #fc8181;
+    --accent-purple: #b794f4;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Poppins',sans-serif; background:var(--navy); color:var(--white); min-height:100vh; }
+
+  /* NAV */
+  nav {
+    background:var(--navy); border-bottom:1px solid rgba(255,255,255,0.07);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 32px; height:60px; position:sticky; top:0; z-index:100;
+  }
+  .nav-logo { font-family:'Raleway',sans-serif; font-size:1.3rem; color:var(--gold); display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-logo span { color:var(--white); }
+  .nav-right { display:flex; align-items:center; gap:12px; }
+  .nav-btn { padding:6px 16px; border-radius:20px; font-size:0.78rem; font-weight:600; cursor:pointer; border:none; display:flex; align-items:center; gap:6px; font-family:'Poppins',sans-serif; transition:all 0.18s; }
+  .btn-stream { background:var(--navy-card); color:var(--white); border:1px solid var(--border); position:relative; }
+  .btn-stream:hover { background:var(--tag-bg); border-color:var(--gold); color:var(--gold); }
+  .btn-shortlist { background:var(--gold); color:var(--navy); }
+  .btn-shortlist:hover { background:var(--gold-light); }
+  .btn-shortlist.added { background:var(--accent-green); color:var(--white); }
+  .btn-logout { background:transparent; color:var(--white); border:1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color:#f56565; color:#f56565; }
+  .badge { background:var(--navy); color:var(--gold); border-radius:50%; width:18px; height:18px; font-size:0.65rem; display:inline-flex; align-items:center; justify-content:center; font-weight:700; transition:all 0.2s; }
+  .badge.pop { animation:badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown { position:absolute; top:calc(100% + 8px); left:0; background:var(--navy-card); border:1px solid var(--border); border-radius:12px; padding:8px; min-width:220px; display:none; z-index:200; box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display:block; animation:fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding:8px 12px; border-radius:8px; font-size:0.78rem; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background 0.15s; }
+  .stream-opt:hover { background:var(--tag-bg); color:var(--gold); }
+  .stream-opt.active { background:var(--tag-bg); color:var(--gold); font-weight:600; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:28px; right:28px; background:var(--navy-card); border:1px solid var(--border); border-radius:12px; padding:12px 20px; font-size:0.82rem; font-weight:500; color:var(--white); z-index:9999; display:flex; align-items:center; gap:10px; box-shadow:0 8px 32px rgba(0,0,0,0.5); transform:translateY(80px); opacity:0; transition:all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events:none; }
+  .toast.show { transform:translateY(0); opacity:1; }
+
+  /* HERO */
+  .hero {
+    background:linear-gradient(135deg, #0e1f40 0%, #152c5e 45%, #1a3a4e 100%);
+    padding:40px 48px 36px; position:relative; overflow:hidden;
+  }
+  .hero::before { content:''; position:absolute; right:60px; top:50%; transform:translateY(-50%); width:280px; height:280px; border-radius:50%; border:2px solid rgba(245,166,35,0.15); }
+  .hero::after { content:''; position:absolute; right:95px; top:50%; transform:translateY(-50%); width:200px; height:200px; border-radius:50%; border:1px solid rgba(99,179,237,0.1); }
+  .hero-ring3 { position:absolute; right:130px; top:50%; transform:translateY(-50%); width:120px; height:120px; border-radius:50%; border:1px solid rgba(72,187,120,0.1); }
+
+  .breadcrumb { font-size:0.75rem; color:var(--muted); margin-bottom:14px; }
+  .breadcrumb a { color:var(--gold); text-decoration:none; cursor:pointer; }
+  .breadcrumb a:hover { text-decoration:underline; }
+  .uni-header { display:flex; align-items:flex-start; gap:22px; margin-bottom:22px; }
+  .uni-logo { width:70px; height:70px; background:var(--white); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:2rem; flex-shrink:0; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family:'Raleway',sans-serif; font-size:1.7rem; font-weight:800; line-height:1.2; margin-bottom:6px; }
+  .uni-title h1 span { color:var(--gold); }
+  .uni-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+  .meta-chip { background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.12); border-radius:20px; padding:4px 14px; font-size:0.72rem; color:var(--muted); display:flex; align-items:center; gap:5px; }
+  .meta-chip strong { color:var(--white); }
+  .meta-chip.clickable { cursor:pointer; transition:all 0.18s; }
+  .meta-chip.clickable:hover { border-color:var(--gold); color:var(--gold); }
+
+  .hero-badges { display:flex; gap:12px; flex-wrap:wrap; }
+  .hero-badge { border-radius:10px; padding:10px 20px; display:flex; flex-direction:column; align-items:center; min-width:110px; }
+  .hb-naac { background:rgba(72,187,120,0.15); border:1px solid rgba(72,187,120,0.3); }
+  .hb-rank { background:rgba(245,166,35,0.12); border:1px solid var(--border); }
+  .hb-campus { background:rgba(99,179,237,0.12); border:1px solid rgba(99,179,237,0.3); }
+  .hb-new { background:rgba(159,122,234,0.15); border:1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  .hero-badge .value { font-size:1rem; font-weight:700; margin-top:2px; }
+  .hb-naac .value { color:var(--accent-green); }
+  .hb-rank .value { color:var(--gold); }
+  .hb-campus .value { color:var(--accent-blue); }
+  .hb-new .value { color:var(--accent-purple); }
+
+  .elite-strip { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+  .elite-badge { background:rgba(252,129,74,0.12); border:1px solid rgba(252,129,74,0.3); border-radius:6px; padding:3px 12px; font-size:0.7rem; font-weight:700; color:#fbd38d; letter-spacing:0.03em; }
+  .elite-badge.blue { background:rgba(99,179,237,0.1); border-color:rgba(99,179,237,0.3); color:var(--accent-blue); }
+  .elite-badge.green { background:rgba(72,187,120,0.1); border-color:rgba(72,187,120,0.3); color:var(--accent-green); }
+  .elite-badge.purple { background:rgba(159,122,234,0.1); border-color:rgba(159,122,234,0.3); color:var(--accent-purple); }
+
+  /* TABS */
+  .tabs-bar { background:var(--navy-mid); border-bottom:1px solid rgba(255,255,255,0.07); display:flex; padding:0 48px; gap:4px; overflow-x:auto; }
+  .tab { padding:14px 20px; font-size:0.82rem; font-weight:500; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; transition:all 0.2s; user-select:none; }
+  .tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+  .tab:hover:not(.active) { color:var(--white); }
+
+  /* LAYOUT */
+  .content-wrap { max-width:1200px; margin:0 auto; padding:36px 32px; display:grid; grid-template-columns:1fr 320px; gap:28px; align-items:start; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+
+  /* CARDS */
+  .card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:24px; margin-bottom:22px; }
+  .card-title { font-size:0.95rem; font-weight:700; color:var(--white); margin-bottom:18px; display:flex; align-items:center; gap:8px; }
+  .card-title .dot { width:4px; height:18px; background:var(--gold); border-radius:2px; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .info-chip { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:10px 14px; font-size:0.78rem; }
+  .info-chip .lbl { color:var(--muted); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:3px; }
+  .info-chip .val { font-weight:600; color:var(--white); }
+
+  .course-block { margin-bottom:26px; }
+  .course-block:last-child { margin-bottom:0; }
+  .course-type-label { font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); background:var(--tag-bg); border:1px solid var(--border); border-radius:6px; padding:3px 10px; display:inline-block; margin-bottom:14px; }
+  .course-row { display:grid; grid-template-columns:1fr auto auto auto; gap:12px; align-items:center; padding:11px 14px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); margin-bottom:8px; transition:background 0.2s; }
+  .course-row:hover { background:rgba(245,166,35,0.06); border-color:var(--border); }
+  .course-name { font-size:0.82rem; font-weight:500; }
+  .course-meta { font-size:0.72rem; color:var(--muted); text-align:center; }
+  .course-meta strong { display:block; color:var(--white); font-size:0.8rem; }
+  .tag { border-radius:6px; padding:3px 9px; font-size:0.68rem; font-weight:600; white-space:nowrap; }
+  .tag-exam { background:rgba(99,179,237,0.15); color:#63b3ed; border:1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background:rgba(72,187,120,0.12); color:#68d391; border:1px solid rgba(72,187,120,0.25); }
+  .tag-gate { background:rgba(159,122,234,0.15); color:var(--accent-purple); border:1px solid rgba(159,122,234,0.25); }
+  .tag-elite { background:rgba(245,166,35,0.15); color:var(--gold); border:1px solid var(--border); }
+
+  .facility-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .fac-item { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:12px; text-align:center; font-size:0.78rem; transition:all 0.2s; }
+  .fac-item:hover { border-color:var(--border); background:var(--tag-bg); }
+  .fac-icon { font-size:1.4rem; margin-bottom:5px; }
+
+  .hostel-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .hostel-item { display:flex; align-items:center; gap:8px; font-size:0.8rem; }
+
+  .phd-category { margin-bottom:14px; }
+  .phd-cat-label { font-size:0.72rem; font-weight:600; color:var(--gold); margin-bottom:8px; }
+  .phd-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .phd-tag { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:4px 10px; font-size:0.72rem; color:var(--muted); }
+
+  .recruiter-list { display:flex; flex-wrap:wrap; gap:10px; }
+  .recruiter-tag { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:7px 16px; font-size:0.8rem; font-weight:500; transition:all 0.2s; }
+  .recruiter-tag:hover { background:var(--tag-bg); border-color:var(--border); color:var(--gold); }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.15rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .timeline { position:relative; padding-left:28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--card-bg); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); line-height:1.65; }
+
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th { background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  .cutoff-table td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); vertical-align:middle; }
+  .cutoff-table tr:last-child td { border-bottom:none; }
+  .cutoff-table tr:hover td { background:rgba(245,166,35,0.04); color:var(--white); }
+  .cutoff-table td:first-child { color:var(--white); font-weight:500; }
+  .level-very-high { color:#fc8181 !important; font-weight:700; }
+  .level-high { color:#f6ad55 !important; font-weight:600; }
+  .level-moderate { color:var(--accent-green) !important; font-weight:600; }
+
+  .rank-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .rank-table th { background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  .rank-table td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); vertical-align:middle; }
+  .rank-table tr:last-child td { border-bottom:none; }
+  .rank-table tr:hover td { background:rgba(245,166,35,0.04); color:var(--white); }
+  .rank-table td:first-child { color:var(--white); font-weight:500; }
+  .rank-top { color:var(--gold) !important; font-weight:700; }
+  .rank-good { color:var(--accent-green) !important; font-weight:600; }
+  .rank-mid { color:var(--accent-blue) !important; font-weight:600; }
+
+  .sidebar-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:22px; margin-bottom:20px; }
+  .sidebar-title { font-size:0.85rem; font-weight:700; color:var(--gold); margin-bottom:14px; text-transform:uppercase; letter-spacing:0.05em; }
+  .key-val { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.78rem; }
+  .key-val:last-child { border-bottom:none; }
+  .key-val .k { color:var(--muted); }
+  .key-val .v { font-weight:600; color:var(--white); text-align:right; max-width:60%; }
+  .v-gold { color:var(--gold) !important; }
+  .v-green { color:var(--accent-green) !important; }
+  .v-blue { color:var(--accent-blue) !important; }
+  .v-purple { color:var(--accent-purple) !important; }
+
+  .exam-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .exam-table th { color:var(--muted); text-align:left; padding:6px 0; font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; }
+  .exam-table td { padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+  .exam-table tr:last-child td { border-bottom:none; }
+
+  .cta-btn { display:block; width:100%; padding:12px; border-radius:10px; border:none; font-size:0.85rem; font-weight:700; cursor:pointer; margin-bottom:10px; transition:all 0.2s; font-family:'Poppins',sans-serif; }
+  .cta-primary { background:var(--gold); color:var(--navy); }
+  .cta-primary:hover { background:var(--gold-light); }
+  .cta-primary.added { background:var(--accent-green); color:var(--white); }
+  .cta-outline { background:transparent; color:var(--white); border:1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color:var(--gold); color:var(--gold); }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:flex-start; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .cutoff-note { background:rgba(99,179,237,0.08); border:1px solid rgba(99,179,237,0.2); border-radius:10px; padding:12px 16px; font-size:0.75rem; color:#90cdf4; margin-top:14px; line-height:1.6; }
+
+  /* NEW IIT BANNER */
+  .new-iit-banner {
+    background:linear-gradient(135deg, rgba(159,122,234,0.12) 0%, rgba(99,179,237,0.08) 100%);
+    border:1px solid rgba(159,122,234,0.3); border-radius:12px; padding:16px 20px;
+    margin-bottom:18px; display:flex; align-items:flex-start; gap:14px;
+  }
+  .new-iit-banner .icon { font-size:1.8rem; flex-shrink:0; }
+  .new-iit-banner .title { font-size:0.85rem; font-weight:700; color:var(--accent-purple); margin-bottom:4px; }
+  .new-iit-banner .desc { font-size:0.78rem; color:var(--muted); line-height:1.65; }
+
+  /* RESEARCH HIGHLIGHT */
+  .research-highlight { background:linear-gradient(135deg, rgba(159,122,234,0.1) 0%, rgba(99,179,237,0.08) 100%); border:1px solid rgba(159,122,234,0.25); border-radius:12px; padding:16px; margin-bottom:14px; }
+  .research-highlight .rh-title { font-size:0.78rem; font-weight:700; color:var(--accent-purple); margin-bottom:6px; }
+  .research-highlight .rh-val { font-size:1.05rem; font-weight:700; color:var(--white); }
+  .research-highlight .rh-sub { font-size:0.72rem; color:var(--muted); margin-top:2px; }
+
+  /* JOSAA TABLE */
+  .josaa-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+  .josaa-table th { background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; padding:9px 12px; text-align:left; border-bottom:1px solid var(--border); }
+  .josaa-table td { padding:9px 12px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); vertical-align:middle; font-size:0.77rem; }
+  .josaa-table tr:last-child td { border-bottom:none; }
+  .josaa-table tr:hover td { background:rgba(245,166,35,0.04); color:var(--white); }
+  .josaa-table td:first-child { color:var(--white); font-weight:500; }
+  .r-open { color:#fc8181 !important; font-weight:700; }
+  .r-obc { color:#f6ad55 !important; font-weight:600; }
+  .r-sc { color:var(--accent-blue) !important; font-weight:600; }
+  .r-st { color:var(--accent-green) !important; font-weight:600; }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation:fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width:768px) {
+    .content-wrap { grid-template-columns:1fr; }
+    .hero { padding:24px 20px; }
+    .tabs-bar { padding:0 16px; }
+    .facility-grid { grid-template-columns:repeat(2,1fr); }
+    .grid-3 { grid-template-columns:1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    nav { padding:0 8px; gap:4px; }
+    .nav-logo { font-size:0.9rem; }
+    .nav-btn { padding:4px 8px; font-size:0.65rem; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+        <div class="stream-opt" onclick="selectStream(this,'Medical &amp; Health Sciences','🏥')">🏥 Medical &amp; Health Sciences</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-ring3"></div>
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Indian Institute of Technology Dharwad
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">⚙️</div>
+    <div class="uni-title">
+      <h1>Indian Institute of Technology <span>Dharwad</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Dharwad, Karnataka</strong></span>
+        <span class="meta-chip">🏛️ <strong>Institute of National Importance</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2016</strong></span>
+        <span class="meta-chip">🏷️ <strong>IIT Dharwad</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.iitdh.ac.in/','_blank')">🌐 <strong>iitdh.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Status</span>
+      <span class="value">Autonomous IIT</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">NIRF 2024</span>
+      <span class="value">Top 100</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Permanent Campus</span>
+      <span class="value">~470 Acres</span>
+    </div>
+    <div class="hero-badge hb-new">
+      <span class="label">Cohort</span>
+      <span class="value">3rd Gen IIT</span>
+    </div>
+  </div>
+  <div class="elite-strip">
+    <span class="elite-badge">Institute of National Importance</span>
+    <span class="elite-badge blue">Autonomous IIT — Govt. of India</span>
+    <span class="elite-badge green">JEE Advanced Admission</span>
+    <span class="elite-badge purple">3rd Generation IIT (2016 Batch)</span>
+    <span class="elite-badge">Permanent Campus Under Development</span>
+    <span class="elite-badge blue">NIRF Ranked</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">B.Tech Programs</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Programs</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD / Research</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off / JoSAA</div>
+</div>
+
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+
+      <div class="new-iit-banner">
+        <div class="icon">🆕</div>
+        <div>
+          <div class="title">New Generation IIT — Established 2016</div>
+          <div class="desc">IIT Dharwad is one of India's <strong style="color:var(--white);">newer IITs</strong> established in the <strong style="color:var(--white);">third wave of IIT expansion</strong> under the National Institutes of Technology, Science Education and Research Act 2007. It started operations in 2016 and is currently building its <strong style="color:var(--white);">permanent 470-acre campus</strong> at Chikkamalligawad near Dharwad, Karnataka. The institute is growing rapidly with strong research output and industry-oriented programs tailored for the tech ecosystem of North Karnataka and Bengaluru.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2016</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Institute of National Importance</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Dharwad, Karnataka</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC / AICTE / Govt. of India</div></div>
+          <div class="info-chip"><div class="lbl">Permanent Campus</div><div class="val">~470 Acres</div></div>
+          <div class="info-chip"><div class="lbl">NIRF 2024</div><div class="val" style="color:var(--gold);">Top 100 (Engineering)</div></div>
+          <div class="info-chip"><div class="lbl">Departments</div><div class="val">8 Academic Depts.</div></div>
+          <div class="info-chip"><div class="lbl">Admission</div><div class="val">JEE Advanced / JoSAA</div></div>
+          <div class="info-chip"><div class="lbl">Affiliation</div><div class="val">Autonomous — Parliament Act</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About IIT Dharwad</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.8;">
+          <strong style="color:var(--white);">Indian Institute of Technology Dharwad (IIT Dharwad / IITDH)</strong> is a premier technical institution established by the <strong style="color:var(--white);">Government of India in 2016</strong> under the NIT Amendment Act. It is one of the <strong style="color:var(--white);">six new IITs</strong> set up in the third generation of IIT expansion. The institute is located in <strong style="color:var(--white);">Dharwad, Karnataka</strong> — a city known for its rich academic tradition — and currently operates from a temporary campus while its sprawling <strong style="color:var(--white);">470-acre permanent campus</strong> at Chikkamalligawad is being developed. IIT Dharwad offers B.Tech, M.Tech, and PhD programs across <strong style="color:var(--white);">8 core engineering and science departments</strong>. Though young, the institute has already established research collaborations with <strong style="color:var(--white);">leading global universities and industry partners</strong>, and is growing its research output year-on-year. Admission to B.Tech is through <strong style="color:var(--white);">JEE Advanced via JoSAA counselling</strong>, placing it among the most competitive undergraduate engineering institutions in India. IIT Dharwad's faculty includes PhDs from top global universities including <strong style="color:var(--white);">IITs, IISc, MIT, Stanford, and other premier institutions</strong>.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Research & Innovation</div>
+        <div class="grid-2" style="margin-bottom:14px;">
+          <div class="research-highlight">
+            <div class="rh-title">Active Research Projects</div>
+            <div class="rh-val">50+</div>
+            <div class="rh-sub">Funded by DST, SERB, DRDO, Industry</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Research Publications</div>
+            <div class="rh-val">200+ / Year</div>
+            <div class="rh-sub">Growing Rapidly — Indexed Journals</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Patents Filed</div>
+            <div class="rh-val">30+</div>
+            <div class="rh-sub">Indian &amp; International Applications</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Faculty Strength</div>
+            <div class="rh-val">80+</div>
+            <div class="rh-sub">PhD Holders from IITs / Global Univ.</div>
+          </div>
+        </div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🤖</span><div><strong>AI, ML &amp; Data Science</strong> — Active research in machine learning, computer vision, NLP, and autonomous systems with industry collaborations</div></div>
+          <div class="event-item"><span class="event-icon">⚡</span><div><strong>Power Systems &amp; Energy</strong> — Smart grid technology, renewable energy systems, and power electronics research aligned with national energy goals</div></div>
+          <div class="event-item"><span class="event-icon">🧪</span><div><strong>Materials &amp; Nanoscience</strong> — Advanced materials research, thin films, and nanotechnology applications in electronics and healthcare</div></div>
+          <div class="event-item"><span class="event-icon">🏗️</span><div><strong>Civil &amp; Infrastructure</strong> — Geotechnical engineering, structural analysis, and sustainable construction materials research</div></div>
+          <div class="event-item"><span class="event-icon">🌐</span><div><strong>Communication &amp; VLSI</strong> — 5G/6G communication research, VLSI chip design, and embedded systems development</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.78rem;color:var(--muted);">
+          <strong style="color:var(--gold);">Campus Status:</strong> IIT Dharwad currently operates from a <strong style="color:var(--white);">temporary campus in Dharwad</strong> while the permanent 470-acre campus at Chikkamalligawad is under construction. The permanent campus is expected to be partially operational in coming years with world-class infrastructure.
+        </div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Laboratories</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computing Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Facilities</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Lecture Halls</div>
+          <div class="fac-item"><div class="fac-icon">🩺</div>Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Canteen / Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">📶</div>High-Speed Wi-Fi</div>
+          <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span>🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span>🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span>📶</span> Wi-Fi Enabled</div>
+          <div class="hostel-item"><span>🍽️</span> Mess / Dining Hall</div>
+          <div class="hostel-item"><span>📖</span> Common Reading Room</div>
+          <div class="hostel-item"><span>🏆</span> Indoor Sports Room</div>
+          <div class="hostel-item"><span>🩺</span> Medical Facility</div>
+          <div class="hostel-item"><span>🌿</span> Green Hostel Environment</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹15,000 – ₹30,000/year (hostel room rent) + Mess charges ₹30,000 – ₹45,000/year · Total ~₹45,000 – ₹75,000/year · Institute provides subsidized accommodation for all enrolled students</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: B.TECH -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>B.Tech Programs (4 Years)</div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;font-size:0.8rem;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--gold);">Admission:</strong> All B.Tech admissions are through <strong style="color:var(--white);">JEE Advanced + JoSAA Counselling</strong> only. IIT Dharwad participates in the central JoSAA seat allotment process. Total intake ~<strong style="color:var(--white);">180–200 seats</strong> across all B.Tech branches.
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Core Engineering · 4 Years · JEE Advanced / JoSAA</span>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Computer Science &amp; Engineering</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Electrical Engineering</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Mechanical Engineering</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Civil Engineering</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Chemical Engineering</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Engineering Physics</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Mathematics &amp; Computing</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Electronics &amp; Communication Engineering</div>
+            <div class="course-meta"><strong>JEE Adv</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">~₹2.2L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            Eligibility: 10+2 with PCM · Min. 75% in 12th (65% for SC/ST) · Admission: JEE Advanced → JoSAA Counselling (5 rounds) · SC/ST/PwD: Fee waiver available · Total program fees ~₹8.5 – ₹9L (tuition only)
+          </div>
+        </div>
+
+        <div style="background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;font-size:0.78rem;">
+          <strong style="color:var(--accent-green);">Fee Breakdown (Per Semester):</strong>
+          <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div><span style="color:var(--muted);">Tuition Fee:</span> <span style="color:var(--white);font-weight:600;">₹1,00,000</span></div>
+            <div><span style="color:var(--muted);">Hostel (approx):</span> <span style="color:var(--white);font-weight:600;">₹7,500 – ₹15,000</span></div>
+            <div><span style="color:var(--muted);">Mess (approx):</span> <span style="color:var(--white);font-weight:600;">₹15,000 – ₹22,000</span></div>
+            <div><span style="color:var(--muted);">Other Fees:</span> <span style="color:var(--white);font-weight:600;">₹5,000 – ₹10,000</span></div>
+          </div>
+          <div style="margin-top:8px;color:var(--muted);">SC/ST students: Tuition fee waived. EWS/OBC-NCL: As per Govt. norms. Need-based scholarships available via INSPIRE / Govt. portals.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG PROGRAMS -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Programs</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech Programs · 2 Years · GATE</span>
+          <div class="course-row">
+            <div class="course-name">M.Tech – Computer Science &amp; Engineering</div>
+            <div class="course-meta"><strong>GATE CS</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-gate">GATE</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Tech – Electrical Engineering</div>
+            <div class="course-meta"><strong>GATE EE/EC</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-gate">GATE</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Tech – Mechanical Engineering</div>
+            <div class="course-meta"><strong>GATE ME</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-gate">GATE</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Tech – Electronics &amp; Communication Engg.</div>
+            <div class="course-meta"><strong>GATE EC</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-gate">GATE</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Tech – Civil Engineering</div>
+            <div class="course-meta"><strong>GATE CE</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-gate">GATE</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            Eligibility: B.Tech/B.E. in relevant engineering field · Admission: GATE Score (CCMT – Centralised Counselling for M.Tech) · Fee: ~₹20,000 – ₹60,000/year · GATE Scholarship: ₹12,400/month for qualifying students
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc Programs · 2 Years · IIT JAM / GATE</span>
+          <div class="course-row">
+            <div class="course-name">M.Sc – Mathematics</div>
+            <div class="course-meta"><strong>IIT JAM</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">IIT JAM</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Sc – Physics</div>
+            <div class="course-meta"><strong>IIT JAM</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">IIT JAM</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            Eligibility: B.Sc in relevant science discipline · Admission: IIT JAM (centralized counselling) · Fee: ~₹20,000 – ₹50,000/year
+          </div>
+        </div>
+
+        <div style="background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:14px;font-size:0.78rem;color:var(--muted);">
+          <strong style="color:var(--accent-blue);">Note on PG Expansion:</strong> As a growing institute, IIT Dharwad is actively expanding its M.Tech and M.Sc offerings. New specializations including AI &amp; Machine Learning, VLSI Design, and Data Science are being introduced. Always check the official IITDH website for the latest list of available PG programs for each academic year.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD / RESEARCH -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs — Research Areas</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Computer Science &amp; Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Artificial Intelligence &amp; ML</span>
+            <span class="phd-tag">Computer Vision</span>
+            <span class="phd-tag">Natural Language Processing</span>
+            <span class="phd-tag">Algorithms &amp; Theory</span>
+            <span class="phd-tag">Cybersecurity</span>
+            <span class="phd-tag">Distributed Systems</span>
+            <span class="phd-tag">Human-Computer Interaction</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Electrical Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Power Systems &amp; Smart Grids</span>
+            <span class="phd-tag">Power Electronics</span>
+            <span class="phd-tag">Control Systems</span>
+            <span class="phd-tag">Renewable Energy</span>
+            <span class="phd-tag">Signal Processing</span>
+            <span class="phd-tag">Electric Vehicles</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Electronics &amp; Communication Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">VLSI &amp; Chip Design</span>
+            <span class="phd-tag">Wireless Communication</span>
+            <span class="phd-tag">5G/6G Networks</span>
+            <span class="phd-tag">Embedded Systems</span>
+            <span class="phd-tag">Photonics &amp; Optics</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Mechanical Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Robotics &amp; Automation</span>
+            <span class="phd-tag">Thermal Engineering</span>
+            <span class="phd-tag">Fluid Mechanics</span>
+            <span class="phd-tag">Manufacturing Science</span>
+            <span class="phd-tag">Solid Mechanics</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Civil Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Geotechnical Engineering</span>
+            <span class="phd-tag">Structural Engineering</span>
+            <span class="phd-tag">Environmental Engineering</span>
+            <span class="phd-tag">Transportation Engineering</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Chemical Engineering &amp; Basic Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Reaction Engineering</span>
+            <span class="phd-tag">Process Systems Engineering</span>
+            <span class="phd-tag">Mathematics – Applied &amp; Pure</span>
+            <span class="phd-tag">Physics – Condensed Matter</span>
+            <span class="phd-tag">Engineering Physics</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.25);border-radius:10px;padding:16px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-purple);margin-bottom:10px;">PhD Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">M.Tech / M.Sc / B.Tech (direct PhD eligible with strong GATE)</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">60%+ / 6.5+ CGPA in qualifying degree</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">GATE / JEST / CSIR-NET / Institute Written Test + Interview</span></div>
+          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">Written Test + Research Interview by Dept. Faculty</span></div>
+        </div>
+
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">PhD Fellowships &amp; Stipends</div>
+          <div class="key-val"><span class="k">Institute Fellowship (JRF)</span><span class="v" style="color:var(--accent-green);">₹31,000/month</span></div>
+          <div class="key-val"><span class="k">Institute Fellowship (SRF – after 2 yrs)</span><span class="v" style="color:var(--accent-green);">₹35,000/month</span></div>
+          <div class="key-val"><span class="k">PMRF (Prime Minister's Research Fellowship)</span><span class="v" style="color:var(--accent-green);">₹70,000–₹80,000/month</span></div>
+          <div class="key-val"><span class="k">GATE Scholarship (M.Tech)</span><span class="v" style="color:var(--accent-green);">₹12,400/month</span></div>
+          <div class="key-val"><span class="k">DST / SERB / DRDO Project Fellowship</span><span class="v" style="color:var(--accent-green);">₹28,000 – ₹35,000/month</span></div>
+          <div class="key-val" style="border:none"><span class="k">CSIR-UGC NET JRF</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>B.Tech Admission Process (JEE Advanced → JoSAA)</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear for JEE Main (January &amp; April Session)</div>
+            <div class="tl-desc">Register and appear for JEE Main conducted by NTA. Secure a strong percentile to be eligible for JEE Advanced. Top ~2.5 lakh candidates from JEE Main are eligible to appear for JEE Advanced. IIT Dharwad accepts ONLY JEE Advanced scores — JEE Main alone is not sufficient.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Qualify JEE Advanced</div>
+            <div class="tl-desc">Appear for JEE Advanced (conducted by one of the IITs on a rotational basis). IIT Dharwad B.Tech admissions happen through JEE Advanced merit. Being a newer IIT, its closing ranks are higher than older IITs — making it accessible to a wider range of JEE Advanced candidates while maintaining the IIT brand value.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Register on JoSAA Portal</div>
+            <div class="tl-desc">Register on the JoSAA (Joint Seat Allocation Authority) portal at josaa.nic.in. Fill in your choices of institute-branch combinations. IIT Dharwad appears as a separate institute in JoSAA. Fill your preferences carefully, listing all desired branches at IIT Dharwad.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Seat Allotment (Rounds 1–6)</div>
+            <div class="tl-desc">JoSAA conducts up to 6 rounds of seat allotment based on JEE Advanced rank and filled choices. Candidates can choose to freeze, float, or slide their seat after each round. IIT Dharwad CSE and EE branches are the most competitive among its offerings.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Online Reporting &amp; Document Verification</div>
+            <div class="tl-desc">After seat acceptance and fee payment on JoSAA, report online with scanned documents: JEE Advanced scorecard, 10th &amp; 12th certificates, category certificate (SC/ST/OBC-NCL/EWS/PwD), ID proof, and photographs. Complete online reporting within the JoSAA deadline.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Physical Reporting &amp; Enrollment at IIT Dharwad</div>
+            <div class="tl-desc">Report physically to IIT Dharwad during the institute's reporting dates with original documents. Verify all submitted details, complete medical examination, pay semester fees, and receive student ID. Attend orientation week before the commencement of the first semester.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>M.Tech / M.Sc / PhD Admission Summary</div>
+        <div class="course-row"><div class="course-name">B.Tech – All Branches</div><div></div><div></div><span class="tag tag-elite">JEE Advanced + JoSAA</span></div>
+        <div class="course-row"><div class="course-name">M.Tech – All Engineering</div><div></div><div></div><span class="tag tag-gate">GATE + CCMT</span></div>
+        <div class="course-row"><div class="course-name">M.Sc – Mathematics / Physics</div><div></div><div></div><span class="tag tag-exam">IIT JAM</span></div>
+        <div class="course-row"><div class="course-name">PhD – Engineering Depts.</div><div></div><div></div><span class="tag tag-gate">GATE / CSIR-NET / Written + Interview</span></div>
+        <div class="course-row"><div class="course-name">PhD – Science Depts.</div><div></div><div></div><span class="tag tag-exam">JEST / CSIR / IIT JAM + Interview</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Aid</div>
+        <div class="phd-tags">
+          <span class="phd-tag">SC/ST Fee Waiver (Tuition)</span>
+          <span class="phd-tag">PMRF – Prime Minister's Research Fellowship</span>
+          <span class="phd-tag">GATE Scholarship (M.Tech – ₹12,400/month)</span>
+          <span class="phd-tag">Institute PhD Fellowship (₹31,000 – ₹35,000)</span>
+          <span class="phd-tag">CSIR-UGC NET JRF</span>
+          <span class="phd-tag">DST-INSPIRE Scholarship</span>
+          <span class="phd-tag">SERB Research Grant</span>
+          <span class="phd-tag">MCM Scholarship (Merit-cum-Means)</span>
+          <span class="phd-tag">DRDO Fellowship</span>
+          <span class="phd-tag">Free Mess (SC/ST scholars)</span>
+          <span class="phd-tag">Need-Based Financial Aid</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement &amp; Career Overview</div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:0.78rem;color:var(--muted);">
+          <strong style="color:var(--gold);">Context:</strong> IIT Dharwad is a <strong style="color:var(--white);">young institute (est. 2016)</strong> with its earliest B.Tech graduates entering the workforce from 2020 onward. The placement scene is growing rapidly. Being an IIT, its graduates are highly sought after by top companies and research institutions.
+        </div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹40–80 LPA</div>
+            <div class="s-lbl">Highest Package (CSE)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹12–18 LPA</div>
+            <div class="s-lbl">Average Package</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">85%+</div>
+            <div class="s-lbl">Placement / Higher Studies</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">IT / Core Engg.</div>
+            <div class="s-lbl">Top Sectors</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">30%+</div>
+            <div class="s-lbl">Higher Studies (MS/PhD)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">Growing</div>
+            <div class="s-lbl">Startup Ecosystem</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Career Pathways</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">💻</span><div><strong>Software &amp; IT Sector</strong> — CSE, ECE, and Mathematics &amp; Computing graduates recruited at Google, Microsoft, Amazon, Goldman Sachs, DE Shaw, Walmart, Adobe, and top Indian startups</div></div>
+          <div class="event-item"><span class="event-icon">⚡</span><div><strong>Core Engineering</strong> — EE and ECE graduates placed at Qualcomm, Texas Instruments, Intel, Samsung R&amp;D, Analog Devices, and power sector PSUs</div></div>
+          <div class="event-item"><span class="event-icon">🎓</span><div><strong>Higher Studies (MS / PhD Abroad)</strong> — Significant percentage of graduates pursue MS/PhD at top global universities — MIT, CMU, UC Berkeley, Georgia Tech, ETH Zurich — leveraging the IIT brand</div></div>
+          <div class="event-item"><span class="event-icon">🏛️</span><div><strong>Government &amp; PSUs</strong> — ISRO, DRDO, BARC, BHEL, ONGC, and other PSUs recruit through GATE and campus channels</div></div>
+          <div class="event-item"><span class="event-icon">📊</span><div><strong>Finance &amp; Analytics</strong> — Quantitative analyst roles at Goldman Sachs, JP Morgan, Deutsche Bank, and analytics firms for Mathematics &amp; Computing graduates</div></div>
+          <div class="event-item"><span class="event-icon">🚀</span><div><strong>Entrepreneurship</strong> — Growing startup culture with support from E-Cell; several alumni have co-founded tech startups in Bengaluru and Hyderabad</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters (Recent Drives)</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Google</span>
+          <span class="recruiter-tag">Microsoft</span>
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Goldman Sachs</span>
+          <span class="recruiter-tag">DE Shaw</span>
+          <span class="recruiter-tag">Qualcomm</span>
+          <span class="recruiter-tag">Texas Instruments</span>
+          <span class="recruiter-tag">Intel</span>
+          <span class="recruiter-tag">Samsung R&amp;D</span>
+          <span class="recruiter-tag">Walmart</span>
+          <span class="recruiter-tag">Adobe</span>
+          <span class="recruiter-tag">Flipkart</span>
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">L&amp;T</span>
+          <span class="recruiter-tag">DRDO</span>
+          <span class="recruiter-tag">ISRO</span>
+          <span class="recruiter-tag">BHEL</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Notes</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          IIT Dharwad's <strong style="color:var(--white);">Training &amp; Placement Cell (T&amp;P Cell)</strong> actively invites top companies for campus recruitment. Being a newer IIT, placement statistics are steadily improving each year as the institute's reputation grows. <strong style="color:var(--white);">CSE, ECE, and EE</strong> branches see the highest demand from recruiters. A notable proportion of students opt for <strong style="color:var(--white);">higher education abroad (MS/PhD)</strong> at top global universities, reflecting the academic strength of the student body. The institute is rapidly building its <strong style="color:var(--white);">alumni network and industry partnerships</strong>, especially in the Bengaluru tech corridor which is just ~400 km away.
+        </p>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at IIT Dharwad</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Prayas – Annual Cultural Fest</strong> — IIT Dharwad's flagship cultural festival featuring music, drama, dance, literary competitions, and celebrity performances attracting students from across Karnataka</div></div>
+            <div class="event-item"><span class="event-icon">⚙️</span><div><strong>Tantrafiesta – Annual Technical Fest</strong> — Technical events, hackathons, robotics competitions, coding challenges, and paper presentations by students from IITs and NITs</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Spandan – Inter-IIT Sports Meet</strong> — IIT Dharwad participates in the prestigious Inter-IIT Sports Meet held annually, competing against all IITs in various sports</div></div>
+            <div class="event-item"><span class="event-icon">💡</span><div><strong>Entrepreneurship Summit</strong> — E-Cell IIT Dharwad organizes annual startup pitch events, entrepreneurship talks, and workshops with founders and VCs</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research Symposium (iSympO)</strong> — Annual inter-IIT research symposium where PhD scholars present papers; IIT Dharwad PhD students actively participate</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏓</div>Table Tennis</div>
+            <div class="fac-item"><div class="fac-icon">♟️</div>Chess Club</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Bodies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Student Gymkhana (Student Council)</span>
+            <span class="phd-tag">E-Cell (Entrepreneurship)</span>
+            <span class="phd-tag">Coding Club</span>
+            <span class="phd-tag">Robotics Club</span>
+            <span class="phd-tag">Astronomy Club</span>
+            <span class="phd-tag">Music Club</span>
+            <span class="phd-tag">Drama Club</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">NSS Unit</span>
+            <span class="phd-tag">Literary Society</span>
+            <span class="phd-tag">Dance Club</span>
+            <span class="phd-tag">Fine Arts Club</span>
+            <span class="phd-tag">Sports Council</span>
+            <span class="phd-tag">Quiz Club</span>
+            <span class="phd-tag">Science &amp; Technology Council</span>
+            <span class="phd-tag">Alumni Relations Cell</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🌆 Life in Dharwad</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🌿</span><div><strong>Pleasant Climate</strong> — Dharwad is known for its mild, pleasant climate year-round — significantly cooler than other tech cities — making it ideal for focused academic work</div></div>
+            <div class="event-item"><span class="event-icon">📚</span><div><strong>Academic City</strong> — Dharwad-Hubli twin cities host Karnataka University, SDMCET, BVB College of Engineering and have a strong culture of education and intellectual life</div></div>
+            <div class="event-item"><span class="event-icon">🚉</span><div><strong>Connectivity</strong> — Well connected by rail (Dharwad Railway Station) and road. Hubli Airport nearby with flights to Bengaluru, Mumbai, Hyderabad. Bengaluru is ~420 km away (~6–7 hrs by road/train)</div></div>
+            <div class="event-item"><span class="event-icon">🍽️</span><div><strong>Food &amp; Culture</strong> — North Karnataka cuisine, vibrant local markets, and proximity to the heritage town of Badami, Hampi, and Gokarna for weekend travel</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: CUT-OFF / JoSAA -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>JoSAA Closing Ranks — B.Tech 2024 (JEE Advanced)</div>
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:0.77rem;color:var(--muted);">
+          <strong style="color:var(--gold);">How to Read:</strong> "Closing Rank" = the JEE Advanced rank of the last candidate allotted that branch in a given category. Lower rank number = more competitive. These are <strong style="color:var(--white);">approximate 2023–2024 trend data</strong>. Verify exact figures on josaa.nic.in.
+        </div>
+        <table class="josaa-table">
+          <thead>
+            <tr>
+              <th>Branch</th>
+              <th>GEN (CRL)</th>
+              <th>OBC-NCL</th>
+              <th>SC</th>
+              <th>ST</th>
+              <th>Competition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CSE</td>
+              <td><span class="r-open">~5,000–7,000</span></td>
+              <td><span class="r-obc">~2,500–4,000</span></td>
+              <td><span class="r-sc">~1,200–2,000</span></td>
+              <td><span class="r-st">~600–1,200</span></td>
+              <td><span class="level-very-high">Highest</span></td>
+            </tr>
+            <tr>
+              <td>Electronics &amp; Communication</td>
+              <td><span class="r-open">~7,000–10,000</span></td>
+              <td><span class="r-obc">~3,500–5,500</span></td>
+              <td><span class="r-sc">~1,800–3,000</span></td>
+              <td><span class="r-st">~800–1,500</span></td>
+              <td><span class="level-very-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>Electrical Engineering</td>
+              <td><span class="r-open">~9,000–13,000</span></td>
+              <td><span class="r-obc">~4,500–7,000</span></td>
+              <td><span class="r-sc">~2,200–4,000</span></td>
+              <td><span class="r-st">~1,000–2,000</span></td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>Mathematics &amp; Computing</td>
+              <td><span class="r-open">~6,000–9,000</span></td>
+              <td><span class="r-obc">~3,000–5,000</span></td>
+              <td><span class="r-sc">~1,500–2,500</span></td>
+              <td><span class="r-st">~700–1,300</span></td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>Mechanical Engineering</td>
+              <td><span class="r-open">~12,000–18,000</span></td>
+              <td><span class="r-obc">~6,000–9,000</span></td>
+              <td><span class="r-sc">~3,000–5,000</span></td>
+              <td><span class="r-st">~1,500–2,800</span></td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>Engineering Physics</td>
+              <td><span class="r-open">~14,000–20,000</span></td>
+              <td><span class="r-obc">~7,000–11,000</span></td>
+              <td><span class="r-sc">~3,500–6,000</span></td>
+              <td><span class="r-st">~1,800–3,500</span></td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>Civil Engineering</td>
+              <td><span class="r-open">~15,000–22,000</span></td>
+              <td><span class="r-obc">~8,000–13,000</span></td>
+              <td><span class="r-sc">~4,000–7,000</span></td>
+              <td><span class="r-st">~2,000–4,000</span></td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>Chemical Engineering</td>
+              <td><span class="r-open">~16,000–24,000</span></td>
+              <td><span class="r-obc">~8,500–14,000</span></td>
+              <td><span class="r-sc">~4,500–8,000</span></td>
+              <td><span class="r-st">~2,200–4,500</span></td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ <strong>Note:</strong> These are indicative JoSAA closing rank trends based on 2023–24 data. Closing ranks fluctuate each year based on JEE Advanced difficulty, number of qualified candidates, and seat matrix changes. IIT Dharwad is a newer IIT — its closing ranks are higher (more accessible) than older IITs like Bombay, Delhi, Madras. PwD category seats have additional relaxation. Always verify on <strong>josaa.nic.in</strong> for official current-year closing ranks.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>GATE Score Cutoff — M.Tech (Indicative)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr><th>Program</th><th>GATE Paper</th><th>Expected GATE Score</th><th>Competition</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>M.Tech – CSE</td>
+              <td>GATE CS</td>
+              <td>650 – 800 (out of 1000)</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – ECE</td>
+              <td>GATE EC</td>
+              <td>600 – 750</td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – EE</td>
+              <td>GATE EE</td>
+              <td>580 – 720</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – ME</td>
+              <td>GATE ME</td>
+              <td>550 – 700</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – Civil</td>
+              <td>GATE CE</td>
+              <td>530 – 680</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ M.Tech admissions are through CCMT (Centralised Counselling for M.Tech) based on GATE scores. IIT Dharwad M.Tech is competitive but more accessible than older IITs. Top 20–30 percentile GATE scorers in their discipline have good chances. Verify on <strong>ccmt.nic.in</strong> for official cutoffs.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Rankings Overview</div>
+        <table class="rank-table">
+          <thead><tr><th>Ranking Body</th><th>Category</th><th>Rank</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr><td>NIRF India Rankings</td><td>Engineering</td><td><span class="rank-good">Top 100</span></td><td>2024</td></tr>
+            <tr><td>NIRF India Rankings</td><td>Overall</td><td><span class="rank-good">Top 100</span></td><td>2024</td></tr>
+            <tr><td>Govt. of India</td><td>Status</td><td><span class="rank-top">Institute of National Importance</span></td><td>Ongoing</td></tr>
+            <tr><td>JoSAA Category</td><td>IIT Tier</td><td><span class="rank-mid">New / 3rd Gen IIT (2016)</span></td><td>Ongoing</td></tr>
+            <tr><td>Inter-IIT Recognition</td><td>Academic</td><td><span class="rank-mid">Growing Reputation</span></td><td>Ongoing</td></tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ As a 2016 institute, IIT Dharwad does not yet have QS or THE world rankings. NIRF ranking is the primary ranking metric. The institute is expected to appear in global rankings as it matures. Faculty research output is growing rapidly with DST, SERB, and industry-funded projects.</div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.iitdh.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2016</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">Institute of National Importance</span></div>
+      <div class="key-val"><span class="k">Cohort</span><span class="v v-purple">3rd Generation IIT</span></div>
+      <div class="key-val"><span class="k">NIRF 2024</span><span class="v v-gold">Top 100 (Engineering)</span></div>
+      <div class="key-val"><span class="k">Campus (Permanent)</span><span class="v">~470 Acres</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Dharwad, Karnataka</span></div>
+      <div class="key-val"><span class="k">B.Tech Intake</span><span class="v">~180–200 Seats</span></div>
+      <div class="key-val"><span class="k">Departments</span><span class="v">8 Depts.</span></div>
+      <div class="key-val"><span class="k">Faculty</span><span class="v">80+ (PhD Holders)</span></div>
+      <div class="key-val"><span class="k">UG Admission</span><span class="v v-green">JEE Advanced + JoSAA</span></div>
+      <div class="key-val"><span class="k">PG Admission</span><span class="v v-blue">GATE / IIT JAM</span></div>
+      <div class="key-val"><span class="k">Nearest Metro</span><span class="v">Bengaluru (~420 km)</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Program</th><th>Exam</th></tr>
+        <tr><td>B.Tech</td><td><span class="tag tag-elite">JEE Advanced</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-gate">GATE + CCMT</span></td></tr>
+        <tr><td>M.Sc</td><td><span class="tag tag-exam">IIT JAM</span></td></tr>
+        <tr><td>PhD (Engg.)</td><td><span class="tag tag-gate">GATE / Written</span></td></tr>
+        <tr><td>PhD (Science)</td><td><span class="tag tag-exam">JEST / CSIR-NET</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Per Year)</div>
+      <div class="key-val"><span class="k">B.Tech Tuition</span><span class="v v-gold">₹2,00,000/yr</span></div>
+      <div class="key-val"><span class="k">M.Tech</span><span class="v v-gold">₹20K – ₹60K/yr</span></div>
+      <div class="key-val"><span class="k">M.Sc</span><span class="v v-gold">₹20K – ₹50K/yr</span></div>
+      <div class="key-val"><span class="k">PhD</span><span class="v v-gold">Nominal + Fellowship</span></div>
+      <div class="key-val"><span class="k">Hostel/yr</span><span class="v v-gold">₹15K – ₹30K</span></div>
+      <div class="key-val"><span class="k">Mess/yr</span><span class="v v-gold">₹30K – ₹45K</span></div>
+      <div class="key-val"><span class="k">SC/ST Tuition</span><span class="v v-green">Waived</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">JoSAA Rank Snapshot (Gen)</div>
+      <div class="key-val"><span class="k">CSE (Gen)</span><span class="v" style="color:#fc8181;">~5,000–7,000</span></div>
+      <div class="key-val"><span class="k">ECE (Gen)</span><span class="v" style="color:#fc8181;">~7,000–10,000</span></div>
+      <div class="key-val"><span class="k">EE (Gen)</span><span class="v" style="color:#f6ad55;">~9,000–13,000</span></div>
+      <div class="key-val"><span class="k">Maths &amp; Computing</span><span class="v" style="color:#f6ad55;">~6,000–9,000</span></div>
+      <div class="key-val"><span class="k">ME / Civil (Gen)</span><span class="v" style="color:var(--accent-green);">~12,000–22,000</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">JEE Advanced CRL Closing Rank (indicative, 2023–24 trends)</div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Highest (CSE)</span><span class="v v-gold">₹40–80 LPA</span></div>
+      <div class="key-val"><span class="k">Average Package</span><span class="v v-gold">₹12–18 LPA</span></div>
+      <div class="key-val"><span class="k">Top Sectors</span><span class="v v-green">IT / Core / Finance</span></div>
+      <div class="key-val"><span class="k">MS/PhD Abroad</span><span class="v v-blue">30%+ graduates</span></div>
+      <div class="key-val"><span class="k">Govt. / PSU</span><span class="v v-blue">ISRO / DRDO / GATE</span></div>
+      <div class="key-val"><span class="k">Top Hirers</span><span class="v v-purple">Google / MS / Amazon</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">PhD Fellowships</div>
+      <div class="key-val"><span class="k">Institute JRF</span><span class="v v-green">₹31,000/month</span></div>
+      <div class="key-val"><span class="k">Institute SRF</span><span class="v v-green">₹35,000/month</span></div>
+      <div class="key-val"><span class="k">PMRF</span><span class="v v-gold">₹70,000–80,000/month</span></div>
+      <div class="key-val"><span class="k">GATE (M.Tech)</span><span class="v v-green">₹12,400/month</span></div>
+      <div class="key-val"><span class="k">CSIR-NET JRF</span><span class="v v-green">₹31,000–37,000</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'IIT Dharwad added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown'))
+      document.getElementById('streamDropdown').classList.remove('open');
+  });
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

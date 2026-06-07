@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visvesvaraya Technological University – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --accent-blue: #63b3ed;
+    --accent-red: #fc8181;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy); color: var(--gold); border-radius: 50%;
+    width: 18px; height: 18px; font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown {
+    position: absolute; top: calc(100% + 8px); left: 0;
+    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 8px; min-width: 220px; display: none; z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999;
+    display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d1f3c 0%, #1a3a6e 40%, #0d2a52 100%);
+    padding: 40px 48px 36px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+    width: 300px; height: 300px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.15);
+  }
+  .hero::after {
+    content: ''; position: absolute; right: 95px; top: 50%; transform: translateY(-50%);
+    width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.08);
+  }
+  .hero-ring3 {
+    position: absolute; right: 130px; top: 50%; transform: translateY(-50%);
+    width: 140px; height: 140px; border-radius: 50%; border: 1px solid rgba(99,179,237,0.12);
+  }
+
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px; background: var(--white); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .meta-chip strong { color: var(--white); }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px; padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center; min-width: 110px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-rank { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-institute { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-research { background: rgba(159,122,234,0.15); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-rank .value { color: var(--gold); }
+  .hb-institute .value { color: var(--accent-blue); }
+  .hb-research .value { color: #b794f4; }
+
+  .elite-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .elite-badge {
+    background: rgba(252,129,74,0.12); border: 1px solid rgba(252,129,74,0.3);
+    border-radius: 6px; padding: 3px 12px; font-size: 0.7rem; font-weight: 700;
+    color: #fbd38d; letter-spacing: 0.03em;
+  }
+  .elite-badge.blue { background: rgba(99,179,237,0.1); border-color: rgba(99,179,237,0.3); color: var(--accent-blue); }
+  .elite-badge.green { background: rgba(72,187,120,0.1); border-color: rgba(72,187,120,0.3); color: var(--accent-green); }
+  .elite-badge.purple { background: rgba(159,122,234,0.1); border-color: rgba(159,122,234,0.3); color: #b794f4; }
+
+  /* TABS */
+  .tabs-bar {
+    background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; padding: 0 48px; gap: 4px; overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer;
+    border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* LAYOUT */
+  .content-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 36px 32px;
+    display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 24px; margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 10px 14px; font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* COURSE ROWS */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px;
+    align-items: center; padding: 11px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px; transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-gate { background: rgba(159,122,234,0.15); color: #b794f4; border: 1px solid rgba(159,122,234,0.25); }
+  .tag-elite { background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid var(--border); }
+  .tag-kcet { background: rgba(252,129,74,0.15); color: #fc8181; border: 1px solid rgba(252,129,74,0.3); }
+
+  /* FACILITIES */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem;
+    transition: all 0.2s;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* HOSTEL */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+
+  /* RESEARCH */
+  .research-item {
+    display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; margin-bottom: 8px; font-size: 0.8rem; transition: all 0.2s;
+  }
+  .research-item:hover { border-color: var(--border); background: rgba(245,166,35,0.04); }
+  .research-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+  /* PHD TAGS */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted);
+  }
+
+  /* RECRUITERS */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* STAT BOXES */
+  .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 18px; }
+  .stat-box {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 16px; text-align: center;
+  }
+  .stat-box .s-val { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+  .stat-box .s-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--card-bg); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); line-height: 1.6; }
+
+  /* RANKING TABLE */
+  .rank-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .rank-table th {
+    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .rank-table td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted); vertical-align: middle;
+  }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .rank-table td:first-child { color: var(--white); font-weight: 500; }
+  .rank-1 { color: var(--gold) !important; font-weight: 700; font-size: 1rem; }
+  .rank-top { color: var(--accent-green) !important; font-weight: 600; }
+  .rank-mid { color: var(--accent-blue) !important; font-weight: 600; }
+
+  /* CUTOFF TABLE */
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th {
+    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .cutoff-table td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted); vertical-align: middle;
+  }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-very-high { color: #fc8181 !important; font-weight: 700; }
+  .level-high { color: #f6ad55 !important; font-weight: 600; }
+  .level-moderate { color: var(--accent-green) !important; font-weight: 600; }
+
+  /* SIDEBAR */
+  .sidebar-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 22px; margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 60%; }
+  .v-gold { color: var(--gold) !important; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-blue { color: var(--accent-blue) !important; }
+  .v-purple { color: #b794f4 !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block; width: 100%; padding: 12px; border-radius: 10px; border: none;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+    transition: all 0.2s; font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .campus-section { margin-bottom: 22px; }
+  .campus-section-title { font-size: 0.78rem; font-weight: 600; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .event-list { display: flex; flex-direction: column; gap: 8px; }
+  .event-item { display: flex; align-items: flex-start; gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; }
+  .event-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+  .cutoff-note {
+    background: rgba(99,179,237,0.08); border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 10px; padding: 12px 16px; font-size: 0.75rem; color: #90cdf4;
+    margin-top: 14px; line-height: 1.6;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+    z-index:999; display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card); border:1px solid var(--border); border-radius:20px;
+    padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  /* SPECIAL: Research highlight card */
+  .research-highlight {
+    background: linear-gradient(135deg, rgba(159,122,234,0.1) 0%, rgba(99,179,237,0.08) 100%);
+    border: 1px solid rgba(159,122,234,0.25); border-radius: 12px; padding: 16px;
+    margin-bottom: 14px;
+  }
+  .research-highlight .rh-title { font-size: 0.78rem; font-weight: 700; color: #b794f4; margin-bottom: 6px; }
+  .research-highlight .rh-val { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+  .research-highlight .rh-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 8px; gap: 4px; }
+    .nav-logo { font-size: 0.9rem; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    #streamBtn span { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+        <div class="stream-opt" onclick="selectStream(this,'Medical &amp; Health Sciences','🏥')">🏥 Medical &amp; Health Sciences</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-ring3"></div>
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Visvesvaraya Technological University, Belagavi
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">⚙️</div>
+    <div class="uni-title">
+      <h1>Visvesvaraya <span>Technological University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Belagavi, Karnataka</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Public University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1998</strong></span>
+        <span class="meta-chip">🏷️ <strong>VTU</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.vtu.ac.in/','_blank')">🌐 <strong>vtu.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC</span>
+      <span class="value">A+ Grade</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">NIRF 2024</span>
+      <span class="value">#51–100</span>
+    </div>
+    <div class="hero-badge hb-institute">
+      <span class="label">Affiliated Colleges</span>
+      <span class="value">200+ Colleges</span>
+    </div>
+    <div class="hero-badge hb-research">
+      <span class="label">Status</span>
+      <span class="value">State Univ. (Engg.)</span>
+    </div>
+  </div>
+  <div class="elite-strip">
+    <span class="elite-badge">Largest Tech University in India</span>
+    <span class="elite-badge blue">NAAC A+ Accredited</span>
+    <span class="elite-badge green">200+ Affiliated Engineering Colleges</span>
+    <span class="elite-badge purple">UGC Recognized</span>
+    <span class="elite-badge">NIRF Ranked University</span>
+    <span class="elite-badge blue">State University – Govt. of Karnataka</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Programs</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Programs</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD / Research</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Rankings &amp; Cut-Off</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1998</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Public University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Belagavi, Karnataka</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC / AICTE / Govt. of Karnataka</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~600 Acres (HQ)</div></div>
+          <div class="info-chip"><div class="lbl">NIRF Rank</div><div class="val" style="color:var(--gold);">#51–100 (University, 2024)</div></div>
+          <div class="info-chip"><div class="lbl">Affiliated Colleges</div><div class="val">200+ Engineering Colleges</div></div>
+          <div class="info-chip"><div class="lbl">Total Students</div><div class="val">~3.5 Lakh+</div></div>
+          <div class="info-chip"><div class="lbl">Regional Centres</div><div class="val">4 Regional Offices</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About VTU, Belagavi</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.8;">
+          <strong style="color:var(--white);">Visvesvaraya Technological University (VTU)</strong>, established in <strong style="color:var(--white);">1998</strong> by the Government of Karnataka, is one of the largest technological universities in Asia and is named after <strong style="color:var(--white);">Sir M. Visvesvaraya</strong>, the legendary engineer, statesman, and Bharat Ratna awardee. Headquartered in <strong style="color:var(--white);">Belagavi</strong>, VTU affiliates over <strong style="color:var(--white);">200+ engineering and technology colleges</strong> across Karnataka, enrolling more than <strong style="color:var(--white);">3.5 lakh students</strong> per year — making it one of the largest engineering universities in the world by enrolment. Accredited by <strong style="color:var(--white);">NAAC with A+ Grade</strong>, VTU offers undergraduate, postgraduate, and doctoral programs in engineering, technology, management, and applied sciences through its affiliated colleges and its own constituent units. VTU's four regional centres — <strong style="color:var(--white);">Belagavi, Bengaluru, Kalaburagi, and Mysuru</strong> — ensure equitable academic governance across all affiliated institutions. With over 25 years of academic excellence, VTU has built a strong ecosystem for technical education, applied research, skill development, and industry collaboration across Karnataka.
+        </p>
+      </div>
+
+      <!-- Research Highlights -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Research &amp; Innovation Highlights</div>
+        <div class="grid-2" style="margin-bottom:14px;">
+          <div class="research-highlight">
+            <div class="rh-title">Annual Research Publications</div>
+            <div class="rh-val">10,000+</div>
+            <div class="rh-sub">Indexed Journals across all affiliated institutions</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">PhD Scholars Enrolled</div>
+            <div class="rh-val">5,000+</div>
+            <div class="rh-sub">Active PhD Research Scholars across departments</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Research Centres</div>
+            <div class="rh-val">50+</div>
+            <div class="rh-sub">Recognized Research Centres across affiliated colleges</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Industry Collaborations</div>
+            <div class="rh-val">500+</div>
+            <div class="rh-sub">MoUs with Domestic &amp; International Institutions</div>
+          </div>
+        </div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🤖</span><div><strong>Artificial Intelligence &amp; Machine Learning</strong> — Multiple research centres dedicated to AI, deep learning, and data science across affiliated colleges</div></div>
+          <div class="event-item"><span class="event-icon">🌿</span><div><strong>Renewable Energy &amp; Sustainability</strong> — Active research in solar energy, electric vehicles, and green engineering systems</div></div>
+          <div class="event-item"><span class="event-icon">🏗️</span><div><strong>Civil &amp; Structural Engineering Research</strong> — R&amp;D in smart infrastructure, geotechnical engineering, and structural health monitoring</div></div>
+          <div class="event-item"><span class="event-icon">💊</span><div><strong>Biomedical &amp; Health Tech</strong> — Interdisciplinary research in biomedical devices, health informatics, and biosensors</div></div>
+          <div class="event-item"><span class="event-icon">🛡️</span><div><strong>Cybersecurity &amp; Networks</strong> — Growing research area in information security, IoT systems, and network engineering</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities (HQ – Belagavi)</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Advanced Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centres</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Ground</div>
+          <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Seminar Halls &amp; Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🩺</div>Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria &amp; Canteen</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>Green Campus (600 Acres)</div>
+          <div class="fac-item"><div class="fac-icon">🚀</div>Innovation &amp; Startup Hub</div>
+          <div class="fac-item"><div class="fac-icon">📡</div>VTU e-Learning Centre</div>
+          <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security</div>
+        </div>
+
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span>🏠</span> Boys Hostels (HQ Campus)</div>
+          <div class="hostel-item"><span>🏡</span> Girls Hostels (Separate Blocks)</div>
+          <div class="hostel-item"><span>📶</span> High-Speed Wi-Fi Campus-Wide</div>
+          <div class="hostel-item"><span>🍽️</span> Multiple Dining Mess Facilities</div>
+          <div class="hostel-item"><span>📖</span> Reading Rooms / Study Halls</div>
+          <div class="hostel-item"><span>🏆</span> Sports &amp; Recreation Areas</div>
+          <div class="hostel-item"><span>🩺</span> On-Campus Health Centre</div>
+          <div class="hostel-item"><span>🌿</span> Lush Green Belagavi Campus</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees (HQ Campus):</span>
+          <span style="color:var(--muted);"> ₹15,000 – ₹40,000/year (hostel) + Mess charges vary · Hostels available at affiliated colleges separately · Fellowship holders receive additional benefits</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG PROGRAMS -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Programs</div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;font-size:0.8rem;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--gold);">Note:</strong> VTU offers <strong style="color:var(--white);">B.E./B.Tech (4-year)</strong> programs through its <strong style="color:var(--white);">200+ affiliated engineering colleges</strong> across Karnataka. The main entry route is through <strong style="color:var(--white);">KCET (Karnataka Common Entrance Test)</strong>. Some colleges also accept <strong style="color:var(--white);">JEE Main / COMEDK</strong> scores.
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.E. / B.Tech · 4 Years · KCET / COMEDK / JEE Main</span>
+          <div class="course-row">
+            <div class="course-name">B.E. – Computer Science &amp; Engineering</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Electronics &amp; Communication Engg.</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Mechanical Engineering</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Civil Engineering</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Electrical &amp; Electronics Engg.</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Information Science &amp; Engg.</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Aerospace Engineering</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Chemical Engineering</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Biotechnology</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Industrial Engineering &amp; Mgmt.</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Instrumentation Technology</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. – Mining Engineering</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹60K – ₹2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Artificial Intelligence &amp; ML</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹80K – ₹2.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Data Science</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹80K – ₹2.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech – Cyber Security</div>
+            <div class="course-meta"><strong>KCET / COMEDK</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-kcet">₹80K – ₹2.5L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">
+            Eligibility: 10+2 with PCM · Admission via KCET / COMEDK / JEE Main (for management quota/NRI) · Fees vary significantly by college (Govt. aided vs. unaided private) · Govt. college seats: ~₹50,000–₹1L/yr; Private unaided: ₹1.5L–₹3L+/yr
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG PROGRAMS -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Programs</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech Programs · 2 Years · GATE / PGCET</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.Tech – Computer Science &amp; Engg.</span>
+            <span class="phd-tag">M.Tech – Software Engineering</span>
+            <span class="phd-tag">M.Tech – VLSI Design &amp; Embedded Systems</span>
+            <span class="phd-tag">M.Tech – Digital Electronics &amp; Communication</span>
+            <span class="phd-tag">M.Tech – Power Electronics</span>
+            <span class="phd-tag">M.Tech – Structural Engineering</span>
+            <span class="phd-tag">M.Tech – Machine Design</span>
+            <span class="phd-tag">M.Tech – Thermal Engineering</span>
+            <span class="phd-tag">M.Tech – CAD/CAM</span>
+            <span class="phd-tag">M.Tech – Environmental Engineering</span>
+            <span class="phd-tag">M.Tech – Transportation Engineering</span>
+            <span class="phd-tag">M.Tech – Geotechnical Engineering</span>
+            <span class="phd-tag">M.Tech – Biotechnology</span>
+            <span class="phd-tag">M.Tech – Nano Technology</span>
+            <span class="phd-tag">M.Tech – Artificial Intelligence</span>
+            <span class="phd-tag">M.Tech – Data Science &amp; Analytics</span>
+            <span class="phd-tag">M.Tech – Cyber Security</span>
+            <span class="phd-tag">M.Tech – Construction Management</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.E./B.Tech in relevant field · Admission: GATE Score (preferred) / Karnataka PGCET · GATE Scholarship: ₹12,400/month for qualified students · Fee: ~₹40,000 – ₹1.2 Lakh/year (varies by college)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA – Management · 2 Years · PGCET / CAT / KMAT</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">MBA – General Management</span>
+            <span class="phd-tag">MBA – Marketing Management</span>
+            <span class="phd-tag">MBA – Human Resource Management</span>
+            <span class="phd-tag">MBA – Finance &amp; Accounting</span>
+            <span class="phd-tag">MBA – Operations Management</span>
+            <span class="phd-tag">MBA – Technology Management</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Any degree (preferably engineering/science for tech management) · Admission: Karnataka PGCET / CAT / KMAT · Fee: ~₹1 – ₹2 Lakh/year</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.C.A. – Computer Applications · 2 Years · PGCET</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">MCA – Computer Applications</span>
+            <span class="phd-tag">MCA – Data Science Specialization</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: BCA / B.Sc (Computer Science/Math) · Admission: Karnataka PGCET / MCA entrance · Fee: ~₹40,000 – ₹80,000/year</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD / RESEARCH -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs — Research Areas</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Computer Science &amp; IT</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Computer Science &amp; Engineering</span>
+            <span class="phd-tag">Artificial Intelligence &amp; ML</span>
+            <span class="phd-tag">Data Science &amp; Big Data</span>
+            <span class="phd-tag">Cyber Security</span>
+            <span class="phd-tag">Internet of Things (IoT)</span>
+            <span class="phd-tag">Cloud Computing</span>
+            <span class="phd-tag">Image Processing &amp; Computer Vision</span>
+            <span class="phd-tag">Natural Language Processing</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Electronics &amp; Communication</div>
+          <div class="phd-tags">
+            <span class="phd-tag">VLSI Design</span>
+            <span class="phd-tag">Signal Processing</span>
+            <span class="phd-tag">Wireless Communication</span>
+            <span class="phd-tag">Embedded Systems</span>
+            <span class="phd-tag">RF &amp; Microwave Engineering</span>
+            <span class="phd-tag">Antenna &amp; Wave Propagation</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Mechanical &amp; Manufacturing</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Machine Design</span>
+            <span class="phd-tag">Thermal Engineering</span>
+            <span class="phd-tag">Manufacturing Science</span>
+            <span class="phd-tag">Robotics &amp; Automation</span>
+            <span class="phd-tag">Composite Materials</span>
+            <span class="phd-tag">Computational Fluid Dynamics</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Civil &amp; Structural Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Structural Engineering</span>
+            <span class="phd-tag">Geotechnical Engineering</span>
+            <span class="phd-tag">Water Resources Engineering</span>
+            <span class="phd-tag">Environmental Engineering</span>
+            <span class="phd-tag">Transportation Engineering</span>
+            <span class="phd-tag">Remote Sensing &amp; GIS</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Electrical &amp; Power Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Power Systems Engineering</span>
+            <span class="phd-tag">Power Electronics &amp; Drives</span>
+            <span class="phd-tag">Renewable Energy Systems</span>
+            <span class="phd-tag">Smart Grid Technology</span>
+            <span class="phd-tag">Control Systems</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Interdisciplinary / Applied Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Nano Technology</span>
+            <span class="phd-tag">Physics &amp; Applied Mathematics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Management Studies</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.25);border-radius:10px;padding:16px;">
+          <div style="font-size:0.78rem;font-weight:600;color:#b794f4;margin-bottom:10px;">PhD Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">M.Tech / M.E. or M.Sc in relevant field (55%+)</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">55% in PG (50% for SC/ST)</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">VTU PhD Entrance Test (VRET) + GATE / NET (Exempt)</span></div>
+          <div class="key-val"><span class="k">Selection</span><span class="v">Written VRET + Research Proposal + Interview</span></div>
+          <div class="key-val" style="border:none"><span class="k">Duration</span><span class="v">Minimum 3 Years (Full-Time) / 5 Years (Part-Time)</span></div>
+        </div>
+
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Fellowships &amp; Stipends</div>
+          <div class="key-val"><span class="k">GATE Scholarship (M.Tech)</span><span class="v" style="color:var(--accent-green);">₹12,400/month</span></div>
+          <div class="key-val"><span class="k">CSIR-UGC NET JRF</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
+          <div class="key-val"><span class="k">DST INSPIRE Fellowship</span><span class="v" style="color:var(--accent-green);">₹80,000/year + Research Grant</span></div>
+          <div class="key-val"><span class="k">SERB / DST Project Grants</span><span class="v" style="color:var(--accent-green);">Applicable</span></div>
+          <div class="key-val" style="border:none"><span class="k">VTU-Industry Research Fellowship</span><span class="v" style="color:var(--accent-green);">Varies by project</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear for KCET / COMEDK / JEE Main</div>
+            <div class="tl-desc">For B.E./B.Tech admissions, students must appear in Karnataka Common Entrance Test (KCET) conducted by KEA, or COMEDK UGET for private engineering colleges. JEE Main scores are accepted in some management quota/NRI seats. KCET is the primary route for Karnataka domicile students.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register on KEA / COMEDK Portal</div>
+            <div class="tl-desc">Visit kea.kar.nic.in (for KCET) or comedk.org (for COMEDK). Register online, upload documents (10th, 11th/12th marksheets, domicile/caste certificate, ID), pay the application fee, and submit the form within the announced window. For PG programs, apply on the VTU PGCET portal.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Counselling &amp; College/Branch Allotment</div>
+            <div class="tl-desc">Based on KCET rank / COMEDK rank, KEA conducts centralized online counselling. Students must fill college and branch preference in order. Seats are allotted based on rank, category (GM/OBC/SC/ST/Kannada medium), and availability. Multiple rounds of counselling are conducted until seats are filled.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification at Reporting Centre</div>
+            <div class="tl-desc">After seat allotment, visit the designated Helpline / Reporting Centre with original documents. Verify all certificates — 10+2 marksheet, KCET scorecard, category certificate, income certificate (if applicable), domicile proof, and photographs. Document verification is mandatory before enrollment.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment &amp; College Enrollment</div>
+            <div class="tl-desc">Pay the prescribed tuition fees (online or at the college) as per the KCET/COMEDK allotment letter. Government-aided college fees are regulated by Karnataka; private college fees follow VTU norms but vary by institution. Complete enrollment by submitting documents to the allotted college and attending induction/orientation programs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — VTU Registration &amp; Student ID</div>
+            <div class="tl-desc">The allotted college registers the enrolled student on the VTU university portal, generating a unique VTU USN (University Seat Number). This USN is used for all exam registrations, hall tickets, mark sheets, and degree certificate issuance throughout the 4-year program.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">B.E. / B.Tech – All Engineering Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-kcet">KCET / COMEDK</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.E. / B.Tech – NRI / Management Quota</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">JEE Main / COMEDK</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Tech – All Engineering Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-gate">GATE / Karnataka PGCET</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA – Management Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">PGCET / CAT / KMAT / MAT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MCA – Computer Applications</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Karnataka PGCET / MCA Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD – All Departments</div>
+          <div></div><div></div>
+          <span class="tag tag-gate">VRET + GATE / NET (Exempt)</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Fee Waivers</div>
+        <div class="phd-tags">
+          <span class="phd-tag">SC/ST Fee Reimbursement (Govt. of Karnataka)</span>
+          <span class="phd-tag">OBC Scholarship (State &amp; Central)</span>
+          <span class="phd-tag">Post-Matric Scholarship (Minority)</span>
+          <span class="phd-tag">GATE Scholarship (M.Tech)</span>
+          <span class="phd-tag">Merit-cum-Means Scholarship</span>
+          <span class="phd-tag">Chief Minister's Scholarship</span>
+          <span class="phd-tag">National Scholarship Portal (NSP)</span>
+          <span class="phd-tag">VTU Research Fellowship</span>
+          <span class="phd-tag">AICTE Pragati Scholarship (Girls)</span>
+          <span class="phd-tag">AICTE Saksham Scholarship (Disabled)</span>
+          <span class="phd-tag">Vidyasiri Scholarship (Karnataka)</span>
+          <span class="phd-tag">DST INSPIRE Fellowship (PhD)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement &amp; Career Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹40–80 LPA</div>
+            <div class="s-lbl">Highest Package (Top Colleges)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹5–12 LPA</div>
+            <div class="s-lbl">Average Package</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">75–90%</div>
+            <div class="s-lbl">Placement Rate (Top Colleges)</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">IT / Core / Consulting</div>
+            <div class="s-lbl">Top Career Paths</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">500+</div>
+            <div class="s-lbl">Companies Visiting Annually</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">GATE / GRE</div>
+            <div class="s-lbl">Higher Studies Opportunities</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Career Pathways</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">💻</span><div><strong>IT &amp; Software Industry</strong> — Infosys, Wipro, TCS, Accenture, Cognizant, and mid-cap IT firms visit extensively. Top VTU colleges (MSRIT, BIT, BMSCE, PESIT) secure FAANG/MNC offers of ₹20L–₹80L+</div></div>
+          <div class="event-item"><span class="event-icon">🏭</span><div><strong>Core Engineering Roles</strong> — ISRO, BHEL, HAL, L&amp;T, BOSCH, Toyota Kirloskar, ABB, and Schneider recruit mechanical, civil, electrical, and manufacturing engineers from VTU colleges</div></div>
+          <div class="event-item"><span class="event-icon">📈</span><div><strong>Management &amp; Consulting</strong> — MBA graduates from top VTU-affiliated B-schools placed at Deloitte, EY, KPMG, Amazon, Flipkart, and leading management consulting firms with ₹10–30 LPA packages</div></div>
+          <div class="event-item"><span class="event-icon">🎓</span><div><strong>Higher Studies (GATE / GRE)</strong> — Large proportion of VTU graduates crack GATE (M.Tech at IITs/NITs) or pursue MS/MBA abroad (USA, Germany, Canada, Australia)</div></div>
+          <div class="event-item"><span class="event-icon">🏛️</span><div><strong>Government &amp; PSU Roles</strong> — DRDO, BARC, KSEB, HESCOM, PWD, BDA, BBMP, and various Karnataka PSUs recruit civil, electrical, and mechanical engineers from VTU institutions</div></div>
+          <div class="event-item"><span class="event-icon">🚀</span><div><strong>Startups &amp; Entrepreneurship</strong> — Karnataka's Bengaluru tech hub creates strong startup opportunities; VTU alumni have founded multiple funded tech startups in fintech, edtech, and SaaS sectors</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Accenture</span>
+          <span class="recruiter-tag">Cognizant</span>
+          <span class="recruiter-tag">IBM</span>
+          <span class="recruiter-tag">Capgemini</span>
+          <span class="recruiter-tag">HCL Technologies</span>
+          <span class="recruiter-tag">Tech Mahindra</span>
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Microsoft</span>
+          <span class="recruiter-tag">Google</span>
+          <span class="recruiter-tag">Flipkart</span>
+          <span class="recruiter-tag">BOSCH</span>
+          <span class="recruiter-tag">Toyota Kirloskar</span>
+          <span class="recruiter-tag">L&amp;T</span>
+          <span class="recruiter-tag">HAL</span>
+          <span class="recruiter-tag">ISRO</span>
+          <span class="recruiter-tag">DRDO</span>
+          <span class="recruiter-tag">ABB</span>
+          <span class="recruiter-tag">Schneider Electric</span>
+          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">EY</span>
+          <span class="recruiter-tag">KPMG</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at VTU</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>VTU Fest – Inter-Collegiate Cultural &amp; Technical Fest</strong> — Annual university-level cultural and technical festival bringing together students from 200+ affiliated colleges across Karnataka</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>VTU Youth Fest</strong> — State-level youth festival with competitions in fine arts, performing arts, literary events, and traditional cultural activities under the Association of Indian Universities (AIU) framework</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>VTU Research Conclave</strong> — Annual research conference where PhD scholars and faculty present their work, fostering inter-disciplinary collaboration among affiliated colleges and research centres</div></div>
+            <div class="event-item"><span class="event-icon">⚽</span><div><strong>VTU Inter-College Sports Tournament</strong> — University-level sports championships across cricket, football, basketball, athletics, volleyball, and badminton among affiliated college teams</div></div>
+            <div class="event-item"><span class="event-icon">💡</span><div><strong>VTU Hackathons &amp; Innovation Challenges</strong> — Regular state-level hackathons, smart India hackathon zonal rounds, and startup pitch competitions through VTU's innovation cell</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation (HQ Campus)</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🎾</div>Tennis Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Modern Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Court</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Societies (Typical VTU College)</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Student Council / ISTE Chapter</span>
+            <span class="phd-tag">IEEE Student Branch</span>
+            <span class="phd-tag">CSI (Computer Society of India)</span>
+            <span class="phd-tag">ASCE Student Chapter</span>
+            <span class="phd-tag">SAE India Collegiate Club</span>
+            <span class="phd-tag">Robotics Club</span>
+            <span class="phd-tag">Coding / Competitive Programming Club</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Trekking &amp; Adventure Club</span>
+            <span class="phd-tag">Cultural &amp; Dance Committee</span>
+            <span class="phd-tag">Entrepreneurship Cell (E-Cell)</span>
+            <span class="phd-tag">NSS Unit</span>
+            <span class="phd-tag">NCC (National Cadet Corps)</span>
+            <span class="phd-tag">Literary &amp; Debate Club</span>
+            <span class="phd-tag">Quiz Club</span>
+          </div>
+        </div>
+
+        <div style="background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:14px;font-size:0.78rem;margin-top:8px;">
+          <span style="color:var(--accent-blue);font-weight:600;">ℹ️ Note:</span>
+          <span style="color:var(--muted);"> Campus life experience varies significantly across VTU's 200+ affiliated colleges. Premier affiliated colleges (MSRIT, BIT Bengaluru, BMSCE, PESIT, RV College) offer excellent campus life, student clubs, and placement support, while other colleges may offer a more basic experience. Choose your affiliated college wisely based on KCET cutoffs and facilities.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: RANKINGS & CUT-OFF -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Rankings &amp; Recognition</div>
+        <table class="rank-table">
+          <thead>
+            <tr>
+              <th>Ranking Body</th>
+              <th>Category</th>
+              <th>Rank / Score</th>
+              <th>Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>NIRF India Rankings</td>
+              <td>University</td>
+              <td><span class="rank-top">#51–100</span></td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>NIRF India Rankings</td>
+              <td>Engineering</td>
+              <td><span class="rank-top">#51–100</span></td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>NAAC Accreditation</td>
+              <td>National</td>
+              <td><span class="rank-1">A+ Grade</span></td>
+              <td>2023</td>
+            </tr>
+            <tr>
+              <td>QS World University Rankings</td>
+              <td>Global (Emerging)</td>
+              <td><span class="rank-mid">1001–1200</span></td>
+              <td>2025</td>
+            </tr>
+            <tr>
+              <td>Govt. of Karnataka</td>
+              <td>Technical University</td>
+              <td><span class="rank-top">Largest Tech Univ. (Asia)</span></td>
+              <td>Ongoing</td>
+            </tr>
+            <tr>
+              <td>UGC Recognition</td>
+              <td>State University</td>
+              <td><span class="rank-top">Fully Recognized</span></td>
+              <td>Ongoing</td>
+            </tr>
+            <tr>
+              <td>AICTE Approval</td>
+              <td>Technical Education</td>
+              <td><span class="rank-top">Approved (All Programs)</span></td>
+              <td>Ongoing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off — B.E. (KCET 2024)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Branch</th>
+              <th>Category</th>
+              <th>KCET Rank (Approx.)</th>
+              <th>Competition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CSE – Top VTU College (MSRIT/BMSCE/BIT)</td>
+              <td>General (GM)</td>
+              <td>Top 1,000 – 5,000 Rank</td>
+              <td><span class="level-very-high">Extremely High</span></td>
+            </tr>
+            <tr>
+              <td>CSE – Mid-tier VTU College</td>
+              <td>General (GM)</td>
+              <td>5,000 – 20,000 Rank</td>
+              <td><span class="level-very-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>ECE – Top VTU College</td>
+              <td>General (GM)</td>
+              <td>Top 3,000 – 8,000 Rank</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>Mechanical / Civil / EEE – Top College</td>
+              <td>General (GM)</td>
+              <td>Top 8,000 – 25,000 Rank</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>CSE – Any VTU College (SC/ST)</td>
+              <td>SC / ST</td>
+              <td>Top 5,000 – 30,000 (SC/ST Rank)</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>CSE – COMEDK Private Colleges</td>
+              <td>General</td>
+              <td>COMEDK Rank: Top 5,000 – 15,000</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ KCET cutoff ranks vary significantly by college tier and branch. VTU's top colleges (MSRIT, BIT Bengaluru, BMSCE, PESIT, RV College of Engg.) close much earlier than average. Ranks are category-wise; SC/ST/OBC have separate rank lists. Refer to kea.kar.nic.in for official previous year closing ranks by college and branch.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off — M.Tech (GATE Score / PGCET)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Route</th>
+              <th>Expected Score / Rank</th>
+              <th>Competition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>M.Tech – CSE / AI / Data Science</td>
+              <td>GATE CS</td>
+              <td>GATE Score: 650–850+</td>
+              <td><span class="level-very-high">Very High (Top VTU Colleges)</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – VLSI / ECE Programs</td>
+              <td>GATE EC</td>
+              <td>GATE Score: 600–800</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – Mechanical / Thermal</td>
+              <td>GATE ME</td>
+              <td>GATE Score: 550–750</td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – Civil / Structural Engg.</td>
+              <td>GATE CE</td>
+              <td>GATE Score: 500–700</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech – Any Branch (PGCET Route)</td>
+              <td>Karnataka PGCET</td>
+              <td>PGCET Rank: Top 1,000 – 10,000</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ M.Tech admissions at VTU-affiliated colleges are through Karnataka PGCET (for non-GATE) and direct GATE score (GATE scholarship seats). Premier VTU colleges offer GATE-based admissions with competitive cutoffs. PGCET route is less competitive but GATE stipend (₹12,400/month) is not available through PGCET. Refer to the official VTU admissions portal for verified cutoffs.</div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.vtu.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1998</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State Public University</span></div>
+      <div class="key-val"><span class="k">Affiliation</span><span class="v v-purple">200+ Engineering Colleges</span></div>
+      <div class="key-val"><span class="k">NIRF 2024</span><span class="v v-gold">#51–100 (University)</span></div>
+      <div class="key-val"><span class="k">NAAC</span><span class="v v-green">A+ Accredited</span></div>
+      <div class="key-val"><span class="k">Total Students</span><span class="v v-blue">~3.5 Lakh+/yr</span></div>
+      <div class="key-val"><span class="k">HQ Campus</span><span class="v">~600 Acres, Belagavi</span></div>
+      <div class="key-val"><span class="k">Regional Centres</span><span class="v">4 (BLR, BGM, MYS, KLG)</span></div>
+      <div class="key-val"><span class="k">Admission Route</span><span class="v">KCET / COMEDK / PGCET</span></div>
+      <div class="key-val"><span class="k">Named After</span><span class="v">Sir M. Visvesvaraya</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Program</th><th>Exam</th></tr>
+        <tr><td>B.E./B.Tech</td><td><span class="tag tag-kcet">KCET / COMEDK</span></td></tr>
+        <tr><td>B.E. (Mgmt.)</td><td><span class="tag tag-exam">JEE Main</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-gate">GATE / PGCET</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">PGCET / CAT / KMAT</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-exam">PGCET / MCA Exam</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-gate">VRET + GATE/NET</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Per Year)</div>
+      <div class="key-val"><span class="k">B.E. (Govt. Aided)</span><span class="v v-gold">₹50K – ₹1L/yr</span></div>
+      <div class="key-val"><span class="k">B.E. (Private-Unaided)</span><span class="v v-gold">₹1.5L – ₹3L+/yr</span></div>
+      <div class="key-val"><span class="k">M.Tech (GATE)</span><span class="v v-gold">₹40K – ₹1.2L/yr</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹1L – ₹2L/yr</span></div>
+      <div class="key-val"><span class="k">MCA</span><span class="v v-gold">₹40K – ₹80K/yr</span></div>
+      <div class="key-val"><span class="k">PhD</span><span class="v v-gold">Nominal + Fellowship</span></div>
+      <div class="key-val"><span class="k">Hostel/yr (HQ)</span><span class="v v-gold">₹15,000 – ₹40,000</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cut-Off Snapshot</div>
+      <div class="key-val"><span class="k">CSE – Top College (KCET)</span><span class="v" style="color:#fc8181;">Top 1K–5K Rank</span></div>
+      <div class="key-val"><span class="k">ECE – Top College (KCET)</span><span class="v" style="color:#f6ad55;">Top 3K–8K Rank</span></div>
+      <div class="key-val"><span class="k">Mech/Civil – Top College</span><span class="v" style="color:#f6ad55;">Top 8K–25K Rank</span></div>
+      <div class="key-val"><span class="k">M.Tech CSE (GATE)</span><span class="v" style="color:#f6ad55;">650–850 Score</span></div>
+      <div class="key-val"><span class="k">COMEDK CSE</span><span class="v" style="color:var(--accent-green);">Top 5K–15K Rank</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">KCET Rank / GATE Score / COMEDK Rank (indicative, varies by college)</div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Highest Package</span><span class="v v-gold">₹40L – ₹80L+</span></div>
+      <div class="key-val"><span class="k">Average Package</span><span class="v v-gold">₹5 – ₹12 LPA</span></div>
+      <div class="key-val"><span class="k">Top Sectors</span><span class="v v-green">IT / Core / Consulting</span></div>
+      <div class="key-val"><span class="k">Mass Recruiters</span><span class="v v-green">Infosys / TCS / Wipro</span></div>
+      <div class="key-val"><span class="k">Dream Companies</span><span class="v v-blue">Google / Amazon / MS</span></div>
+      <div class="key-val"><span class="k">Higher Studies</span><span class="v v-purple">GATE / GRE / GMAT</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Top Affiliated Colleges</div>
+      <div class="key-val"><span class="k">MSRIT</span><span class="v v-gold">M. S. Ramaiah IT, Blr</span></div>
+      <div class="key-val"><span class="k">BIT Bengaluru</span><span class="v v-gold">BMS Inst. of Tech.</span></div>
+      <div class="key-val"><span class="k">BMSCE</span><span class="v v-gold">BMS Coll. of Engg.</span></div>
+      <div class="key-val"><span class="k">PESIT</span><span class="v v-gold">PES Institute of Tech.</span></div>
+      <div class="key-val"><span class="k">RNSIT</span><span class="v v-gold">RNS Inst. of Tech.</span></div>
+      <div class="key-val"><span class="k">DSCE</span><span class="v v-gold">Dayananda Sagar CE</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">All these are autonomous VTU-affiliated colleges. Admission is via KCET / COMEDK based on merit rank.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'VTU Belagavi added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      document.getElementById('streamDropdown').classList.remove('open');
+    }
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Barkatullah University Bhopal – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --accent-blue: #63b3ed;
+    --accent-red: #fc8181;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy); color: var(--gold); border-radius: 50%;
+    width: 18px; height: 18px; font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown {
+    position: absolute; top: calc(100% + 8px); left: 0;
+    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 8px; min-width: 220px; display: none; z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999;
+    display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero {
+    background: linear-gradient(135deg, #0d1a3a 0%, #1c2f5e 40%, #0e2040 100%);
+    padding: 40px 48px 36px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+    width: 300px; height: 300px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.15);
+  }
+  .hero::after {
+    content: ''; position: absolute; right: 95px; top: 50%; transform: translateY(-50%);
+    width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.08);
+  }
+  .hero-ring3 {
+    position: absolute; right: 130px; top: 50%; transform: translateY(-50%);
+    width: 140px; height: 140px; border-radius: 50%; border: 1px solid rgba(99,179,237,0.1);
+  }
+
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px; background: var(--white); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .meta-chip strong { color: var(--white); }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px; padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center; min-width: 110px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-rank { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-institute { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-research { background: rgba(159,122,234,0.15); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-rank .value { color: var(--gold); }
+  .hb-institute .value { color: var(--accent-blue); }
+  .hb-research .value { color: #b794f4; }
+
+  .elite-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .elite-badge {
+    background: rgba(252,129,74,0.12); border: 1px solid rgba(252,129,74,0.3);
+    border-radius: 6px; padding: 3px 12px; font-size: 0.7rem; font-weight: 700;
+    color: #fbd38d; letter-spacing: 0.03em;
+  }
+  .elite-badge.blue { background: rgba(99,179,237,0.1); border-color: rgba(99,179,237,0.3); color: var(--accent-blue); }
+  .elite-badge.green { background: rgba(72,187,120,0.1); border-color: rgba(72,187,120,0.3); color: var(--accent-green); }
+  .elite-badge.purple { background: rgba(159,122,234,0.1); border-color: rgba(159,122,234,0.3); color: #b794f4; }
+
+  .tabs-bar {
+    background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; padding: 0 48px; gap: 4px; overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer;
+    border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap {
+    max-width: 1200px; margin: 0 auto; padding: 36px 32px;
+    display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 24px; margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 10px 14px; font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px;
+    align-items: center; padding: 11px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px; transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-gate { background: rgba(159,122,234,0.15); color: #b794f4; border: 1px solid rgba(159,122,234,0.25); }
+  .tag-elite { background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid var(--border); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem;
+    transition: all 0.2s;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted);
+  }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 18px; }
+  .stat-box {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 16px; text-align: center;
+  }
+  .stat-box .s-val { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+  .stat-box .s-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--card-bg); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); line-height: 1.6; }
+
+  .rank-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .rank-table th {
+    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .rank-table td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted); vertical-align: middle;
+  }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .rank-table td:first-child { color: var(--white); font-weight: 500; }
+  .rank-1 { color: var(--gold) !important; font-weight: 700; font-size: 1rem; }
+  .rank-top { color: var(--accent-green) !important; font-weight: 600; }
+  .rank-mid { color: var(--accent-blue) !important; font-weight: 600; }
+
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th {
+    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .cutoff-table td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted); vertical-align: middle;
+  }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-very-high { color: #fc8181 !important; font-weight: 700; }
+  .level-high { color: #f6ad55 !important; font-weight: 600; }
+  .level-moderate { color: var(--accent-green) !important; font-weight: 600; }
+  .level-low { color: var(--accent-blue) !important; font-weight: 600; }
+
+  .sidebar-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 22px; margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 60%; }
+  .v-gold { color: var(--gold) !important; }
+  .v-green { color: var(--accent-green) !important; }
+  .v-blue { color: var(--accent-blue) !important; }
+  .v-purple { color: #b794f4 !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block; width: 100%; padding: 12px; border-radius: 10px; border: none;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+    transition: all 0.2s; font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .campus-section { margin-bottom: 22px; }
+  .campus-section-title { font-size: 0.78rem; font-weight: 600; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .event-list { display: flex; flex-direction: column; gap: 8px; }
+  .event-item { display: flex; align-items: flex-start; gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; }
+  .event-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+  .cutoff-note {
+    background: rgba(99,179,237,0.08); border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 10px; padding: 12px 16px; font-size: 0.75rem; color: #90cdf4;
+    margin-top: 14px; line-height: 1.6;
+  }
+
+  .research-highlight {
+    background: linear-gradient(135deg, rgba(159,122,234,0.1) 0%, rgba(99,179,237,0.08) 100%);
+    border: 1px solid rgba(159,122,234,0.25); border-radius: 12px; padding: 16px;
+    margin-bottom: 14px;
+  }
+  .research-highlight .rh-title { font-size: 0.78rem; font-weight: 700; color: #b794f4; margin-bottom: 6px; }
+  .research-highlight .rh-val { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+  .research-highlight .rh-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+    z-index:999; display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card); border:1px solid var(--border); border-radius:20px;
+    padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  .affiliated-note {
+    background: rgba(245,166,35,0.06); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px; margin-bottom: 20px; font-size: 0.8rem; color: var(--muted); line-height: 1.7;
+  }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 8px; }
+    .nav-logo { font-size: 0.9rem; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; }
+  }
+  @media (max-width: 480px) {
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📖 <span id="streamLabel">Arts &amp; Sci.</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+        <div class="stream-opt" onclick="selectStream(this,'Medical &amp; Health Sciences','🏥')">🏥 Medical &amp; Health Sciences</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-ring3"></div>
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Barkatullah University, Bhopal
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>Barkatullah <span>University, Bhopal</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Bhopal, Madhya Pradesh</strong></span>
+        <span class="meta-chip">🏛️ <strong>State University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1970</strong></span>
+        <span class="meta-chip">🏷️ <strong>BU Bhopal / BUB</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.bubhopal.ac.in/','_blank')">🌐 <strong>bubhopal.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC</span>
+      <span class="value">B++ Grade</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">NIRF 2024</span>
+      <span class="value">Ranked</span>
+    </div>
+    <div class="hero-badge hb-institute">
+      <span class="label">Campus Area</span>
+      <span class="value">~596 Acres</span>
+    </div>
+    <div class="hero-badge hb-research">
+      <span class="label">Type</span>
+      <span class="value">Affiliating Univ.</span>
+    </div>
+  </div>
+  <div class="elite-strip">
+    <span class="elite-badge">State University – Govt. of M.P.</span>
+    <span class="elite-badge blue">NAAC B++ Accredited</span>
+    <span class="elite-badge green">800+ Affiliated Colleges</span>
+    <span class="elite-badge purple">UGC Recognized</span>
+    <span class="elite-badge">Named After Freedom Fighter Barkatullah</span>
+    <span class="elite-badge blue">Bhopal – Capital of M.P.</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Programs</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Programs</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD / Research</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Rankings &amp; Cut-Off</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- TAB 0: OVERVIEW -->
+    <div class="tab-panel active" id="panel-0">
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1970</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State University (Affiliating)</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Bhopal, Madhya Pradesh</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC / Govt. of M.P.</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~596 Acres</div></div>
+          <div class="info-chip"><div class="lbl">Affiliated Colleges</div><div class="val" style="color:var(--gold);">800+ Colleges</div></div>
+          <div class="info-chip"><div class="lbl">Teaching Depts.</div><div class="val">42+ University Depts.</div></div>
+          <div class="info-chip"><div class="lbl">NAAC Grade</div><div class="val" style="color:var(--accent-green);">B++ (2023)</div></div>
+          <div class="info-chip"><div class="lbl">Student Strength</div><div class="val">5 Lakh+ (Affiliated)</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About Barkatullah University</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.8;">
+          <strong style="color:var(--white);">Barkatullah University (BU Bhopal)</strong>, established in <strong style="color:var(--white);">1970</strong> and named after the great freedom fighter and revolutionary <strong style="color:var(--white);">Professor Barkatullah</strong> of Bhopal, is the premier state university of Madhya Pradesh. Located in the heart of <strong style="color:var(--white);">Bhopal — the capital city of Madhya Pradesh</strong>, the university is spread across a sprawling <strong style="color:var(--white);">596-acre campus</strong>. Originally known as Bhopal University, it was renamed in 1988 in honour of its illustrious namesake. BU Bhopal functions as both a <strong style="color:var(--white);">teaching and affiliating university</strong>, overseeing more than <strong style="color:var(--white);">800 affiliated colleges</strong> across multiple districts of Madhya Pradesh and catering to over <strong style="color:var(--white);">5 lakh students</strong> annually. The university offers programs across <strong style="color:var(--white);">Arts, Science, Commerce, Law, Management, Education, Engineering, and Social Sciences</strong>. The university campus houses over <strong style="color:var(--white);">42 teaching departments and study centres</strong> offering direct university programs including B.A., B.Sc., B.Com., LLB, M.A., M.Sc., M.Com., MBA, MCA, M.Tech., and PhD. Accredited with a <strong style="color:var(--white);">NAAC B++ grade</strong>, BU Bhopal is recognized by the UGC and continues to be the academic backbone of central India's higher education ecosystem.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Key Highlights &amp; Research</div>
+        <div class="grid-2" style="margin-bottom:14px;">
+          <div class="research-highlight">
+            <div class="rh-title">Affiliated Colleges</div>
+            <div class="rh-val">800+</div>
+            <div class="rh-sub">Colleges Across Multiple M.P. Districts</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Teaching Departments</div>
+            <div class="rh-val">42+</div>
+            <div class="rh-sub">University Teaching &amp; Research Depts.</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">Annual Student Intake</div>
+            <div class="rh-val">5 Lakh+</div>
+            <div class="rh-sub">Direct + Affiliated Students Per Year</div>
+          </div>
+          <div class="research-highlight">
+            <div class="rh-title">PhD Research Scholars</div>
+            <div class="rh-val">2,000+</div>
+            <div class="rh-sub">Active Registered PhD Scholars</div>
+          </div>
+        </div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🔬</span><div><strong>Science &amp; Technology Research</strong> — Active research groups in Chemistry, Physics, Biotechnology, Computer Science, and Environmental Sciences</div></div>
+          <div class="event-item"><span class="event-icon">📖</span><div><strong>Humanities &amp; Social Sciences</strong> — Strong PhD programs in Hindi, English, Urdu, History, Political Science, Sociology, and Economics</div></div>
+          <div class="event-item"><span class="event-icon">⚖️</span><div><strong>Law &amp; Constitutional Studies</strong> — School of Law offers LLB and LLM programs; active research in constitutional and criminal law</div></div>
+          <div class="event-item"><span class="event-icon">💼</span><div><strong>Management &amp; Commerce Studies</strong> — MBA, M.Com., and BBA programs with industry linkages and training programs for central India's job market</div></div>
+          <div class="event-item"><span class="event-icon">🖥️</span><div><strong>Computer Science &amp; IT</strong> — MCA and M.Sc. (IT) programs with growing industry exposure and government sector placement opportunities</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library (1.5 Lakh+ Books)</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Laboratories</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Ground &amp; Stadium</div>
+          <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Open-Air Theatre &amp; Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🩺</div>University Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Canteens &amp; Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">🌿</div>Lush Green 596-Acre Campus</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Bank &amp; Post Office (On-Campus)</div>
+          <div class="fac-item"><div class="fac-icon">📡</div>Wi-Fi Enabled Campus</div>
+          <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security</div>
+        </div>
+
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span>🏠</span> Boys Hostels (Multiple Blocks)</div>
+          <div class="hostel-item"><span>🏡</span> Girls Hostels (Multiple Blocks)</div>
+          <div class="hostel-item"><span>📶</span> Wi-Fi in Hostels</div>
+          <div class="hostel-item"><span>🍽️</span> Subsidized Mess Facility</div>
+          <div class="hostel-item"><span>📖</span> Reading Rooms</div>
+          <div class="hostel-item"><span>🏆</span> Sports &amp; Recreational Area</div>
+          <div class="hostel-item"><span>🩺</span> Health Centre Access</div>
+          <div class="hostel-item"><span>🌿</span> Green Peaceful Campus</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹5,000 – ₹20,000/year (hostel) + Mess charges vary · Highly affordable for state university students · SC/ST and BPL students eligible for additional fee concessions under M.P. Govt. schemes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: UG PROGRAMS -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Programs</div>
+
+        <div class="affiliated-note">
+          <strong style="color:var(--gold);">Note:</strong> Barkatullah University offers UG programs both directly through its <strong style="color:var(--white);">42+ teaching departments on campus</strong> and through its <strong style="color:var(--white);">800+ affiliated colleges</strong> across Madhya Pradesh. Admission to university teaching departments (direct) is through merit / MP DMAT / MP Pre-Law Test as applicable. Affiliated college admissions are handled separately by each college.
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Bachelor of Arts (B.A.) · 3 Years · Merit / Entrance</span>
+          <div class="course-row">
+            <div class="course-name">B.A. – Economics, Political Science, Sociology</div>
+            <div class="course-meta"><strong>Merit / MP Board</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000 – ₹12,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. – History, Geography, Philosophy</div>
+            <div class="course-meta"><strong>Merit / MP Board</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000 – ₹12,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. – Hindi, English, Urdu, Sanskrit</div>
+            <div class="course-meta"><strong>Merit / MP Board</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000 – ₹12,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. – Journalism &amp; Mass Communication</div>
+            <div class="course-meta"><strong>Merit / Entrance</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹15,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. – Social Work (BSW)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000 – ₹12,000/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Bachelor of Science (B.Sc.) · 3 Years · Merit</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Physics, Chemistry, Mathematics (PCM)</div>
+            <div class="course-meta"><strong>Merit / 10+2</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000 – ₹14,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Physics, Chemistry, Biology (PCB)</div>
+            <div class="course-meta"><strong>Merit / 10+2</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000 – ₹14,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Computer Science / IT</div>
+            <div class="course-meta"><strong>Merit / 10+2</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹18,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Biotechnology / Microbiology</div>
+            <div class="course-meta"><strong>Merit / 10+2</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹18,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Environmental Science</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹7,000 – ₹15,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc. – Electronics &amp; Instrumentation</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹16,000/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Bachelor of Commerce (B.Com.) · 3 Years · Merit</span>
+          <div class="course-row">
+            <div class="course-name">B.Com. (General)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000 – ₹12,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Com. (Honours)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000 – ₹14,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BBA – Bachelor of Business Administration</div>
+            <div class="course-meta"><strong>Merit / Entrance</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹15,000 – ₹30,000/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Bachelor of Law (LLB) · 3 / 5 Years · MP Pre-Law Test</span>
+          <div class="course-row">
+            <div class="course-name">LLB (3-Year Program) – After Graduation</div>
+            <div class="course-meta"><strong>MP Pre-Law / CLAT</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">₹10,000 – ₹20,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BA LLB (5-Year Integrated) – After 10+2</div>
+            <div class="course-meta"><strong>MP Pre-Law / CLAT</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">₹10,000 – ₹20,000/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Other UG Programs</span>
+          <div class="course-row">
+            <div class="course-name">B.Ed. – Bachelor of Education</div>
+            <div class="course-meta"><strong>MP B.Ed. Entrance</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹10,000 – ₹25,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BCA – Bachelor of Computer Applications</div>
+            <div class="course-meta"><strong>Merit / 10+2</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,000 – ₹25,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Lib.I.Sc. – Library &amp; Information Science</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>1 Yr</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000 – ₹12,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.P.Ed. – Bachelor of Physical Education</div>
+            <div class="course-meta"><strong>Merit / Sports</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹16,000/yr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PG PROGRAMS -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Programs</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.A. Programs · 2 Years · Merit / Entrance</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.A. – Hindi</span>
+            <span class="phd-tag">M.A. – English</span>
+            <span class="phd-tag">M.A. – Urdu</span>
+            <span class="phd-tag">M.A. – Sanskrit</span>
+            <span class="phd-tag">M.A. – History</span>
+            <span class="phd-tag">M.A. – Political Science</span>
+            <span class="phd-tag">M.A. – Economics</span>
+            <span class="phd-tag">M.A. – Sociology</span>
+            <span class="phd-tag">M.A. – Geography</span>
+            <span class="phd-tag">M.A. – Philosophy</span>
+            <span class="phd-tag">M.A. – Psychology</span>
+            <span class="phd-tag">M.A. – Public Administration</span>
+            <span class="phd-tag">M.A. – Journalism &amp; Mass Communication</span>
+            <span class="phd-tag">M.A. – Social Work (MSW)</span>
+            <span class="phd-tag">M.A. – Anthropology</span>
+            <span class="phd-tag">M.A. – Ancient Indian History, Culture &amp; Archaeology</span>
+            <span class="phd-tag">M.A. – Defence Studies</span>
+            <span class="phd-tag">M.A. – Music</span>
+            <span class="phd-tag">M.A. – Fine Arts &amp; Drawing</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Relevant Bachelor's degree with 50%+ marks · Admission: Merit-based or Departmental Entrance Test · Fee: ₹8,000 – ₹20,000/year</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc. Programs · 2 Years · Merit / Entrance</span>
+          <div class="phd-tags" style="margin-bottom:8px;">
+            <span class="phd-tag">M.Sc. – Physics</span>
+            <span class="phd-tag">M.Sc. – Chemistry</span>
+            <span class="phd-tag">M.Sc. – Mathematics</span>
+            <span class="phd-tag">M.Sc. – Botany</span>
+            <span class="phd-tag">M.Sc. – Zoology</span>
+            <span class="phd-tag">M.Sc. – Biotechnology</span>
+            <span class="phd-tag">M.Sc. – Microbiology</span>
+            <span class="phd-tag">M.Sc. – Environmental Science</span>
+            <span class="phd-tag">M.Sc. – Computer Science</span>
+            <span class="phd-tag">M.Sc. – Information Technology</span>
+            <span class="phd-tag">M.Sc. – Electronics</span>
+            <span class="phd-tag">M.Sc. – Statistics</span>
+            <span class="phd-tag">M.Sc. – Biochemistry</span>
+            <span class="phd-tag">M.Sc. – Geology</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Sc. with relevant subject (50%+) · Admission: Merit / Department Entrance Test · Fee: ₹10,000 – ₹25,000/year</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Com. / MBA / MCA · 2 Years · Entrance</span>
+          <div class="course-row">
+            <div class="course-name">M.Com. – Master of Commerce</div>
+            <div class="course-meta"><strong>Merit / Entrance</strong>Admission</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹18,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">MBA – Master of Business Administration</div>
+            <div class="course-meta"><strong>MP-MAT / CAT / Dept. Exam</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">₹25,000 – ₹60,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">MCA – Master of Computer Applications</div>
+            <div class="course-meta"><strong>MP MCA Entrance / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-exam">₹20,000 – ₹40,000/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech. / M.Ed. / LLM / Other PG · 1–2 Years</span>
+          <div class="course-row">
+            <div class="course-name">M.Tech. – Computer Science &amp; Engineering</div>
+            <div class="course-meta"><strong>GATE / Dept. Exam</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-gate">₹30,000 – ₹60,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Tech. – Electronics &amp; Communication</div>
+            <div class="course-meta"><strong>GATE / Dept. Exam</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-gate">₹30,000 – ₹60,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">LLM – Master of Laws</div>
+            <div class="course-meta"><strong>Merit / Dept. Exam</strong>Entrance</div>
+            <div class="course-meta"><strong>1 Yr</strong>Duration</div>
+            <span class="tag tag-fees">₹10,000 – ₹22,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Ed. – Master of Education</div>
+            <div class="course-meta"><strong>MP M.Ed. Entrance</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,000 – ₹25,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Lib.I.Sc. – Library &amp; Information Science</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>1 Yr</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹15,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.P.Ed. – Master of Physical Education</div>
+            <div class="course-meta"><strong>Merit / Sports</strong>Admission</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000 – ₹16,000/yr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PhD / RESEARCH -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs — Research Areas</div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Arts, Humanities &amp; Social Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Hindi</span>
+            <span class="phd-tag">English</span>
+            <span class="phd-tag">Urdu</span>
+            <span class="phd-tag">Sanskrit</span>
+            <span class="phd-tag">History</span>
+            <span class="phd-tag">Political Science</span>
+            <span class="phd-tag">Sociology</span>
+            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Psychology</span>
+            <span class="phd-tag">Geography</span>
+            <span class="phd-tag">Philosophy</span>
+            <span class="phd-tag">Public Administration</span>
+            <span class="phd-tag">Journalism &amp; Mass Communication</span>
+            <span class="phd-tag">Social Work</span>
+            <span class="phd-tag">Anthropology</span>
+            <span class="phd-tag">Defence Studies</span>
+            <span class="phd-tag">Ancient History, Culture &amp; Archaeology</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Sciences &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Botany</span>
+            <span class="phd-tag">Zoology</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Microbiology</span>
+            <span class="phd-tag">Biochemistry</span>
+            <span class="phd-tag">Environmental Science</span>
+            <span class="phd-tag">Geology</span>
+            <span class="phd-tag">Statistics</span>
+            <span class="phd-tag">Electronics</span>
+            <span class="phd-tag">Computer Science</span>
+            <span class="phd-tag">Information Technology</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce, Management &amp; Law</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Commerce</span>
+            <span class="phd-tag">Management Studies (MBA)</span>
+            <span class="phd-tag">Law</span>
+            <span class="phd-tag">Library &amp; Information Science</span>
+          </div>
+        </div>
+
+        <div class="phd-category">
+          <div class="phd-cat-label">Education, Fine Arts &amp; Physical Education</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Education</span>
+            <span class="phd-tag">Physical Education</span>
+            <span class="phd-tag">Fine Arts</span>
+            <span class="phd-tag">Music</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.25);border-radius:10px;padding:16px;">
+          <div style="font-size:0.78rem;font-weight:600;color:#b794f4;margin-bottom:10px;">PhD Eligibility &amp; Admission Process</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree in Relevant Subject (55%+)</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">55%+ in PG (50% for SC/ST/OBC)</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">BU PhD Entrance Test (PET) / UGC-NET / CSIR-NET Exempted</span></div>
+          <div class="key-val"><span class="k">NET/JRF Exemption</span><span class="v">UGC-NET / JRF Qualified Candidates Exempt from PET</span></div>
+          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">PET Score + Interview by Research Committee</span></div>
+        </div>
+
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Fellowships &amp; Funding</div>
+          <div class="key-val"><span class="k">UGC-NET JRF</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
+          <div class="key-val"><span class="k">CSIR-JRF (Science)</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
+          <div class="key-val"><span class="k">DST INSPIRE Fellowship</span><span class="v" style="color:var(--accent-green);">₹80,000/month (Senior) + ₹20,000 Research Grant</span></div>
+          <div class="key-val"><span class="k">M.P. State Research Fellowship</span><span class="v" style="color:var(--accent-green);">Applicable (Govt. of M.P. Scheme)</span></div>
+          <div class="key-val" style="border:none"><span class="k">Maulana Azad Fellowship (Minorities)</span><span class="v" style="color:var(--accent-green);">Applicable</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ADMISSIONS -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Check Official Notification</div>
+            <div class="tl-desc">Visit the official BU Bhopal website (bubhopal.ac.in) or the MP Online portal (mponline.gov.in). Barkatullah University releases admission notifications for all programs annually, typically between April and July. Bookmark the official site for timely updates and notification PDFs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register on MP Online Portal</div>
+            <div class="tl-desc">Most BU Bhopal admissions are processed through the centralized MP Online portal (mponline.gov.in). Create an account, select Barkatullah University and your desired program, and pay the application fee online. For some programs, a direct university application form is also available at the campus registrar office.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Appear in Entrance Test (Where Applicable)</div>
+            <div class="tl-desc">Programs like LLB (MP Pre-Law Test), MBA (MP-MAT / Departmental Test), B.Ed. (MP B.Ed. Entrance), M.Sc. / M.A. (Departmental Entrance), and PhD (BU PET – PhD Entrance Test) require separate entrance examinations. Check the program-specific notification for exact entrance test schedule and syllabus.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Merit List / Counselling</div>
+            <div class="tl-desc">For merit-based programs (B.A., B.Sc., B.Com., M.A., M.Sc., M.Com.), a merit list is published based on 10+2 or bachelor's marks. Report to the university for document verification and seat confirmation in order of merit. Multiple rounds of counselling may be held for remaining seats.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Document Verification</div>
+            <div class="tl-desc">Bring original and attested photocopies of: 10th &amp; 12th marksheets, bachelor's degree/marksheets (for PG), transfer certificate, character certificate, caste certificate (SC/ST/OBC), domicile certificate (M.P. Resident), Aadhaar card, and passport-size photographs. Spot verification is mandatory before fee payment.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Fee Payment &amp; Enrollment</div>
+            <div class="tl-desc">Pay semester/annual fees at the university cashier or via MP Online. Collect your enrollment number, identity card, and class schedule from the respective department. PhD candidates must additionally submit their research synopsis and supervisor details within 6 months of enrollment as per UGC regulations.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">B.A. / B.Sc. / B.Com. (General)</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Merit / 10+2 Marks</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">LLB (3-Year) / BA LLB (5-Year)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">MP Pre-Law Test / CLAT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Ed. – Bachelor of Education</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">MP B.Ed. Entrance Test</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.A. / M.Sc. / M.Com. (PG Arts/Science)</div>
+          <div></div><div></div>
+          <span class="tag tag-fees">Merit / Dept. Entrance Test</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA – Management</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">MP-MAT / CAT / Dept. Test + PI</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MCA – Computer Applications</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">MP MCA Entrance / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Tech. – Engineering Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-gate">GATE / Dept. Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Ed. – Education</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">MP M.Ed. Entrance Test</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD – All Departments</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">BU PET / UGC-NET (Exemption)</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Fee Concessions</div>
+        <div class="phd-tags">
+          <span class="phd-tag">Mukhyamantri Medhavi Vidyarthi Yojana (M.P.)</span>
+          <span class="phd-tag">SC / ST Scholarship (Govt. of India)</span>
+          <span class="phd-tag">OBC Scholarship (Govt. of India)</span>
+          <span class="phd-tag">Minority Scholarship (Maulana Azad)</span>
+          <span class="phd-tag">DST INSPIRE Fellowship</span>
+          <span class="phd-tag">UGC-NET JRF</span>
+          <span class="phd-tag">CSIR-NET JRF (Science)</span>
+          <span class="phd-tag">M.P. Gaon Ki Beti Yojana (Girls)</span>
+          <span class="phd-tag">M.P. Pratibha Kiran Yojana (Girls)</span>
+          <span class="phd-tag">National Merit Scholarship</span>
+          <span class="phd-tag">BPL Fee Waiver</span>
+          <span class="phd-tag">Disabled (Divyang) Fee Concession</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PLACEMENTS -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement &amp; Career Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹3–8 LPA</div>
+            <div class="s-lbl">Average Entry Package</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">Govt. / PSU</div>
+            <div class="s-lbl">Top Career Pathway</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">70%+</div>
+            <div class="s-lbl">Placement / Career Progress</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">Central India</div>
+            <div class="s-lbl">Primary Employer Market</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">MPSC / UPSC</div>
+            <div class="s-lbl">Preferred Career Route</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-blue);">IT / BPO / Banking</div>
+            <div class="s-lbl">Private Sector Roles</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:18px;font-size:0.8rem;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--gold);">Note:</strong> As a state affiliating university, Barkatullah University's placement scenario is <strong style="color:var(--white);">primarily driven by individual colleges and departments</strong>. The university provides a placement cell and career guidance, but outcomes vary significantly across departments. Students from MBA, MCA, M.Sc. (CS/IT), and M.Tech. programs have the strongest campus placement records.
+        </div>
+
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Career Pathways</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🏛️</span><div><strong>Government &amp; Civil Services</strong> — The largest career pathway for BU graduates. Students prepare for MPSC (MP State Services), UPSC (IAS/IPS/IFS), SSC, Banking (IBPS/SBI), and Railways (RRB). BU graduates have consistently cleared state-level competitive exams.</div></div>
+          <div class="event-item"><span class="event-icon">🖥️</span><div><strong>IT &amp; Software Companies</strong> — MCA, M.Sc. CS/IT, BCA, and M.Tech. graduates are recruited by Infosys, TCS, Wipro, HCL, Cognizant, and regional IT companies based in Bhopal, Indore, and Pune at packages of ₹3.5 – ₹8 LPA</div></div>
+          <div class="event-item"><span class="event-icon">🏦</span><div><strong>Banking &amp; Finance</strong> — B.Com., M.Com., MBA (Finance) graduates widely recruited by SBI, PNB, Bank of India, LIC, and private sector banks via IBPS / SBI PO / Clerk exams</div></div>
+          <div class="event-item"><span class="event-icon">⚖️</span><div><strong>Legal &amp; Judiciary Careers</strong> — LLB and LLM graduates pursue MP District Court practice, Higher Judiciary (MP High Court), and MP Judicial Services Examination</div></div>
+          <div class="event-item"><span class="event-icon">🎓</span><div><strong>Teaching &amp; Education</strong> — B.Ed., M.Ed., and PG graduates appear for MP Teacher Eligibility Test (MP TET), CTET, and Navodaya / Kendriya Vidyalaya teacher recruitment exams</div></div>
+          <div class="event-item"><span class="event-icon">📰</span><div><strong>Media &amp; Communication</strong> — MA (Journalism &amp; Mass Communication) graduates join print, digital, and broadcast media companies; growing opportunities in Bhopal's media ecosystem</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters &amp; Sectors</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">HCL Technologies</span>
+          <span class="recruiter-tag">Cognizant</span>
+          <span class="recruiter-tag">SBI</span>
+          <span class="recruiter-tag">Bank of India</span>
+          <span class="recruiter-tag">LIC of India</span>
+          <span class="recruiter-tag">NTPC</span>
+          <span class="recruiter-tag">BHEL Bhopal</span>
+          <span class="recruiter-tag">MP State Govt.</span>
+          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">EY</span>
+          <span class="recruiter-tag">KPMG</span>
+          <span class="recruiter-tag">Dainik Bhaskar</span>
+          <span class="recruiter-tag">Zee Media</span>
+          <span class="recruiter-tag">Bhopal Smart City Ltd.</span>
+          <span class="recruiter-tag">MP Tourism</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Government Exam Pathways (Most Popular)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Exam / Service</th>
+              <th>Eligible Programs</th>
+              <th>Typical Salary (After Selection)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>MPSC – MP State Civil Services</td>
+              <td>Any Graduate / PG</td>
+              <td style="color:var(--accent-green);">₹5.6 – ₹15 LPA</td>
+            </tr>
+            <tr>
+              <td>UPSC – IAS / IPS / IFS</td>
+              <td>Any Graduate</td>
+              <td style="color:var(--accent-green);">₹6 – ₹18 LPA</td>
+            </tr>
+            <tr>
+              <td>MP Judicial Services (PCS-J)</td>
+              <td>LLB / LLM</td>
+              <td style="color:var(--accent-green);">₹7 – ₹16 LPA</td>
+            </tr>
+            <tr>
+              <td>IBPS PO / SBI PO / RRB PO</td>
+              <td>B.Com. / MBA / M.Com.</td>
+              <td style="color:var(--accent-blue);">₹5 – ₹10 LPA</td>
+            </tr>
+            <tr>
+              <td>MP TET / CTET / NVS / KVS Teacher</td>
+              <td>B.Ed. / M.Ed. + PG</td>
+              <td style="color:var(--accent-blue);">₹4.5 – ₹9 LPA</td>
+            </tr>
+            <tr>
+              <td>SSC CGL / CHSL / CPO</td>
+              <td>Any Graduate</td>
+              <td style="color:var(--accent-blue);">₹4 – ₹8 LPA</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 6: CAMPUS LIFE -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at Barkatullah University</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual University Cultural Fest</strong> — BU's annual cultural festival featuring folk dance, classical music, drama, street plays, fine arts exhibition, and literary competitions attracting students from affiliated colleges across M.P.</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Science &amp; Research Symposia</strong> — Departmental conferences, seminars, and national-level workshops organized throughout the year in sciences, humanities, and law departments</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Inter-University &amp; Inter-College Sports Tournaments</strong> — BU participates in AIU (Association of Indian Universities) sports meets; campus championships are held in cricket, football, kabaddi, athletics, and volleyball</div></div>
+            <div class="event-item"><span class="event-icon">📰</span><div><strong>Journalism &amp; Media Activities</strong> — The Department of Mass Communication runs the university's news magazine and conducts annual media summits connecting students with working journalists</div></div>
+            <div class="event-item"><span class="event-icon">⚖️</span><div><strong>Moot Court Competitions</strong> — The School of Law conducts regular moot court exercises, legal aid clinics, and legal awareness programs across Bhopal and MP districts</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">🎾</div>Tennis Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🏃</div>Athletics Track</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">🏊</div>Outdoor Sports Area</div>
+            <div class="fac-item"><div class="fac-icon">🎱</div>Indoor Games Room</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Organizations &amp; Clubs</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Student Union (BU Students' Council)</span>
+            <span class="phd-tag">NSS – National Service Scheme</span>
+            <span class="phd-tag">NCC Unit (Army / Navy Wing)</span>
+            <span class="phd-tag">Debate &amp; Elocution Society</span>
+            <span class="phd-tag">Cultural Committee</span>
+            <span class="phd-tag">Literary Club</span>
+            <span class="phd-tag">Science Club</span>
+            <span class="phd-tag">Women's Cell</span>
+            <span class="phd-tag">Anti-Ragging Committee</span>
+            <span class="phd-tag">Legal Aid Clinic (Law Dept.)</span>
+            <span class="phd-tag">Media &amp; Journalism Club</span>
+            <span class="phd-tag">Environmental Club</span>
+            <span class="phd-tag">Rotaract Club</span>
+            <span class="phd-tag">Youth Red Cross</span>
+            <span class="phd-tag">Hindi Sahitya Parishad</span>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🌿 Location &amp; Connectivity</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">📍</span><div><strong>Situated in Bhopal – Capital of Madhya Pradesh</strong> — The university campus is located near Shymala Hills, Bhopal. Excellent connectivity to the city center (~5 km) via BRTS and city buses.</div></div>
+            <div class="event-item"><span class="event-icon">✈️</span><div><strong>Raja Bhoj Airport, Bhopal</strong> — ~15 km from campus · Direct flights to Delhi, Mumbai, Indore, Hyderabad, and other major cities</div></div>
+            <div class="event-item"><span class="event-icon">🚂</span><div><strong>Bhopal Railway Station</strong> — ~8 km from campus · Well-connected to all major Indian cities. Habibganj (Rani Kamalapati) station (~6 km) is a new world-class station nearby.</div></div>
+            <div class="event-item"><span class="event-icon">🏙️</span><div><strong>Bhopal — City of Lakes</strong> — Known for its twin lakes (Upper and Lower Lake), Bhimbetka rock shelters (UNESCO heritage), Van Vihar National Park, and vibrant culture. Very affordable student-friendly city.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: RANKINGS & CUT-OFF -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Rankings &amp; Recognition</div>
+        <table class="rank-table">
+          <thead>
+            <tr>
+              <th>Ranking Body</th>
+              <th>Category</th>
+              <th>Rank / Score</th>
+              <th>Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>NAAC Accreditation</td>
+              <td>National</td>
+              <td><span class="rank-top">B++ Grade</span></td>
+              <td>2023</td>
+            </tr>
+            <tr>
+              <td>NIRF India Rankings</td>
+              <td>University</td>
+              <td><span class="rank-mid">Ranked (151–200 Band)</span></td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>UGC Recognition</td>
+              <td>National</td>
+              <td><span class="rank-top">UGC Recognized (Sec. 2(f) &amp; 12B)</span></td>
+              <td>Ongoing</td>
+            </tr>
+            <tr>
+              <td>AIU Membership</td>
+              <td>National</td>
+              <td><span class="rank-top">Member – Association of Indian Universities</span></td>
+              <td>Ongoing</td>
+            </tr>
+            <tr>
+              <td>Govt. of M.P.</td>
+              <td>State</td>
+              <td><span class="rank-top">Premier State University of M.P.</span></td>
+              <td>Ongoing</td>
+            </tr>
+            <tr>
+              <td>India Today / Outlook Rankings</td>
+              <td>State University</td>
+              <td><span class="rank-mid">Top 10 State Universities of Central India</span></td>
+              <td>2024</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Cut-Off — UG Programs</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Category</th>
+              <th>Approx. 10+2 Marks Required</th>
+              <th>Competition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>B.Sc. – Computer Science / Biotechnology</td>
+              <td>General</td>
+              <td>70% – 85% (10+2 PCM/PCB)</td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>B.Sc. – PCM / PCB</td>
+              <td>General</td>
+              <td>60% – 75% (10+2)</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>BBA – Business Administration</td>
+              <td>General</td>
+              <td>60% – 75% (Any Stream)</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.A. / B.Com. (General)</td>
+              <td>General</td>
+              <td>45% – 60%+ (10+2)</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>LLB – Law (3-Year / 5-Year)</td>
+              <td>General</td>
+              <td>MP Pre-Law Test Score Based</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>BCA – Computer Applications</td>
+              <td>General</td>
+              <td>55% – 70% (10+2 with Maths)</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ Cut-off percentages depend on the number of applicants, seat matrix, and academic year. For SC/ST/OBC categories, cut-offs are typically 5–10% lower. Direct university department seats are limited; early application is advised. Check the official BU Bhopal portal or MP Online for current-year actual cut-off data.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Cut-Off — PG Programs</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Category</th>
+              <th>Approx. Eligibility / Score</th>
+              <th>Competition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>MBA – Management</td>
+              <td>General</td>
+              <td>MP-MAT / CAT Sectional Score + 50%+ UG</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>MCA – Computer Applications</td>
+              <td>General</td>
+              <td>55%+ in BCA/B.Sc. CS / Merit Based</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc. – Physics / Chemistry / Maths</td>
+              <td>General</td>
+              <td>55% – 65%+ in B.Sc. Relevant Subject</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc. – Computer Science / IT / Biotech</td>
+              <td>General</td>
+              <td>60% – 75%+ in B.Sc. / BCA</td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>M.A. – Hindi / English / History / Pol. Sci.</td>
+              <td>General</td>
+              <td>50%+ in B.A. Relevant Subject</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>LLM – Law</td>
+              <td>General</td>
+              <td>55%+ in LLB / BA LLB</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech. – CS / EC</td>
+              <td>General</td>
+              <td>GATE Score / 60%+ in B.Tech/B.E.</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>PhD – All Departments</td>
+              <td>General</td>
+              <td>55%+ PG + BU PET / UGC-NET</td>
+              <td><span class="level-high">Moderate–High</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">ℹ️ PG admissions at Barkatullah University are generally moderate in competition compared to central universities or IITs. The university is an excellent option for students seeking affordable, quality higher education in central India. Verify all cut-offs directly at bubhopal.ac.in or contact the respective department office.</div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.bubhopal.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1970</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State University (Affiliating)</span></div>
+      <div class="key-val"><span class="k">Named After</span><span class="v v-purple">Prof. Barkatullah (Freedom Fighter)</span></div>
+      <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-green">B++ (2023)</span></div>
+      <div class="key-val"><span class="k">NIRF 2024</span><span class="v v-blue">Ranked (Univ. Category)</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">~596 Acres, Bhopal</span></div>
+      <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v v-gold">800+</span></div>
+      <div class="key-val"><span class="k">Teaching Depts.</span><span class="v">42+ Depts.</span></div>
+      <div class="key-val"><span class="k">Student Strength</span><span class="v">5 Lakh+ (Total)</span></div>
+      <div class="key-val"><span class="k">PhD Scholars</span><span class="v">2,000+ Active</span></div>
+      <div class="key-val"><span class="k">UGC Status</span><span class="v v-green">Sec. 2(f) &amp; 12B</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Program</th><th>Exam</th></tr>
+        <tr><td>B.A./B.Sc./B.Com.</td><td><span class="tag tag-fees">Merit Based</span></td></tr>
+        <tr><td>LLB / BA LLB</td><td><span class="tag tag-exam">MP Pre-Law</span></td></tr>
+        <tr><td>B.Ed.</td><td><span class="tag tag-exam">MP B.Ed. Test</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">MP-MAT / CAT</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-exam">MP MCA Entrance</span></td></tr>
+        <tr><td>M.Tech.</td><td><span class="tag tag-gate">GATE</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">BU PET / NET</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Per Year)</div>
+      <div class="key-val"><span class="k">B.A. / B.Com.</span><span class="v v-gold">₹5,000 – ₹12,000</span></div>
+      <div class="key-val"><span class="k">B.Sc. (Science)</span><span class="v v-gold">₹6,000 – ₹18,000</span></div>
+      <div class="key-val"><span class="k">BCA / BBA</span><span class="v v-gold">₹12,000 – ₹30,000</span></div>
+      <div class="key-val"><span class="k">M.A. / M.Sc. / M.Com.</span><span class="v v-gold">₹8,000 – ₹25,000</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹25,000 – ₹60,000</span></div>
+      <div class="key-val"><span class="k">MCA</span><span class="v v-gold">₹20,000 – ₹40,000</span></div>
+      <div class="key-val"><span class="k">M.Tech.</span><span class="v v-gold">₹30,000 – ₹60,000</span></div>
+      <div class="key-val"><span class="k">LLB / LLM</span><span class="v v-gold">₹10,000 – ₹22,000</span></div>
+      <div class="key-val"><span class="k">PhD</span><span class="v v-gold">₹10,000 – ₹20,000/yr</span></div>
+      <div class="key-val"><span class="k">Hostel/yr</span><span class="v v-gold">₹5,000 – ₹20,000</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cut-Off Snapshot</div>
+      <div class="key-val"><span class="k">B.Sc. CS/Biotech (Gen)</span><span class="v" style="color:#f6ad55;">70–85% in 10+2</span></div>
+      <div class="key-val"><span class="k">B.Sc. PCM/PCB</span><span class="v" style="color:var(--accent-green);">60–75% in 10+2</span></div>
+      <div class="key-val"><span class="k">B.A. / B.Com.</span><span class="v" style="color:var(--accent-blue);">45–60% in 10+2</span></div>
+      <div class="key-val"><span class="k">M.Sc. CS/IT/Biotech</span><span class="v" style="color:#f6ad55;">60–75% in B.Sc.</span></div>
+      <div class="key-val"><span class="k">MBA (MP-MAT)</span><span class="v" style="color:#f6ad55;">Score + 50%+ UG</span></div>
+      <div class="key-val"><span class="k">PhD (BU PET)</span><span class="v" style="color:var(--accent-green);">55%+ PG + PET</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">10+2 / Graduation % / Entrance Score (indicative)</div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Career Snapshot</div>
+      <div class="key-val"><span class="k">Top Pathway</span><span class="v v-gold">Govt. / Civil Services</span></div>
+      <div class="key-val"><span class="k">Avg. Entry Package</span><span class="v v-gold">₹3 – ₹8 LPA</span></div>
+      <div class="key-val"><span class="k">Best Branches</span><span class="v v-green">MBA / MCA / M.Tech.</span></div>
+      <div class="key-val"><span class="k">Govt. Exams</span><span class="v v-green">MPSC / UPSC / IBPS</span></div>
+      <div class="key-val"><span class="k">Law Careers</span><span class="v v-blue">MP District / HC Bar</span></div>
+      <div class="key-val"><span class="k">Teaching Careers</span><span class="v v-purple">MP TET / CTET / UGC</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'Barkatullah University added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      document.getElementById('streamDropdown').classList.remove('open');
+    }
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
