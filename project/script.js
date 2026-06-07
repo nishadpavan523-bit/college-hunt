@@ -1509,7 +1509,7 @@ let _suggestionIndex  = -1;
 
 // ─── Streams ────────────────────────────────────────────────
 const STREAMS = [
-  { id:"engineering",  name:"Engineering & Technology", icon:"⚙️",  desc:"BTech, MTech, Architecture", keywords:["BTech","MTech","BEng","Engineering","Architecture"] },
+  { id:"engineering",  name:"Engineering & Technology", icon:"⚙️",  desc:"BTech, MTech, Architecture,BE", keywords:["BTech","MTech","BEng","Engineering","Architecture","BE"] },
   { id:"medical",      name:"Medical & Health Sciences",icon:"🏥",  desc:"MBBS, BDS, MD, Pharmacy",   keywords:["MBBS","BDS","MD","MS","DM","MCh","BPharma","BAMS","BSc Nursing","Nursing"] },
   { id:"law",          name:"Law & Legal Studies",      icon:"⚖️",  desc:"LLB, LLM, Integrated Law",  keywords:["LLB","LLM","Law"] },
   { id:"management",   name:"Management & Business",    icon:"💼",  desc:"MBA, BBA, BCom, PGDM",      keywords:["MBA","BBA","BCom","PGDM","Executive MBA","Commerce","Management"] },
@@ -1667,7 +1667,7 @@ const COLLEGES = [
   {id:73, state:'Uttar Pradesh',name:'Integral University',city:'Lucknow',type:'Private',estd:2004,rating:4.1,courses:['BTech','BBA','BPharma','MBA','MBBS'],page:'integraluniversity.html',fees:'₹80,000 – ₹2,50,000 / yr',intake:5000,accreditation:'NAAC A'},
   {id:74, state:'Uttar Pradesh',name:'Mahatma Jyotiba Phule Rohilkhand University',city:'Bareilly',type:'Government',estd:1975,rating:4.0,courses:['BA','BSc','BCom','BTech','MA','MBA'],page:'mjpruuniversity.html',fees:'₹8,000 – ₹30,000 / yr',intake:3500,accreditation:'NAAC A'},
   {id:75, state:'Uttar Pradesh',name:'Noida International University',city:'Noida',type:'Private',estd:2010,rating:3.8,courses:['BTech','BBA','MBA','BCA','LLB'],page:'noidainternational.html',fees:'₹80,000 – ₹1,80,000 / yr',intake:4000,accreditation:'NAAC B+'},
-  {id:76, state:'Uttar Pradesh',name:'Chhatrapati Shahu Ji Maharaj University',city:'Kanpur',type:'Government',estd:1966,rating:4.0,courses:['BA','BCom','BSc','BEd','MA','LLB'],fees:'₹7,000 – ₹25,000 / yr',intake:4500,accreditation:'NAAC A'},
+  {id:76, state:'Uttar Pradesh',name:'Chhatrapati Shahu Ji Maharaj University',city:'Kanpur',type:'Government',estd:1966,rating:4.0,courses:['BA','BCom','BSc','BEd','MA','LLB'],page:'csjmu.html',fees:'₹7,000 – ₹25,000 / yr',intake:4500,accreditation:'NAAC A'},
   {id:77, state:'Uttar Pradesh',name:'Sanjay Gandhi Postgraduate Institute',city:'Lucknow',type:'Central',estd:1983,rating:4.8,courses:['MD','DM','MCh','PhD'],page:'sgpgimslucknow.html',fees:'₹30,000 – ₹80,000 / yr',intake:400,accreditation:'NAAC A++'},
   {id:78, state:'Uttar Pradesh',name:'Rani Lakshmi Bai Central Agricultural University',city:'Jhansi',type:'Central',estd:2014,rating:4.5,courses:['B.Sc Agriculture','B.Sc Horticulture','M.Sc','PhD'],page:'ranilaxmibaicentraluniversity.html',fees:'₹30,000 – ₹75,000 / yr',intake:120,accreditation:'ICAR'},
   {id:79, state:'Uttar Pradesh',name:'University of Lucknow (State)',city:'Lucknow',type:'State',estd:1920,rating:4.5,courses:['BTech','MBA','BCA','MCA','LLB','B.Ed','M.A','M.Sc','PhD'],page:'universityoflucknow.html',fees:'₹6,000 – ₹2,50,000 / yr',intake:20000,accreditation:'NAAC A++'},
@@ -1675,7 +1675,7 @@ const COLLEGES = [
   {id:81, state:'Uttar Pradesh',name:'Babasaheb Bhimrao Ambedkar University',city:'Lucknow',type:'Central',estd:1996,rating:4.4,courses:['BTech','MTech','MBA','MCA','BBA','LLB','M.A','M.Sc','B.Ed','PhD'],page:'bbaulucknow.html',fees:'₹8,000 – ₹1,50,000 / yr',intake:7000,accreditation:'NAAC A++',isCentral:true},
 
   // ==================== BIHAR ====================
-  {id:82,  state:'Bihar',name:'Patna University',city:'Patna',type:'Government',estd:1917,rating:4.3,courses:['BA','BSc','BCom','MA','LLB','MBA','PhD'],fees:'₹5,000 – ₹25,000 / yr',intake:6000,accreditation:'NAAC A'},
+  {id:82,  state:'Bihar',name:'Patna University',city:'Patna',type:'Government',estd:1917,rating:4.3,courses:['BA','BSc','BCom','MA','LLB','MBA','PhD'],page:'patnauniversity.html',fees:'₹5,000 – ₹25,000 / yr',intake:6000,accreditation:'NAAC A'},
   {id:83,  state:'Bihar',name:'Magadh University',city:'Bodh Gaya',type:'Government',estd:1962,rating:4.0,courses:['BA','BSc','BCom','MA','LLB','BEd'],fees:'₹5,000 – ₹20,000 / yr',intake:5000,accreditation:'NAAC B+'},
   {id:84,  state:'Bihar',name:'NIT Patna',city:'Patna',type:'Central',estd:1886,rating:4.5,courses:['BTech','MTech','MCA','MBA','PhD'],page:'nitpatna.html',fees:'₹1,40,000 – ₹1,90,000 / yr',intake:1200,accreditation:'NAAC A',isNIT:true},
   {id:85,  state:'Bihar',name:'IIT Patna',city:'Patna',type:'Central',estd:2008,rating:4.7,courses:['BTech','MTech','MSc','PhD'],page:'iitpatna.html',fees:'₹2,00,000 – ₹2,50,000 / yr',intake:900,accreditation:'NAAC A',isIIT:true},
@@ -1771,19 +1771,19 @@ const COLLEGES = [
    {id:135, state:'Delhi',name:'AIIMS Delhi',city:'New Delhi',type:'Central',estd:1956,rating:4.9,courses:['MBBS','MD','MS','BDS','BSc Nursing','PhD'],page:'aiimsdelhi.html',fees:'₹5,000 – ₹20,000 / yr',intake:1000,accreditation:'NAAC A++'},
    {id:136, state:'Delhi',name:'Delhi Technological University',city:'New Delhi',type:'Government',estd:1941,rating:4.5,courses:['BTech','MTech','MBA','MCA','PhD'],page:'dtu.html',fees:'₹1,50,000 – ₹2,00,000 / yr',intake:3000,accreditation:'NAAC A+'},
    {id:137, state:'Delhi',name:'Indraprastha Institute of Information Technology',city:'New Delhi',type:'Government',estd:2008,rating:4.5,courses:['BTech','MTech','PhD'],page:'iiitdelhi.html',fees:'₹2,00,000 – ₹2,50,000 / yr',intake:800,accreditation:'NAAC A+'},
-  {id:138, state:'Delhi',name:'Guru Gobind Singh Indraprastha University',city:'New Delhi',type:'Government',estd:1998,rating:4.2,courses:['BTech','MBA','MCA','LLB','BBA','BEd','PhD'],page:'ipu.html',fees:'₹60,000 – ₹1,80,000 / yr',intake:30000,accreditation:'NAAC A+'},
-  {id:139, state:'Delhi',name:'Netaji Subhas University of Technology',city:'New Delhi',type:'Government',estd:1983,rating:4.3,courses:['BTech','MTech','PhD'],page:'nsut.html',fees:'₹1,20,000 – ₹1,80,000 / yr',intake:2000,accreditation:'NAAC A'},
+   {id:138, state:'Delhi',name:'Guru Gobind Singh Indraprastha University',city:'New Delhi',type:'Government',estd:1998,rating:4.2,courses:['BTech','MBA','MCA','LLB','BBA','BEd','PhD'],page:'ggsipu.html',fees:'₹60,000 – ₹1,80,000 / yr',intake:30000,accreditation:'NAAC A+'},
+   {id:139, state:'Delhi',name:'Netaji Subhas University of Technology',city:'New Delhi',type:'Government',estd:1983,rating:4.3,courses:['BTech','MTech','PhD'],page:'netajitechnicaluniversity.html',fees:'₹1,20,000 – ₹1,80,000 / yr',intake:2000,accreditation:'NAAC A'},
    {id:140, state:'Delhi',name:'Ambedkar University Delhi',city:'New Delhi',type:'Government',estd:2007,rating:4.2,courses:['BA','MA','MSW','MBA','PhD'],page:'drbrambedkaruniversitydelhi.html',fees:'₹20,000 – ₹80,000 / yr',intake:2500,accreditation:'NAAC A'},
 
   // ==================== RAJASTHAN ====================
    {id:141, state:'Rajasthan',name:'IIT Jodhpur',city:'Jodhpur',type:'Central',estd:2008,rating:4.7,courses:['BTech','MTech','MSc','PhD'],page:'iitjodhpur.html',fees:'₹2,00,000 – ₹2,50,000 / yr',intake:700,accreditation:'NAAC A',isIIT:true},
    {id:142, state:'Rajasthan',name:'NIT Jaipur (MNIT)',city:'Jaipur',type:'Central',estd:1963,rating:4.6,courses:['BTech','MTech','MBA','PhD'],page:'mnitjaipur.html',fees:'₹1,50,000 – ₹2,00,000 / yr',intake:1500,accreditation:'NAAC A+',isNIT:true},
-  {id:143, state:'Rajasthan',name:'University of Rajasthan',city:'Jaipur',type:'Government',estd:1947,rating:4.3,courses:['BA','BSc','BCom','MA','LLB','MBA','PhD'],page:'universityofrajasthan.html',fees:'₹8,000 – ₹35,000 / yr',intake:10000,accreditation:'NAAC A+'},
-  {id:144, state:'Rajasthan',name:'Birla Institute of Technology & Science (BITS)',city:'Pilani',type:'Deemed',estd:1964,rating:4.9,courses:['BE','MSc','ME','MBA','PhD'],page:'bitspilani.html',fees:'₹4,00,000 – ₹5,00,000 / yr',intake:3500,accreditation:'NAAC A'},
-  {id:145, state:'Rajasthan',name:'Manipal University Jaipur',city:'Jaipur',type:'Private',estd:2011,rating:4.2,courses:['BTech','BBA','MBA','MCA','BPharma','LLB'],page:'manipaluniversityjaipur.html',fees:'₹1,20,000 – ₹2,80,000 / yr',intake:5000,accreditation:'NAAC A'},
-  {id:146, state:'Rajasthan',name:'Rajasthan University of Health Sciences',city:'Jaipur',type:'Government',estd:2005,rating:4.2,courses:['MBBS','BDS','BAMS','BPharma','BSc Nursing','MD'],page:'ruhsrajasthan.html',fees:'₹50,000 – ₹4,00,000 / yr',intake:2000,accreditation:'NAAC B+'},
-  {id:147, state:'Rajasthan',name:'Central University of Rajasthan',city:'Ajmer',type:'Central',estd:2009,rating:4.3,courses:['BA','BSc','BCom','MA','MSc','MBA','LLB','PhD'],page:'curajasthan.html',fees:'₹10,000 – ₹45,000 / yr',intake:3000,accreditation:'NAAC A'},
-  {id:148, state:'Rajasthan',name:'Rajasthan Technical University',city:'Kota',type:'Government',estd:2006,rating:4.0,courses:['BTech','MTech','MBA','MCA','BPharma'],page:'rtu.html',fees:'₹40,000 – ₹1,20,000 / yr',intake:20000,accreditation:'NAAC B+'},
+   {id:143, state:'Rajasthan',name:'University of Rajasthan',city:'Jaipur',type:'Government',estd:1947,rating:4.3,courses:['BA','BSc','BCom','MA','LLB','MBA','PhD'],page:'universityofrajasthan.html',fees:'₹8,000 – ₹35,000 / yr',intake:10000,accreditation:'NAAC A+'},
+   {id:144, state:'Rajasthan',name:'Birla Institute of Technology & Science (BITS)',city:'Pilani',type:'Deemed',estd:1964,rating:4.9,courses:['BE','MSc','ME','MBA','PhD'],page:'bitspilani.html',fees:'₹4,00,000 – ₹5,00,000 / yr',intake:3500,accreditation:'NAAC A'},
+   {id:145, state:'Rajasthan',name:'Manipal University Jaipur',city:'Jaipur',type:'Private',estd:2011,rating:4.2,courses:['BTech','BBA','MBA','MCA','BPharma','LLB'],page:'manipaluniversityjaipur.html',fees:'₹1,20,000 – ₹2,80,000 / yr',intake:5000,accreditation:'NAAC A'},
+   {id:146, state:'Rajasthan',name:'Rajasthan University of Health Sciences',city:'Jaipur',type:'Government',estd:2005,rating:4.2,courses:['MBBS','BDS','BAMS','BPharma','BSc Nursing','MD'],page:'ruhsrajasthan.html',fees:'₹50,000 – ₹4,00,000 / yr',intake:2000,accreditation:'NAAC B+'},
+   {id:147, state:'Rajasthan',name:'Central University of Rajasthan',city:'Ajmer',type:'Central',estd:2009,rating:4.3,courses:['BA','BSc','BCom','MA','MSc','MBA','LLB','PhD'],page:'centraluniversityrajasthan.html',fees:'₹10,000 – ₹45,000 / yr',intake:3000,accreditation:'NAAC A'},
+   {id:148, state:'Rajasthan',name:'Rajasthan Technical University',city:'Kota',type:'Government',estd:2006,rating:4.0,courses:['BTech','MTech','MBA','MCA','BPharma'],page:'rtuniversity.html',fees:'₹40,000 – ₹1,20,000 / yr',intake:20000,accreditation:'NAAC B+'},
 
   // ==================== MADHYA PRADESH ====================
   {id:149, state:'Madhya Pradesh',name:'IIT Indore',city:'Indore',type:'Central',estd:2009,rating:4.7,courses:['BTech','MTech','MSc','PhD'],page:'iitindore.html',fees:'₹2,00,000 – ₹2,50,000 / yr',intake:700,accreditation:'NAAC A',isIIT:true},

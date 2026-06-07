@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>University of Rajasthan – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* ── RECRUITERS ── */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* ── PhD LIST ── */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── ADMISSIONS TAB ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* ── PLACEMENTS TAB ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ── CAMPUS LIFE TAB ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* ── CUT-OFF TAB ── */
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th {
+    background: rgba(245,166,35,0.1);
+    color: var(--gold);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .cutoff-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted);
+    vertical-align: middle;
+  }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-high { color: #fc8181 !important; font-weight: 600; }
+  .level-moderate { color: #f6ad55 !important; font-weight: 600; }
+  .level-low { color: var(--accent-green) !important; font-weight: 600; }
+  .cutoff-note {
+    background: rgba(99,179,237,0.08);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    color: #90cdf4;
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    #streamBtn span { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        📚 <span id="streamLabel">Arts &amp; Humanities</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    University of Rajasthan
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>University of <span>Rajasthan</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>JLN Marg, Jaipur, Rajasthan</strong></span>
+        <span class="meta-chip">🏛️ <strong>State University / Public</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1947</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.uniraj.ac.in/','_blank')" title="Open official website">🌐 <strong>uniraj.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Accreditation</span>
+      <span class="value">NAAC A+</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">~175 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Type</span>
+      <span class="value">State / Public</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1947</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State University / Public</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">JLN Marg, Jaipur</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC A+</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~175 Acres</div></div>
+          <div class="info-chip"><div class="lbl">Admission</div><div class="val">CUET / Merit / Entrance</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About University of Rajasthan</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          The University of Rajasthan (UniRaj), established in <strong style="color:var(--white);">1947</strong>, is one of the oldest and most prestigious state universities in India, located on a sprawling <strong style="color:var(--white);">175-acre campus</strong> in Jaipur. Recognized by the <strong style="color:var(--white);">UGC</strong> and accredited with the prestigious <strong style="color:var(--white);">NAAC A+ Grade</strong>, it serves as the affiliating university for hundreds of colleges across Rajasthan. The university offers a diverse range of programs spanning Arts, Science, Commerce, Law, Management, Education, Engineering, and more through its numerous faculties and departments. It houses world-class research facilities, a rich library heritage, and strong cultural traditions that have shaped generations of scholars and leaders.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Laboratories</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">💪</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centres</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Bank &amp; ATM</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostels</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostels</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess &amp; Canteen</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Room</div>
+          <div class="hostel-item"><span class="hostel-icon">🎮</span> Indoor Games</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">📹</span> 24×7 Security</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹15,000–25,000/semester (room rent) + ₹8,000–12,000/semester (mess) · Total ₹50,000–80,000/year (approx.)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.A. · 3 Years · CUET / Merit-Based</span>
+          <div class="course-row">
+            <div class="course-name">B.A. (History, Political Science, Economics, Sociology, Geography, Hindi, English, Sanskrit, Philosophy, Public Administration)</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5,000–12,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.A. (Journalism &amp; Mass Communication)</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,000–18,000/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 (any stream) · Admission via CUET / Merit in 12th</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Sc · 3 Years · CUET / Merit-Based</span>
+          <div class="course-row">
+            <div class="course-name">B.Sc (Physics, Chemistry, Mathematics, Biology, Botany, Zoology, Computer Science, Statistics)</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000–20,000/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Science (PCM/PCB) · Admission via CUET / Merit</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Com · 3 Years · CUET / Merit-Based</span>
+          <div class="course-row">
+            <div class="course-name">B.Com (General)</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000–10,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Com (Honours)</div>
+            <div class="course-meta"><strong>CUET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000–14,000/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 (Commerce preferred) · Admission via CUET / Merit</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.B.A · 3 Years · Entrance / Merit</span>
+          <div class="course-row">
+            <div class="course-name">Bachelor of Business Administration (BBA)</div>
+            <div class="course-meta"><strong>Entrance / Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹20,000–35,000/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Ed / LL.B / B.Lib · Professional UG Courses</span>
+          <div class="course-row">
+            <div class="course-name">B.Ed (Bachelor of Education)</div>
+            <div class="course-meta"><strong>Pre B.Ed</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹15,000–25,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">LL.B (Bachelor of Laws) – 3 Year</div>
+            <div class="course-meta"><strong>CLAT / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹10,000–20,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Lib.I.Sc (Bachelor of Library &amp; Information Science)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>1 Yr</strong>Duration</div>
+            <span class="tag tag-fees">₹6,000–10,000/yr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.A. · 2 Years · CUET PG / Merit · ₹8,000–25,000</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">History</span>
+            <span class="phd-tag">Political Science</span>
+            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Sociology</span>
+            <span class="phd-tag">Geography</span>
+            <span class="phd-tag">Hindi</span>
+            <span class="phd-tag">English</span>
+            <span class="phd-tag">Sanskrit</span>
+            <span class="phd-tag">Public Administration</span>
+            <span class="phd-tag">Philosophy</span>
+            <span class="phd-tag">Journalism &amp; Mass Communication</span>
+            <span class="phd-tag">Music (Vocal / Instrumental)</span>
+            <span class="phd-tag">Drawing &amp; Painting</span>
+            <span class="phd-tag">Rajasthani</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Graduation in relevant subject · Admission via CUET PG / University Entrance / Merit</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc · 2 Years · CUET PG / Entrance · ₹12,000–40,000</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Botany</span>
+            <span class="phd-tag">Zoology</span>
+            <span class="phd-tag">Statistics</span>
+            <span class="phd-tag">Computer Science</span>
+            <span class="phd-tag">Biochemistry</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Environmental Science</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Sc in relevant discipline · Admission via CUET PG / Entrance Test</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Com · 2 Years · CUET PG / Merit · ₹10,000–18,000</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.Com (Accounting &amp; Business Statistics)</span>
+            <span class="phd-tag">M.Com (Business Administration)</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Com / BBA / Equivalent · Admission via CUET PG / Merit</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA / MCA / M.Ed / LL.M – Professional PG</span>
+          <div class="course-row">
+            <div class="course-name">MBA (Master of Business Administration)</div>
+            <div class="course-meta"><strong>CAT / CMAT / MAT</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹50,000–1.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">MCA (Master of Computer Applications)</div>
+            <div class="course-meta"><strong>NIMCET / Entrance</strong>Exam</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹30,000–60,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Ed (Master of Education)</div>
+            <div class="course-meta"><strong>Pre M.Ed</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹20,000–35,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">LL.M (Master of Laws)</div>
+            <div class="course-meta"><strong>Entrance / Merit</strong>Admission</div>
+            <div class="course-meta"><strong>1–2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹12,000–22,000/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Lib.I.Sc (Master of Library &amp; Information Science)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>1 Yr</strong>Duration</div>
+            <span class="tag tag-fees">₹8,000–14,000/yr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Arts &amp; Humanities</div>
+          <div class="phd-tags">
+            <span class="phd-tag">History</span>
+            <span class="phd-tag">Political Science</span>
+            <span class="phd-tag">Sociology</span>
+            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Geography</span>
+            <span class="phd-tag">Hindi</span>
+            <span class="phd-tag">English</span>
+            <span class="phd-tag">Sanskrit</span>
+            <span class="phd-tag">Philosophy</span>
+            <span class="phd-tag">Rajasthani</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Science &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Botany</span>
+            <span class="phd-tag">Zoology</span>
+            <span class="phd-tag">Statistics</span>
+            <span class="phd-tag">Computer Science</span>
+            <span class="phd-tag">Biochemistry</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Environmental Science</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce &amp; Management</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Commerce</span>
+            <span class="phd-tag">Business Administration</span>
+            <span class="phd-tag">Accountancy</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Law, Education &amp; Others</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Law (LL.D)</span>
+            <span class="phd-tag">Education</span>
+            <span class="phd-tag">Library &amp; Information Science</span>
+            <span class="phd-tag">Journalism &amp; Mass Communication</span>
+            <span class="phd-tag">Music</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree with 55%+ Marks (50% for SC/ST/OBC)</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">University PhD Entrance Test (RPET)</span></div>
+          <div class="key-val"><span class="k">Exemption</span><span class="v">UGC-NET / CSIR-NET / JRF Qualified</span></div>
+          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">Written Test + Interview</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Fellowships Available</div>
+          <div class="key-val"><span class="k">UGC-NET / JRF Fellowship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val"><span class="k">CSIR Fellowship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val"><span class="k">Rajasthan State Fellowship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val" style="border:none"><span class="k">PMRF Fellowship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear in CUET / Qualifying Exam</div>
+            <div class="tl-desc">For UG and PG programs, candidates must appear in CUET (Common University Entrance Test) or qualify relevant entrance exams. Some programs are merit-based on 12th / graduation marks.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Register on University Portal</div>
+            <div class="tl-desc">Visit the official University of Rajasthan admission portal and register with valid personal and academic details. Keep scanned documents ready.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Fill Application Form &amp; Pay Fee</div>
+            <div class="tl-desc">Complete the online application form for your desired program, pay the application fee online, and submit before the deadline.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Merit List / Counselling</div>
+            <div class="tl-desc">University publishes merit lists based on CUET scores / qualifying exam scores / 12th marks. Shortlisted candidates are called for document verification and counselling.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Document Verification</div>
+            <div class="tl-desc">Submit original documents: 10th &amp; 12th marksheets, graduation certificate (for PG), CUET scorecard, category certificate, migration certificate, and passport photos.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Fee Payment &amp; Admission Confirmation</div>
+            <div class="tl-desc">Pay the program fee and hostel fee online. Collect your enrollment number and student ID to confirm admission to the University of Rajasthan.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">B.A. / B.Sc / B.Com</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET / Merit-Based</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Ed</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Pre B.Ed Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">LL.B (3-year)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CLAT / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.A. / M.Sc / M.Com</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CUET PG / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MBA</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">CAT / CMAT / MAT</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MCA</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NIMCET / Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Ed</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Pre M.Ed Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">LL.M</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Entrance / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD (All Subjects)</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">RPET / NET / JRF</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Fellowships Available</div>
+        <div class="phd-tags">
+          <span class="phd-tag">Rajasthan State Scholarship</span>
+          <span class="phd-tag">NSP (National Scholarship Portal)</span>
+          <span class="phd-tag">SC / ST / OBC Scholarships</span>
+          <span class="phd-tag">EWS Scholarships</span>
+          <span class="phd-tag">Merit-cum-Means Scholarship</span>
+          <span class="phd-tag">Post-Matric Scholarship</span>
+          <span class="phd-tag">UGC-NET Fellowship</span>
+          <span class="phd-tag">CSIR Fellowship</span>
+          <span class="phd-tag">PMRF Fellowship</span>
+          <span class="phd-tag">Minority Scholarships</span>
+          <span class="phd-tag">Rajasthan Mukhyamantri Scholarship</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: PLACEMENTS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹4–8 LPA</div>
+            <div class="s-lbl">Avg. Package (UG)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹12–18 LPA</div>
+            <div class="s-lbl">Avg. Package (PG/MBA)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">65–75%</div>
+            <div class="s-lbl">Placement Rate</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Placement Highlights</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🏢</span><div><strong>Campus Placement Cell</strong> — University's dedicated placement cell coordinates with recruiters for MBA, MCA, and Science programs</div></div>
+          <div class="event-item"><span class="event-icon">🎯</span><div><strong>Government &amp; PSU Sector Strong</strong> — Large share of students placed via state government exams (RPSC, RAS, REET, RSMSSB), civil services, banking &amp; SSC</div></div>
+          <div class="event-item"><span class="event-icon">💼</span><div><strong>MBA &amp; MCA Placements</strong> — MBA and MCA students placed in companies like HDFC Bank, Infosys, Wipro, TCS, and regional businesses</div></div>
+          <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research &amp; Academia</strong> — Strong tradition of students pursuing research careers, faculty positions, and PhD programs in India and abroad</div></div>
+          <div class="event-item"><span class="event-icon">🚀</span><div><strong>Entrepreneurship</strong> — Growing entrepreneurship culture leveraging Jaipur's startup ecosystem and tourism industry</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">HDFC Bank</span>
+          <span class="recruiter-tag">ICICI Bank</span>
+          <span class="recruiter-tag">State Bank of India</span>
+          <span class="recruiter-tag">HCL Technologies</span>
+          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">Capgemini</span>
+          <span class="recruiter-tag">KPMG</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;margin-top:16px;">
+          University of Rajasthan is one of India's oldest and most respected state universities with a legacy spanning over 75 years. Its strength lies in <strong style="color:var(--white);">Arts, Social Sciences, Law, Commerce, and Science</strong> education. Graduates hold prominent positions in government services, academia, journalism, banking, and law. The university's proximity to Jaipur's thriving business environment supports strong industry linkages for professional programs like MBA and MCA.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual University Festival</strong> — Cultural fest featuring music, dance, drama, fine arts, and literary competitions with inter-college participation</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Rajasthan University Sports Meet</strong> — Inter-college sports competitions across cricket, football, kabaddi, athletics, and more</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>National Seminars &amp; Conferences</strong> — Regular academic conferences, workshops, and guest lectures by eminent scholars and industry experts</div></div>
+            <div class="event-item"><span class="event-icon">🎤</span><div><strong>Youth Parliament &amp; Debate</strong> — Strong tradition of debating, elocution, and mock parliament competitions fostering civic awareness</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Court</div>
+            <div class="fac-item"><div class="fac-icon">💪</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🏊</div>Athletics Track</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Societies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Literary Society</span>
+            <span class="phd-tag">Debate Club</span>
+            <span class="phd-tag">Cultural Society</span>
+            <span class="phd-tag">NSS (National Service Scheme)</span>
+            <span class="phd-tag">NCC</span>
+            <span class="phd-tag">Science Society</span>
+            <span class="phd-tag">Economics Forum</span>
+            <span class="phd-tag">Law Society</span>
+            <span class="phd-tag">Fine Arts Society</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Music &amp; Dance Society</span>
+            <span class="phd-tag">Eco Club</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 7: CUT-OFF ── -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off Trends — UG Programs (CUET / Merit-Based)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Category</th>
+              <th>Expected Cut-Off (12th % / CUET Score)</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>B.A. (Economics / Political Sci.)</td>
+              <td>General</td>
+              <td>75% – 85%+ (12th) / 650+ CUET</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.A. (History / Sociology / Geography)</td>
+              <td>General</td>
+              <td>65% – 78% (12th) / 550+ CUET</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>B.A. (Journalism &amp; Mass Communication)</td>
+              <td>General</td>
+              <td>70% – 82% (12th) / 600+ CUET</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>B.Sc (Physics / Chemistry / Maths)</td>
+              <td>General</td>
+              <td>72% – 85% (12th PCM) / 600+ CUET</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.Sc (Botany / Zoology / Biology)</td>
+              <td>General</td>
+              <td>65% – 78% (12th PCB) / 550+ CUET</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.Com (General)</td>
+              <td>General</td>
+              <td>65% – 78% (12th) / 550+ CUET</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.Com (Honours)</td>
+              <td>General</td>
+              <td>75% – 88% (12th) / 650+ CUET</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>BBA</td>
+              <td>General</td>
+              <td>65% – 80% (12th) / Entrance</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>LL.B (3-Year)</td>
+              <td>General</td>
+              <td>Graduation 55%+ / CLAT Merit</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>SC / ST Candidates</td>
+              <td>SC / ST</td>
+              <td>Relaxation of 5–10% in all programs</td>
+              <td><span class="level-low">Relaxed</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ <strong>Note:</strong> Cut-offs are indicative based on recent admission trends. Actual merit lists depend on number of applicants, CUET scores, and seat availability each year. Always check the official University of Rajasthan admissions portal for current-year cut-off data and seat matrix.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off Trends — PG Programs</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Admission Basis</th>
+              <th>Expected Cut-Off</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>M.A. Economics / English / Political Sci.</td>
+              <td>CUET PG / Merit</td>
+              <td>Graduation 60%+ / 600+ CUET PG</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>M.A. History / Sociology / Hindi</td>
+              <td>CUET PG / Merit</td>
+              <td>Graduation 55%+ / 500+ CUET PG</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc Chemistry / Physics / Maths</td>
+              <td>CUET PG / Entrance</td>
+              <td>B.Sc 60%+ / 580+ CUET PG</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc Botany / Zoology / Statistics</td>
+              <td>CUET PG / Entrance</td>
+              <td>B.Sc 55%+ / 500+ CUET PG</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>MBA</td>
+              <td>CAT / CMAT / MAT</td>
+              <td>CAT 60%ile / CMAT 150+ Score</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>MCA</td>
+              <td>NIMCET / Entrance</td>
+              <td>Graduation 60%+ / NIMCET Merit</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Ed</td>
+              <td>Pre M.Ed Entrance</td>
+              <td>B.Ed 55%+ / Entrance Merit</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>LL.M</td>
+              <td>Entrance / Merit</td>
+              <td>LL.B 55%+ / Entrance Test</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>PhD (All Subjects)</td>
+              <td>RPET / NET / JRF</td>
+              <td>Master's 55%+ / NET Qualifying</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ PG cut-offs are indicative based on recent admission trends. University of Rajasthan also conducts its own entrance tests for select PG programs. Refer to the official university admissions portal and CUET portal for the latest criteria and schedules.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <!-- Quick Action -->
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.uniraj.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <!-- Key Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1947</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">State University / Public</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-gold">NAAC A+</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v">UGC + Govt. of Rajasthan</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">~175 Acres</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">JLN Marg, Jaipur</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">UniRaj / RU Jaipur</span></div>
+      <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v">300+</span></div>
+    </div>
+
+    <!-- Entrance Exams -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.A. / B.Sc / B.Com</td><td><span class="tag tag-exam">CUET / Merit</span></td></tr>
+        <tr><td>B.Ed</td><td><span class="tag tag-exam">Pre B.Ed</span></td></tr>
+        <tr><td>LL.B</td><td><span class="tag tag-exam">CLAT / Merit</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT / CMAT / MAT</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-exam">NIMCET</span></td></tr>
+        <tr><td>M.A. / M.Sc</td><td><span class="tag tag-exam">CUET PG</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">RPET / NET / JRF</span></td></tr>
+      </table>
+    </div>
+
+    <!-- Approx Fees Summary -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">B.A. / B.Com (per year)</span><span class="v v-gold">₹5,000 – ₹12,000</span></div>
+      <div class="key-val"><span class="k">B.Sc (per year)</span><span class="v v-gold">₹8,000 – ₹20,000</span></div>
+      <div class="key-val"><span class="k">BBA (per year)</span><span class="v v-gold">₹20,000 – ₹35,000</span></div>
+      <div class="key-val"><span class="k">MBA (per year)</span><span class="v v-gold">₹50,000 – ₹1.2 Lakh</span></div>
+      <div class="key-val"><span class="k">MCA (per year)</span><span class="v v-gold">₹30,000 – ₹60,000</span></div>
+      <div class="key-val"><span class="k">M.A. / M.Sc (per year)</span><span class="v v-gold">₹8,000 – ₹40,000</span></div>
+      <div class="key-val"><span class="k">Hostel (per year)</span><span class="v v-gold">₹50,000 – ₹80,000</span></div>
+    </div>
+
+    <!-- Cut-Off Snapshot -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cut-Off Snapshot</div>
+      <div class="key-val"><span class="k">B.A. Economics (Gen.)</span><span class="v" style="color:#fc8181;">75–85%+ / 650+ CUET</span></div>
+      <div class="key-val"><span class="k">B.Com Honours (Gen.)</span><span class="v" style="color:#fc8181;">75–88%+ / 650+ CUET</span></div>
+      <div class="key-val"><span class="k">B.Sc PCM (Gen.)</span><span class="v" style="color:#f6ad55;">72–85% / 600+ CUET</span></div>
+      <div class="key-val"><span class="k">B.A. History / Hindi</span><span class="v" style="color:var(--accent-green);">65–75% / 500+ CUET</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v" style="color:#f6ad55;">CAT 60%ile / CMAT 150+</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">Based on 12th merit / CUET scores (General Category, indicative)</div>
+    </div>
+
+    <!-- Placement Snapshot -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Avg. Package (UG)</span><span class="v v-gold">₹4 – ₹8 LPA</span></div>
+      <div class="key-val"><span class="k">Avg. Package (MBA)</span><span class="v v-gold">₹12 – ₹18 LPA</span></div>
+      <div class="key-val"><span class="k">Placement Rate</span><span class="v" style="color:var(--accent-green);">65 – 75%</span></div>
+      <div class="key-val"><span class="k">Govt. Job Placements</span><span class="v" style="color:var(--accent-green);">Very Strong</span></div>
+      <div class="key-val"><span class="k">Notable Sectors</span><span class="v">Govt., Banking, IT, Law</span></div>
+      <div class="key-val"><span class="k">Top Recruiters</span><span class="v v-gold">TCS, Infosys, HDFC, SBI</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  /* ── SHORTLIST STATE ── */
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'University of Rajasthan added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  /* ── TABS ── */
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  /* ── STREAM DROPDOWN ── */
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  /* ── LOGOUT MODAL ── */
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

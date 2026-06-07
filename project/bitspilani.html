@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BITS Pilani – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  nav {
+    background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-nirf { background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-nirf .value { color: #b794f4; }
+
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+  .tag-ps { background: rgba(159,122,234,0.15); color: #b794f4; border: 1px solid rgba(159,122,234,0.25); }
+
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 58%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); line-height:1.6; }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th { background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  .cutoff-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--muted); vertical-align: middle; }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-high { color: #fc8181 !important; font-weight: 600; }
+  .level-moderate { color: #f6ad55 !important; font-weight: 600; }
+  .level-low { color: var(--accent-green) !important; font-weight: 600; }
+  .cutoff-note { background: rgba(99,179,237,0.08); border: 1px solid rgba(99,179,237,0.2); border-radius: 10px; padding: 12px 16px; font-size: 0.75rem; color: #90cdf4; margin-top: 14px; line-height: 1.6; }
+
+  .bits-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(159,122,234,0.12); border:1px solid rgba(159,122,234,0.3); border-radius:8px; padding:6px 14px; font-size:0.75rem; font-weight:600; color:#b794f4; margin-bottom:16px; }
+
+  /* Campuses strip */
+  .campus-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:18px; }
+  .campus-chip { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 10px; text-align:center; font-size:0.75rem; transition:all 0.2s; cursor:default; }
+  .campus-chip:hover { border-color:var(--border); background:var(--tag-bg); }
+  .campus-chip .cicon { font-size:1.3rem; margin-bottom:5px; }
+  .campus-chip .cname { font-weight:600; color:var(--white); margin-bottom:2px; }
+  .campus-chip .cloc { color:var(--muted); font-size:0.68rem; }
+
+  /* PS highlight box */
+  .ps-box { background:rgba(159,122,234,0.08); border:1px solid rgba(159,122,234,0.25); border-radius:12px; padding:16px; margin-top:14px; }
+  .ps-box-title { font-size:0.8rem; font-weight:700; color:#b794f4; margin-bottom:8px; }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    .campus-strip { grid-template-columns:1fr 1fr; }
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Birla Institute of Technology and Science, Pilani
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">⚡</div>
+    <div class="uni-title">
+      <h1>Birla Institute of Technology &amp; Science, <span>Pilani</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Vidya Vihar, Pilani, Rajasthan</strong></span>
+        <span class="meta-chip">🏛️ <strong>Deemed University / Private</strong></span>
+        <span class="meta-chip">📅 Est. <strong>1964</strong></span>
+        <span class="meta-chip">🌐 <strong>4 Campuses Across India &amp; Dubai</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.bits-pilani.ac.in/','_blank')" title="Open official website">🌍 <strong>bits-pilani.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Accreditation</span>
+      <span class="value">NAAC A+</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">~328 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Type</span>
+      <span class="value">Deemed Univ.</span>
+    </div>
+    <div class="hero-badge hb-nirf">
+      <span class="label">NIRF Rank</span>
+      <span class="value">Top 25</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">1964</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Deemed University / Private</div></div>
+          <div class="info-chip"><div class="lbl">Pilani Campus</div><div class="val">Pilani, Rajasthan</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC A+, NBA</div></div>
+          <div class="info-chip"><div class="lbl">Campus Area</div><div class="val">~328 Acres (Pilani)</div></div>
+          <div class="info-chip"><div class="lbl">Admission</div><div class="val">BITSAT (Own Entrance)</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>All BITS Campuses</div>
+        <div class="campus-strip">
+          <div class="campus-chip">
+            <div class="cicon">🏛️</div>
+            <div class="cname">Pilani</div>
+            <div class="cloc">Rajasthan (Main Campus)</div>
+          </div>
+          <div class="campus-chip">
+            <div class="cicon">🌊</div>
+            <div class="cname">Goa</div>
+            <div class="cloc">Zuarinagar, Goa</div>
+          </div>
+          <div class="campus-chip">
+            <div class="cicon">🏙️</div>
+            <div class="cname">Hyderabad</div>
+            <div class="cloc">Jawahar Nagar, Telangana</div>
+          </div>
+          <div class="campus-chip">
+            <div class="cicon">✈️</div>
+            <div class="cname">Dubai</div>
+            <div class="cloc">Dubai International Academic City</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);line-height:1.7;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;">
+          ℹ️ All four campuses offer the same BITS curriculum, degree, and BITSAT-based admission. Seat allocation across campuses is based on BITSAT rank and candidate preference during the admission process.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About BITS Pilani</div>
+        <div class="bits-badge">⚡ Deemed University of the Highest Category — Ranked Among India's Top 25 Universities (NIRF)</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          The Birla Institute of Technology and Science (BITS), Pilani is one of India's most prestigious and autonomous technical universities, established in <strong style="color:var(--white);">1964</strong> and accorded the status of a <strong style="color:var(--white);">Deemed University</strong> by the Government of India. Accredited with <strong style="color:var(--white);">NAAC A+ Grade</strong> and ranked consistently in the <strong style="color:var(--white);">NIRF Top 25</strong>, BITS Pilani is globally recognised for excellence in Engineering, Sciences, and Management. The institute is uniquely known for its <strong style="color:var(--white);">Practice School (PS) programme</strong> — one of India's first industry internship models — and the <strong style="color:var(--white);">Dual Degree</strong> system that lets students combine any two programmes simultaneously. BITS conducts its own national entrance exam, <strong style="color:var(--white);">BITSAT</strong>, drawing over 3 lakh applicants each year for its four campuses across Pilani, Goa, Hyderabad, and Dubai.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities — Pilani</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Jaykar Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Advanced Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computing Centres</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
+          <div class="fac-item"><div class="fac-icon">💪</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>General Hospital</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Amphitheatre</div>
+          <div class="fac-item"><div class="fac-icon">🚀</div>Technology Business Incubator</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria &amp; Food Court</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Bank &amp; ATM</div>
+          <div class="fac-item"><div class="fac-icon">📹</div>24×7 Security</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> 8 Boys Bhavans</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> 3 Girls Bhavans</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> High-Speed Wi-Fi</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess &amp; Dining</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">🎮</span> Indoor Recreation</div>
+          <div class="hostel-item"><span class="hostel-icon">❄️</span> AC Rooms Available</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> 24×7 Medical Support</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹55,000–90,000/semester (room + mess) · Total ₹1.1–1.8 Lakh/year · Compulsory residential for 1st year students</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses (All Campuses — BITSAT)</div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.E. · 4 Years · BITSAT · Engineering Programs</span>
+          <div class="course-row">
+            <div class="course-name">B.E. Chemical Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. Civil Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. Computer Science Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. Electrical &amp; Electronics Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. Electronics &amp; Communication Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. Electronics &amp; Instrumentation Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. Manufacturing Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.E. Mechanical Engineering</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 PCM with 75%+ · Admission: BITSAT Score (Own Entrance Test) · 8 Semesters</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Pharm · 4 Years · BITSAT · Pharmacy</span>
+          <div class="course-row">
+            <div class="course-name">B.Pharm (Bachelor of Pharmacy)</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB/PCM with 75%+ · Pilani Campus only</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc (Integrated) · 5 Years · BITSAT · Pure Sciences</span>
+          <div class="course-row">
+            <div class="course-name">M.Sc (Hons.) Biological Sciences</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Sc (Hons.) Chemistry</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Sc (Hons.) Economics</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Sc (Hons.) Mathematics</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">M.Sc (Hons.) Physics</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹5.9L/sem</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">5-year integrated M.Sc programs — students can also opt for a Dual Degree by pairing with a B.E. programme simultaneously.</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.E. + M.Sc Dual Degree · 5 Years · BITSAT · Unique to BITS</span>
+          <div class="course-row">
+            <div class="course-name">B.E. (any) + M.Sc (Hons.) (any) — Dual Degree</div>
+            <div class="course-meta"><strong>BITSAT</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-ps">Dual Degree</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">BITS's hallmark: students can pursue any B.E. + M.Sc combination simultaneously. E.g. B.E. CSE + M.Sc Mathematics, B.E. ECE + M.Sc Physics, etc.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.E. · 2 Years · GATE / BITS HD · Engineering PG</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Chemical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Computer Science Engineering</span>
+            <span class="phd-tag">Electrical &amp; Electronics Engineering</span>
+            <span class="phd-tag">Electronics &amp; Communication Engineering</span>
+            <span class="phd-tag">Electronics &amp; Instrumentation Engineering</span>
+            <span class="phd-tag">Manufacturing Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Software Systems</span>
+            <span class="phd-tag">Design Engineering</span>
+            <span class="phd-tag">Embedded Systems</span>
+            <span class="phd-tag">Microelectronics</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.E./B.Tech in relevant field · Admission: GATE Score / BITS Higher Degree (HD) Programme</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA · 2 Years · BITS Work Integrated / Campus</span>
+          <div class="course-row">
+            <div class="course-name">MBA (Master of Business Administration)</div>
+            <div class="course-meta"><strong>BITS / GMAT</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹7–10L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">BITS also offers a unique Work Integrated Learning Programme (WILP) for working professionals — pursue M.E. / M.Sc / MBA without leaving the job.</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Pharm · 2 Years · GPAT · Pharmacy PG</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Pharmaceutical Chemistry</span>
+            <span class="phd-tag">Pharmacology</span>
+            <span class="phd-tag">Pharmaceutics</span>
+            <span class="phd-tag">Pharmacy Practice</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Pharm with 60%+ · Admission: GPAT Score · Pilani Campus only</div>
+        </div>
+
+        <div class="ps-box">
+          <div class="ps-box-title">🏢 Practice School (PS) — BITS's Flagship Industry Programme</div>
+          <p style="font-size:0.78rem;color:var(--muted);line-height:1.7;">BITS Pilani's <strong style="color:var(--white);">Practice School</strong> is one of India's most prestigious industry internship programmes, integrated into the curriculum. PS-I (5–6 months, 3rd year) and PS-II (5–6 months, 4th year) place students in leading companies worldwide. Over <strong style="color:var(--white);">250+ partner companies</strong> including Google, Microsoft, Qualcomm, Goldman Sachs, ISRO, and global firms. PS-II often converts to Pre-Placement Offers (PPOs).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Engineering</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Chemical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Computer Science Engineering</span>
+            <span class="phd-tag">Electrical &amp; Electronics Engineering</span>
+            <span class="phd-tag">Electronics &amp; Communication Engineering</span>
+            <span class="phd-tag">Electronics &amp; Instrumentation</span>
+            <span class="phd-tag">Manufacturing Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Biological Sciences</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Computer Science</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Management, Economics &amp; Pharmacy</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Management</span>
+            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Pharmacy</span>
+            <span class="phd-tag">Pharmaceutical Sciences</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's / B.E. with 60%+ (First Division)</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">BITS PhD Entrance Exam</span></div>
+          <div class="key-val"><span class="k">Exemption</span><span class="v">GATE / UGC-NET / JRF Qualified</span></div>
+          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">Written Test + Technical Interview</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Fellowships &amp; Funding</div>
+          <div class="key-val"><span class="k">GATE Scholarship (MHRD)</span><span class="v" style="color:var(--accent-green);">₹12,400–14,000/month</span></div>
+          <div class="key-val"><span class="k">BITS Institute Fellowship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val"><span class="k">UGC / CSIR / JRF</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val"><span class="k">Sponsored PhD (Industry)</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val" style="border:none"><span class="k">DST / SERB / DRDO Projects</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process — BITSAT</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Apply for BITSAT</div>
+            <div class="tl-desc">Register on the official BITS Pilani admissions portal (bitsadmission.com) for BITSAT. BITSAT is BITS's own computer-based entrance exam conducted across 60+ cities. Eligibility: 10+2 or equivalent with PCM / PCB and minimum 75% aggregate marks. Physics, Chemistry, and Mathematics are mandatory subjects.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Appear in BITSAT (Online CBT)</div>
+            <div class="tl-desc">BITSAT is a 3-hour online computer-based test with 130 questions from Physics (40), Chemistry (40), English + Logical Reasoning (25), and Mathematics / Biology (45). Correct answers: +3 marks; Wrong: −1 mark. Candidates who complete 130 questions under time can attempt 12 bonus questions.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Board-Based Direct Admission (Special Provision)</div>
+            <div class="tl-desc">Candidates scoring 75% or above aggregate in 12th board AND topping their respective board (1st rank) may be offered direct admission without BITSAT. This is a special provision for outstanding board toppers.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Apply to BITS with BITSAT Score</div>
+            <div class="tl-desc">After BITSAT results, apply to BITS on the admissions portal. Submit BITSAT score, 12th board marks, preferred campus, and programme. Candidates must have 75%+ aggregate in 12th board to be eligible for final admission.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Iteration-Based Seat Allotment</div>
+            <div class="tl-desc">BITS conducts multiple iterations of seat allotment based on BITSAT merit rank, campus preference, and programme choice. Candidates must log in to accept / reject allotment within the given window. Upgrading to better programme / campus is possible in subsequent iterations.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Fee Payment &amp; Admission Confirmation</div>
+            <div class="tl-desc">Pay the semester fee (₹5.9 Lakh+/semester) online to confirm admission. Report to the allotted campus with original documents: 10th &amp; 12th marksheets, BITSAT scorecard, category certificate, migration certificate, and passport photos.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">B.E. (All branches)</div><div></div><div></div><span class="tag tag-exam">BITSAT</span></div>
+        <div class="course-row"><div class="course-name">B.Pharm</div><div></div><div></div><span class="tag tag-exam">BITSAT</span></div>
+        <div class="course-row"><div class="course-name">M.Sc (Integrated 5-Year)</div><div></div><div></div><span class="tag tag-exam">BITSAT</span></div>
+        <div class="course-row"><div class="course-name">B.E. + M.Sc Dual Degree</div><div></div><div></div><span class="tag tag-exam">BITSAT</span></div>
+        <div class="course-row"><div class="course-name">M.E. (Campus)</div><div></div><div></div><span class="tag tag-exam">GATE / BITS HD</span></div>
+        <div class="course-row"><div class="course-name">M.Pharm</div><div></div><div></div><span class="tag tag-exam">GPAT</span></div>
+        <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">BITS Entrance / GMAT</span></div>
+        <div class="course-row"><div class="course-name">PhD (All Departments)</div><div></div><div></div><span class="tag tag-exam">BITS PhD Test / GATE / NET</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Aid</div>
+        <div class="phd-tags">
+          <span class="phd-tag">Merit Scholarship (BITS)</span>
+          <span class="phd-tag">Merit-cum-Need Scholarship</span>
+          <span class="phd-tag">SC / ST Fee Concession</span>
+          <span class="phd-tag">Institute Free Studentship</span>
+          <span class="phd-tag">Aditya Birla Group Scholarship</span>
+          <span class="phd-tag">NSP Scholarships</span>
+          <span class="phd-tag">GATE Scholarship (M.E.)</span>
+          <span class="phd-tag">GPAT Scholarship (M.Pharm)</span>
+          <span class="phd-tag">PMRF Fellowship (PhD)</span>
+          <span class="phd-tag">Institute Research Fellowship (PhD)</span>
+          <span class="phd-tag">Alumni Endowment Awards</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: PLACEMENTS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹22–28 LPA</div>
+            <div class="s-lbl">Avg. Package (B.E.)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹2.5+ Cr</div>
+            <div class="s-lbl">Highest Intl. Package</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">90%+</div>
+            <div class="s-lbl">Placement Rate</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Placement Highlights</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🏢</span><div><strong>400+ Recruiters</strong> — World's top tech, finance, consulting, and core engineering companies recruit from BITS campuses every year</div></div>
+          <div class="event-item"><span class="event-icon">💰</span><div><strong>₹1.5 Cr+ Domestic Highest Package</strong> — Elite offers in software, quant finance, AI research, and product roles from top-tier firms</div></div>
+          <div class="event-item"><span class="event-icon">🎯</span><div><strong>Practice School → PPO Pipeline</strong> — Over 50% of students receive Pre-Placement Offers directly through PS-II internships at partner companies</div></div>
+          <div class="event-item"><span class="event-icon">🌍</span><div><strong>Strong International Placements</strong> — Significant number of students placed internationally at companies in the US, Europe, Singapore, and UAE through PS global programme</div></div>
+          <div class="event-item"><span class="event-icon">📝</span><div><strong>Diverse Profiles</strong> — Software development, AI/ML, quant finance, VLSI, product management, consulting, and research — one of the most diversely recruited campuses in India</div></div>
+          <div class="event-item"><span class="event-icon">🚀</span><div><strong>Startup Ecosystem</strong> — BITS Technology Business Incubator (TBI) has supported 150+ startups. Many BITSians are founders of marquee Indian startups including Zomato, Snapdeal, and BrowserStack</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Google</span>
+          <span class="recruiter-tag">Microsoft</span>
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Goldman Sachs</span>
+          <span class="recruiter-tag">Qualcomm</span>
+          <span class="recruiter-tag">Texas Instruments</span>
+          <span class="recruiter-tag">Oracle</span>
+          <span class="recruiter-tag">Samsung</span>
+          <span class="recruiter-tag">DE Shaw</span>
+          <span class="recruiter-tag">Uber</span>
+          <span class="recruiter-tag">Salesforce</span>
+          <span class="recruiter-tag">Adobe</span>
+          <span class="recruiter-tag">Cisco</span>
+          <span class="recruiter-tag">Morgan Stanley</span>
+          <span class="recruiter-tag">McKinsey</span>
+          <span class="recruiter-tag">Schlumberger</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;margin-top:16px;">
+          BITS Pilani is considered one of India's <strong style="color:var(--white);">top 5 engineering institutes</strong> for placements and alumni impact. Its unique Practice School programme gives every student real-world industry exposure before graduation, resulting in extremely high placement rates and exceptional package figures. The BITS alumni network spans global tech giants, Wall Street firms, leading startups, and research institutions worldwide.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at BITS Pilani</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Flagship Events</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>OASIS — Cultural Festival</strong> — One of India's largest college cultural festivals, held annually in October. Features music, dramatics, fine arts, gaming, and celebrity performances attracting 50,000+ visitors</div></div>
+            <div class="event-item"><span class="event-icon">⚙️</span><div><strong>APOGEE — Technical Festival</strong> — BITS's annual technical fest featuring robotics, hackathons, paper presentations, and innovation challenges with nationwide participation</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>BOSM — Sports Meet</strong> — Annual inter-college sports extravaganza competing across 20+ sports disciplines</div></div>
+            <div class="event-item"><span class="event-icon">💼</span><div><strong>QUARK — Science &amp; Tech Fest</strong> — Science and technology festival celebrating research, innovation, and cutting-edge technology</div></div>
+            <div class="event-item"><span class="event-icon">🌿</span><div><strong>Pearl — Literary &amp; Fine Arts</strong> — Literary, visual arts, and creative writing competitions</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
+            <div class="fac-item"><div class="fac-icon">🎾</div>Tennis Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">💪</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga &amp; Wellness</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Departments</div>
+          <div class="phd-tags">
+            <span class="phd-tag">CRUX — Robotics Club</span>
+            <span class="phd-tag">BITS-ACM Chapter</span>
+            <span class="phd-tag">Cybersecurity Club</span>
+            <span class="phd-tag">AI / ML Club</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Music Club — Sur</span>
+            <span class="phd-tag">Dramatics Club — Aavartan</span>
+            <span class="phd-tag">Literary Club</span>
+            <span class="phd-tag">Astronomy Club</span>
+            <span class="phd-tag">Finance Club</span>
+            <span class="phd-tag">Entrepreneurship Cell</span>
+            <span class="phd-tag">NIRMAAN — Social Initiatives</span>
+            <span class="phd-tag">Dance Club</span>
+            <span class="phd-tag">NSS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 7: CUT-OFF ── -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>BITSAT Cut-Off Trends — B.E. Programs (Pilani Campus)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Campus</th>
+              <th>Expected BITSAT Score (Approx.)</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>B.E. Computer Science Engineering</td>
+              <td>Pilani</td>
+              <td>380 – 400+</td>
+              <td><span class="level-high">Extremely High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Computer Science Engineering</td>
+              <td>Goa / Hyderabad</td>
+              <td>355 – 380</td>
+              <td><span class="level-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Electronics &amp; Communication Engg.</td>
+              <td>Pilani</td>
+              <td>360 – 385</td>
+              <td><span class="level-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Electrical &amp; Electronics Engg.</td>
+              <td>Pilani</td>
+              <td>340 – 365</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Mechanical Engineering</td>
+              <td>Pilani</td>
+              <td>310 – 340</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Chemical Engineering</td>
+              <td>Pilani</td>
+              <td>300 – 330</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Civil Engineering</td>
+              <td>Pilani</td>
+              <td>280 – 315</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc (Hons.) Mathematics / Physics</td>
+              <td>Pilani</td>
+              <td>310 – 345</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>M.Sc (Hons.) Economics / Chemistry</td>
+              <td>Pilani</td>
+              <td>290 – 325</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.Pharm</td>
+              <td>Pilani</td>
+              <td>260 – 300</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ <strong>Note:</strong> BITSAT is scored out of 390 (130 questions × 3 marks). Scores shown are approximate closing scores based on recent admission trends. Actual cut-offs vary by year, campus, and category. 12th board score must be 75%+ for eligibility. SC/ST candidates may get relaxation as per BITS policy. Always verify with the official BITS admissions portal (bitsadmission.com).
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>BITS Goa &amp; Hyderabad — BITSAT Cut-Off Comparison</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Campus</th>
+              <th>Expected BITSAT Score</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>B.E. CSE</td>
+              <td>Goa</td>
+              <td>360 – 385</td>
+              <td><span class="level-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. CSE</td>
+              <td>Hyderabad</td>
+              <td>355 – 378</td>
+              <td><span class="level-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. ECE</td>
+              <td>Goa</td>
+              <td>335 – 360</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. ECE</td>
+              <td>Hyderabad</td>
+              <td>330 – 358</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. EEE</td>
+              <td>Goa / Hyderabad</td>
+              <td>310 – 345</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Mechanical</td>
+              <td>Goa / Hyderabad</td>
+              <td>290 – 325</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.E. Chemical / Civil</td>
+              <td>Goa / Hyderabad</td>
+              <td>265 – 305</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.E. (PG — all branches)</td>
+              <td>All Campuses</td>
+              <td>GATE 600+ / Pilani HD</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ Pilani campus commands the highest cut-off due to its flagship status, followed closely by Goa and Hyderabad. Dubai campus has a separate process. BITS conducts 2–3 iteration rounds — candidates can upgrade to a better programme or campus in later rounds if they qualify. Scores are out of 390.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.bits-pilani.ac.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">1964</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">Deemed University / Private</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-gold">NAAC A+, NBA</span></div>
+      <div class="key-val"><span class="k">NIRF Rank</span><span class="v v-gold">Top 25 (Engineering)</span></div>
+      <div class="key-val"><span class="k">Campuses</span><span class="v">Pilani · Goa · Hyderabad · Dubai</span></div>
+      <div class="key-val"><span class="k">Campus Area (Pilani)</span><span class="v">~328 Acres</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">BITS / BITS Pilani</span></div>
+      <div class="key-val"><span class="k">Entrance Test</span><span class="v">BITSAT (Own Test)</span></div>
+      <div class="key-val"><span class="k">Unique Feature</span><span class="v">Practice School + Dual Degree</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.E. / B.Pharm</td><td><span class="tag tag-exam">BITSAT</span></td></tr>
+        <tr><td>M.Sc Integrated</td><td><span class="tag tag-exam">BITSAT</span></td></tr>
+        <tr><td>Dual Degree</td><td><span class="tag tag-exam">BITSAT</span></td></tr>
+        <tr><td>M.E.</td><td><span class="tag tag-exam">GATE / HD</span></td></tr>
+        <tr><td>M.Pharm</td><td><span class="tag tag-exam">GPAT</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">BITS / GMAT</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">BITS Test / GATE</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">B.E. / M.Sc (per semester)</span><span class="v v-gold">₹5.90 Lakh</span></div>
+      <div class="key-val"><span class="k">B.E. (Total 4 Years)</span><span class="v v-gold">~₹47–50 Lakh</span></div>
+      <div class="key-val"><span class="k">M.Sc Integrated (5 Yrs)</span><span class="v v-gold">~₹59–62 Lakh</span></div>
+      <div class="key-val"><span class="k">M.E. (per semester)</span><span class="v v-gold">₹3–5 Lakh</span></div>
+      <div class="key-val"><span class="k">MBA (per year)</span><span class="v v-gold">₹7 – ₹10 Lakh</span></div>
+      <div class="key-val"><span class="k">Hostel (per semester)</span><span class="v v-gold">₹55,000 – ₹90,000</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">BITSAT Cut-Off Snapshot</div>
+      <div class="key-val"><span class="k">B.E. CSE — Pilani</span><span class="v" style="color:#fc8181;">380 – 400+</span></div>
+      <div class="key-val"><span class="k">B.E. CSE — Goa / Hyd</span><span class="v" style="color:#fc8181;">355 – 380</span></div>
+      <div class="key-val"><span class="k">B.E. ECE — Pilani</span><span class="v" style="color:#fc8181;">360 – 385</span></div>
+      <div class="key-val"><span class="k">B.E. EEE — Pilani</span><span class="v" style="color:#f6ad55;">340 – 365</span></div>
+      <div class="key-val"><span class="k">B.E. Mech — Pilani</span><span class="v" style="color:#f6ad55;">310 – 340</span></div>
+      <div class="key-val"><span class="k">B.Pharm — Pilani</span><span class="v" style="color:var(--accent-green);">260 – 300</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">BITSAT Score out of 390 · 12th Board 75%+ mandatory</div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Avg. Package (B.E.)</span><span class="v v-gold">₹22 – ₹28 LPA</span></div>
+      <div class="key-val"><span class="k">Highest Domestic</span><span class="v v-gold">₹1.5+ Crore</span></div>
+      <div class="key-val"><span class="k">Highest Intl.</span><span class="v v-gold">₹2.5+ Crore</span></div>
+      <div class="key-val"><span class="k">Placement Rate</span><span class="v" style="color:var(--accent-green);">90%+</span></div>
+      <div class="key-val"><span class="k">Total Recruiters</span><span class="v" style="color:var(--accent-green);">400+</span></div>
+      <div class="key-val"><span class="k">PPO via Practice School</span><span class="v" style="color:var(--accent-green);">50%+ Students</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'BITS Pilani added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) dd.classList.remove('open');
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

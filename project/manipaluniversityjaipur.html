@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manipal University Jaipur – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  nav {
+    background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
+  .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: default; }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hb-nirf { background: rgba(159,122,234,0.12); border: 1px solid rgba(159,122,234,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+  .hb-nirf .value { color: #b794f4; }
+
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 58%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); line-height:1.6; }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th { background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  .cutoff-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--muted); vertical-align: middle; }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-high { color: #fc8181 !important; font-weight: 600; }
+  .level-moderate { color: #f6ad55 !important; font-weight: 600; }
+  .level-low { color: var(--accent-green) !important; font-weight: 600; }
+  .cutoff-note { background: rgba(99,179,237,0.08); border: 1px solid rgba(99,179,237,0.2); border-radius: 10px; padding: 12px 16px; font-size: 0.75rem; color: #90cdf4; margin-top: 14px; line-height: 1.6; }
+
+  .manipal-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(245,166,35,0.12); border:1px solid var(--border); border-radius:8px; padding:6px 14px; font-size:0.75rem; font-weight:600; color:var(--gold); margin-bottom:16px; }
+
+  .campus-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+  .campus-chip { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 10px; text-align:center; font-size:0.75rem; transition:all 0.2s; cursor:default; }
+  .campus-chip:hover { border-color:var(--border); background:var(--tag-bg); }
+  .campus-chip .cicon { font-size:1.3rem; margin-bottom:5px; }
+  .campus-chip .cname { font-weight:600; color:var(--white); margin-bottom:2px; }
+  .campus-chip .cloc { color:var(--muted); font-size:0.68rem; }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    .campus-strip { grid-template-columns:1fr 1fr; }
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Manipal University Jaipur
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🎓</div>
+    <div class="uni-title">
+      <h1>Manipal University <span>Jaipur</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Dehmi Kalan, Jaipur, Rajasthan</strong></span>
+        <span class="meta-chip">🏛️ <strong>Private / Deemed University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2011</strong></span>
+        <span class="meta-chip">🌐 <strong>Part of Manipal Education Group</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://jaipur.manipal.edu/','_blank')" title="Open official website">🌍 <strong>jaipur.manipal.edu ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Accreditation</span>
+      <span class="value">NAAC A</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">~122 Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Type</span>
+      <span class="value">Deemed Univ.</span>
+    </div>
+    <div class="hero-badge hb-nirf">
+      <span class="label">NIRF Rank</span>
+      <span class="value">Top 150</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2011</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">Private / Deemed University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Dehmi Kalan, Jaipur</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC A, NBA</div></div>
+          <div class="info-chip"><div class="lbl">Campus Area</div><div class="val">~122 Acres</div></div>
+          <div class="info-chip"><div class="lbl">Admission</div><div class="val">MET / JEE Main / Merit</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Manipal Education Group — Other Campuses</div>
+        <div class="campus-strip">
+          <div class="campus-chip">
+            <div class="cicon">🏥</div>
+            <div class="cname">Manipal (Main)</div>
+            <div class="cloc">Karnataka (MAHE)</div>
+          </div>
+          <div class="campus-chip">
+            <div class="cicon">🏙️</div>
+            <div class="cname">Jaipur</div>
+            <div class="cloc">Rajasthan (MUJ)</div>
+          </div>
+          <div class="campus-chip">
+            <div class="cicon">🌊</div>
+            <div class="cname">Sikkim</div>
+            <div class="cloc">Gangtok, Sikkim</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 16px;">
+          ℹ️ Manipal University Jaipur (MUJ) is an independent deemed university and a part of the prestigious Manipal Education Group — one of India's largest and most reputed private education networks with 30,000+ students across campuses globally.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About Manipal University Jaipur</div>
+        <div class="manipal-badge">🏛️ UGC Recognised Deemed University · NAAC 'A' Grade Accredited</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Manipal University Jaipur (MUJ), established in <strong style="color:var(--white);">2011</strong>, is a premier private deemed university located on a sprawling <strong style="color:var(--white);">122-acre campus</strong> in Dehmi Kalan, Jaipur. Accredited with <strong style="color:var(--white);">NAAC A Grade</strong> and ranked among India's top private universities by NIRF, MUJ is part of the globally recognised <strong style="color:var(--white);">Manipal Education Group</strong>. The university offers over <strong style="color:var(--white);">200+ programs</strong> across 20+ Schools including Engineering, Technology, Management, Law, Pharmacy, Architecture, Design, Sciences, Journalism, and Humanities. With a strong focus on <strong style="color:var(--white);">industry-oriented education, research, and innovation</strong>, MUJ has built a robust placement ecosystem and strong industry partnerships with 500+ companies recruiting from campus.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Advanced Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computing Centres</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
+          <div class="fac-item"><div class="fac-icon">💪</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Health Centre</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+          <div class="fac-item"><div class="fac-icon">🚀</div>Innovation &amp; Incubation Centre</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria &amp; Food Court</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Bank &amp; ATM</div>
+          <div class="fac-item"><div class="fac-icon">📹</div>24×7 Security</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostels (Multiple)</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostels (Multiple)</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> High-Speed Wi-Fi</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess &amp; Dining Hall</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Room</div>
+          <div class="hostel-item"><span class="hostel-icon">🎮</span> Indoor Games</div>
+          <div class="hostel-item"><span class="hostel-icon">❄️</span> AC Rooms Available</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> 24×7 Medical Support</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹65,000–1,10,000/semester (room + mess) · Total ₹1.3–2.2 Lakh/year · AC &amp; Non-AC options available</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Tech · 4 Years · MET / JEE Main · Engineering</span>
+          <div class="course-row">
+            <div class="course-name">B.Tech Computer Science &amp; Engineering</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech CSE (AI &amp; Machine Learning)</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech CSE (Data Science)</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech CSE (Cyber Security)</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech CSE (Cloud Computing &amp; DevOps)</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Electronics &amp; Communication Engineering</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Electrical &amp; Electronics Engineering</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Mechanical Engineering</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Civil Engineering</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Chemical Engineering</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Tech Biotechnology</div>
+            <div class="course-meta"><strong>MET / JEE</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.2–2.8L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCM / PCB (60%+) · Admission: MET (Manipal Entrance Test) / JEE Main Score / Merit</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Arch · 5 Years · NATA / JEE Paper 2 · Architecture</span>
+          <div class="course-row">
+            <div class="course-name">Bachelor of Architecture (B.Arch)</div>
+            <div class="course-meta"><strong>NATA / JEE 2</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2.5–3L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Maths (50%+) · Admission: NATA Score / JEE Paper 2</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Pharm · 4 Years · MET / PUAT · Pharmacy</span>
+          <div class="course-row">
+            <div class="course-name">Bachelor of Pharmacy (B.Pharm)</div>
+            <div class="course-meta"><strong>MET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1.8–2.2L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB / PCM (50%+)</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">BBA / B.Com / BCA · 3 Years · MET / Merit · Management &amp; Commerce</span>
+          <div class="course-row">
+            <div class="course-name">BBA (Bachelor of Business Administration)</div>
+            <div class="course-meta"><strong>MET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1.5–2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Com (Honours)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹90,000–1.4L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BCA (Bachelor of Computer Applications)</div>
+            <div class="course-meta"><strong>MET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1.2–1.8L/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Design / LLB / B.Sc · Specialized UG Programs</span>
+          <div class="course-row">
+            <div class="course-name">B.Design (Fashion / Communication / Interior)</div>
+            <div class="course-meta"><strong>MET / Portfolio</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2–2.8L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">BA LLB / BBA LLB (5-Year Integrated Law)</div>
+            <div class="course-meta"><strong>CLAT / MET</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1.8–2.5L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Sc (Physics / Chemistry / Mathematics / Biotechnology)</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹80,000–1.2L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">B.Journalism &amp; Mass Communication (BJMC)</div>
+            <div class="course-meta"><strong>MET / Merit</strong>Entrance</div>
+            <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1.2–1.8L/yr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech · 2 Years · GATE / MET · ₹1.5–2.5L/yr</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Computer Science &amp; Engineering</span>
+            <span class="phd-tag">Artificial Intelligence &amp; ML</span>
+            <span class="phd-tag">Data Science &amp; Analytics</span>
+            <span class="phd-tag">Electronics &amp; Communication</span>
+            <span class="phd-tag">VLSI Design</span>
+            <span class="phd-tag">Structural Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Information Security</span>
+            <span class="phd-tag">Software Engineering</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Tech / B.E. in relevant discipline (55%+) · Admission: GATE Score / MET</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MBA · 2 Years · MET / CAT / MAT / CMAT · ₹2–3L/yr</span>
+          <div class="course-row">
+            <div class="course-name">MBA (General Management)</div>
+            <div class="course-meta"><strong>CAT / MAT / MET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2–3L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">MBA (Business Analytics)</div>
+            <div class="course-meta"><strong>CAT / MAT / MET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2–3L/yr</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">MBA (Finance / Marketing / HR / Operations)</div>
+            <div class="course-meta"><strong>CAT / MAT / MET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹2–3L/yr</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Graduation with 50%+ · Admission: CAT / MAT / CMAT / MET Score</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">MCA · 2 Years · MET / NIMCET · ₹1.5–2L/yr</span>
+          <div class="course-row">
+            <div class="course-name">MCA (Master of Computer Applications)</div>
+            <div class="course-meta"><strong>MET / NIMCET</strong>Entrance</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹1.5–2L/yr</span>
+          </div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Sc / M.Pharm / LLM / M.Design · Specialized PG</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.Sc Physics</span>
+            <span class="phd-tag">M.Sc Chemistry</span>
+            <span class="phd-tag">M.Sc Mathematics</span>
+            <span class="phd-tag">M.Sc Biotechnology</span>
+            <span class="phd-tag">M.Pharm (Pharmaceutics)</span>
+            <span class="phd-tag">M.Pharm (Pharmacology)</span>
+            <span class="phd-tag">LLM (Master of Laws)</span>
+            <span class="phd-tag">M.Design</span>
+            <span class="phd-tag">M.A. Journalism &amp; Mass Communication</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Relevant graduation with 50%+ · Admission: MET / GPAT / CLAT / Merit</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs — All Schools</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Engineering &amp; Technology</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Computer Science &amp; Engineering</span>
+            <span class="phd-tag">AI &amp; Machine Learning</span>
+            <span class="phd-tag">Electronics &amp; Communication</span>
+            <span class="phd-tag">Electrical Engineering</span>
+            <span class="phd-tag">Mechanical Engineering</span>
+            <span class="phd-tag">Civil Engineering</span>
+            <span class="phd-tag">Chemical Engineering</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Information Security</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Management &amp; Commerce</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Management</span>
+            <span class="phd-tag">Business Administration</span>
+            <span class="phd-tag">Commerce</span>
+            <span class="phd-tag">Finance</span>
+            <span class="phd-tag">Marketing</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Physics</span>
+            <span class="phd-tag">Chemistry</span>
+            <span class="phd-tag">Mathematics</span>
+            <span class="phd-tag">Biotechnology</span>
+            <span class="phd-tag">Computer Applications</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Law, Design, Pharmacy &amp; Others</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Law</span>
+            <span class="phd-tag">Design</span>
+            <span class="phd-tag">Pharmacy</span>
+            <span class="phd-tag">Architecture</span>
+            <span class="phd-tag">Journalism &amp; Mass Communication</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree with 55%+ (50% for SC/ST)</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">MUJ PhD Entrance Test</span></div>
+          <div class="key-val"><span class="k">Exemption</span><span class="v">UGC-NET / GATE / JRF Qualified</span></div>
+          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">Written Test + Interview</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Funding Available</div>
+          <div class="key-val"><span class="k">GATE Scholarship</span><span class="v" style="color:var(--accent-green);">Available (M.Tech)</span></div>
+          <div class="key-val"><span class="k">UGC / CSIR Fellowship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val"><span class="k">PMRF Fellowship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+          <div class="key-val" style="border:none"><span class="k">University Research Assistantship</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process — MET Based</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Register for MET (Manipal Entrance Test)</div>
+            <div class="tl-desc">Register on the official MUJ admissions portal (jaipur.manipal.edu) for the Manipal Entrance Test (MET). MET is conducted online across multiple cities. Alternatively, candidates can apply using JEE Main / NATA / CLAT / GATE / CAT scores for respective programs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Appear in MET / Qualifying Exam</div>
+            <div class="tl-desc">MET is a computer-based test covering Physics, Chemistry, Mathematics / Biology and English. Duration: 2.5 hours. Candidates applying via JEE Main / CLAT / GATE / CAT can skip MET and apply directly with their scores.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Apply to MUJ Jaipur</div>
+            <div class="tl-desc">After MET results, apply to MUJ Jaipur on the admissions portal. Submit MET / JEE / GATE score, 12th board marks, program and specialisation preference, and personal details.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Merit List &amp; Counselling</div>
+            <div class="tl-desc">MUJ publishes merit lists based on MET / JEE / qualifying exam scores. Shortlisted candidates are called for personal interaction and document verification. Multiple rounds of allotment are conducted.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Document Verification</div>
+            <div class="tl-desc">Submit documents: 10th &amp; 12th marksheets, MET / JEE / qualifying exam scorecard, category certificate, transfer / migration certificate, passport photos, and medical fitness certificate.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 6 — Fee Payment &amp; Enrollment</div>
+            <div class="tl-desc">Pay the semester fee online to secure the seat. Report to campus with original documents for enrollment. Collect student ID and hostel allotment letter to formally begin your academic journey at MUJ Jaipur.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row"><div class="course-name">B.Tech (All Branches)</div><div></div><div></div><span class="tag tag-exam">MET / JEE Main</span></div>
+        <div class="course-row"><div class="course-name">B.Arch</div><div></div><div></div><span class="tag tag-exam">NATA / JEE Paper 2</span></div>
+        <div class="course-row"><div class="course-name">B.Pharm</div><div></div><div></div><span class="tag tag-exam">MET / Merit</span></div>
+        <div class="course-row"><div class="course-name">BBA / B.Com / BCA</div><div></div><div></div><span class="tag tag-exam">MET / Merit</span></div>
+        <div class="course-row"><div class="course-name">B.Design</div><div></div><div></div><span class="tag tag-exam">MET / Portfolio</span></div>
+        <div class="course-row"><div class="course-name">BA LLB / BBA LLB</div><div></div><div></div><span class="tag tag-exam">CLAT / MET</span></div>
+        <div class="course-row"><div class="course-name">M.Tech</div><div></div><div></div><span class="tag tag-exam">GATE / MET</span></div>
+        <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">CAT / MAT / CMAT / MET</span></div>
+        <div class="course-row"><div class="course-name">MCA</div><div></div><div></div><span class="tag tag-exam">MET / NIMCET</span></div>
+        <div class="course-row"><div class="course-name">M.Pharm</div><div></div><div></div><span class="tag tag-exam">GPAT / MET</span></div>
+        <div class="course-row"><div class="course-name">LLM</div><div></div><div></div><span class="tag tag-exam">CLAT PG / Merit</span></div>
+        <div class="course-row"><div class="course-name">PhD (All Schools)</div><div></div><div></div><span class="tag tag-exam">MUJ PhD Test / GATE / NET</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships &amp; Financial Aid</div>
+        <div class="phd-tags">
+          <span class="phd-tag">Merit Scholarship (MUJ)</span>
+          <span class="phd-tag">Manipal Group Merit Awards</span>
+          <span class="phd-tag">SC / ST Fee Concession</span>
+          <span class="phd-tag">Sports Scholarship</span>
+          <span class="phd-tag">NRI / International Scholarship</span>
+          <span class="phd-tag">NSP (National Scholarship Portal)</span>
+          <span class="phd-tag">Rajasthan State Scholarship</span>
+          <span class="phd-tag">EWS Financial Assistance</span>
+          <span class="phd-tag">GATE Scholarship (M.Tech)</span>
+          <span class="phd-tag">GPAT Scholarship (M.Pharm)</span>
+          <span class="phd-tag">Institute Research Assistantship (PhD)</span>
+          <span class="phd-tag">Sibling Concession</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: PLACEMENTS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">₹8–14 LPA</div>
+            <div class="s-lbl">Avg. Package (B.Tech)</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">₹42 LPA</div>
+            <div class="s-lbl">Highest Package</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">85%+</div>
+            <div class="s-lbl">Placement Rate</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Placement Highlights</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🏢</span><div><strong>500+ Recruiters</strong> — Global and Indian companies across IT, core engineering, finance, consulting, and design visit campus for placements and internships</div></div>
+          <div class="event-item"><span class="event-icon">💰</span><div><strong>Strong CSE / AI / DS Placements</strong> — B.Tech CSE, AI, and Data Science students command the highest packages with top tech companies offering ₹12–42 LPA</div></div>
+          <div class="event-item"><span class="event-icon">🎯</span><div><strong>Manipal Group Network Advantage</strong> — Access to the global Manipal alumni network of 75,000+ professionals across 57 countries provides strong industry connections</div></div>
+          <div class="event-item"><span class="event-icon">📝</span><div><strong>Internship-to-PPO Pipeline</strong> — Strong conversion of internships to Pre-Placement Offers through partner companies' structured internship programmes</div></div>
+          <div class="event-item"><span class="event-icon">🌍</span><div><strong>International Placements</strong> — Students placed internationally through exchange programmes, research collaborations, and Manipal's global university partnerships</div></div>
+          <div class="event-item"><span class="event-icon">🚀</span><div><strong>Innovation &amp; Entrepreneurship</strong> — MUJ's incubation centre has supported 80+ startups. Growing culture of entrepreneurship especially in tech, design, and social impact</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">TCS</span>
+          <span class="recruiter-tag">Infosys</span>
+          <span class="recruiter-tag">Wipro</span>
+          <span class="recruiter-tag">Accenture</span>
+          <span class="recruiter-tag">Cognizant</span>
+          <span class="recruiter-tag">Capgemini</span>
+          <span class="recruiter-tag">HCL Technologies</span>
+          <span class="recruiter-tag">Amazon</span>
+          <span class="recruiter-tag">Microsoft</span>
+          <span class="recruiter-tag">IBM</span>
+          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">Goldman Sachs</span>
+          <span class="recruiter-tag">HDFC Bank</span>
+          <span class="recruiter-tag">Siemens</span>
+          <span class="recruiter-tag">L&amp;T</span>
+          <span class="recruiter-tag">Mahindra</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;margin-top:16px;">
+          Manipal University Jaipur is one of Rajasthan's top private universities for placements, particularly in <strong style="color:var(--white);">Computer Science, AI, Data Science, Electronics, and Management</strong>. The Manipal brand carries significant weight with global recruiters, and the university's industry-linked curriculum, strong faculty mentorship, and active placement cell contribute to consistently high placement outcomes.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life at MUJ Jaipur</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Events &amp; Festivals</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Oneiros — Annual Cultural Fest</strong> — MUJ's flagship cultural festival featuring music, dance, drama, standup comedy, fashion shows, and celebrity performances</div></div>
+            <div class="event-item"><span class="event-icon">⚙️</span><div><strong>Technocracy — Tech Fest</strong> — Annual technical festival with hackathons, robotics competitions, paper presentations, and innovation challenges</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>MUJ Sports Meet</strong> — Inter-school and inter-university sports competitions across cricket, football, basketball, badminton, and athletics</div></div>
+            <div class="event-item"><span class="event-icon">💼</span><div><strong>Management Conclave</strong> — Business case studies, entrepreneurship summit, and leadership conclaves organised by the School of Business</div></div>
+            <div class="event-item"><span class="event-icon">🎨</span><div><strong>Design Week</strong> — Showcase of student design projects, architecture models, fashion collections, and media productions</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
+            <div class="fac-item"><div class="fac-icon">🎾</div>Tennis Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏀</div>Basketball Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+            <div class="fac-item"><div class="fac-icon">💪</div>Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga &amp; Wellness</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Societies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Coding Club</span>
+            <span class="phd-tag">Robotics Club</span>
+            <span class="phd-tag">AI / ML Club</span>
+            <span class="phd-tag">Cybersecurity Club</span>
+            <span class="phd-tag">Design Club</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Literary Club</span>
+            <span class="phd-tag">Debate Society</span>
+            <span class="phd-tag">Music &amp; Dance Society</span>
+            <span class="phd-tag">Drama Club</span>
+            <span class="phd-tag">Entrepreneurship Cell</span>
+            <span class="phd-tag">NSS</span>
+            <span class="phd-tag">Finance Club</span>
+            <span class="phd-tag">Law Society</span>
+            <span class="phd-tag">Media &amp; Journalism Club</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 7: CUT-OFF ── -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off Trends — B.Tech (MET Score / JEE Main)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Admission Basis</th>
+              <th>Expected MET Score / JEE %ile</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>B.Tech CSE</td>
+              <td>MET / JEE Main</td>
+              <td>MET 140+ / JEE 80%ile+</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech CSE (AI &amp; ML)</td>
+              <td>MET / JEE Main</td>
+              <td>MET 145+ / JEE 82%ile+</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech CSE (Data Science)</td>
+              <td>MET / JEE Main</td>
+              <td>MET 140+ / JEE 80%ile+</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech CSE (Cyber Security)</td>
+              <td>MET / JEE Main</td>
+              <td>MET 135+ / JEE 75%ile+</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech ECE</td>
+              <td>MET / JEE Main</td>
+              <td>MET 125+ / JEE 70%ile+</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech EEE</td>
+              <td>MET / JEE Main</td>
+              <td>MET 115+ / JEE 65%ile+</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech Mechanical Engineering</td>
+              <td>MET / JEE Main</td>
+              <td>MET 110+ / JEE 60%ile+</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech Civil Engineering</td>
+              <td>MET / JEE Main</td>
+              <td>MET 100+ / JEE 55%ile+</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech Biotechnology</td>
+              <td>MET / JEE Main</td>
+              <td>MET 110+ / JEE 60%ile+</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>B.Arch</td>
+              <td>NATA / JEE Paper 2</td>
+              <td>NATA 100+ / JEE P2 75%ile</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ <strong>Note:</strong> MET is scored out of 200. Cut-offs are indicative based on recent admission trends. Actual scores vary each year based on number of applicants and seat availability. 12th board score of 60%+ in PCM / PCB is required for eligibility. Always refer to the official MUJ admissions portal (jaipur.manipal.edu) for current-year details.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off Trends — PG Programs</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Admission Basis</th>
+              <th>Expected Score / Criteria</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>M.Tech CSE / AI / DS</td>
+              <td>GATE / MET</td>
+              <td>GATE 450+ / MET 120+</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech ECE / VLSI</td>
+              <td>GATE / MET</td>
+              <td>GATE 400+ / MET 110+</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech Mechanical / Civil</td>
+              <td>GATE / MET</td>
+              <td>GATE 350+ / MET 100+</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>MBA (General / Analytics)</td>
+              <td>CAT / MAT / MET</td>
+              <td>CAT 65%ile / MAT 600+</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>MCA</td>
+              <td>MET / NIMCET</td>
+              <td>MET 110+ / NIMCET Merit</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Pharm</td>
+              <td>GPAT / MET</td>
+              <td>GPAT 50+ / MET 100+</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>LLM</td>
+              <td>CLAT PG / Merit</td>
+              <td>LLB 55%+ / CLAT PG Merit</td>
+              <td><span class="level-low">Low–Moderate</span></td>
+            </tr>
+            <tr>
+              <td>PhD (All Schools)</td>
+              <td>MUJ PhD Test / GATE / NET</td>
+              <td>Master's 55%+ / GATE / NET</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ PG cut-offs are indicative. MUJ Jaipur accepts multiple national exam scores (GATE, CAT, MAT, CMAT, CLAT, GPAT) in addition to its own MET. Direct admission may be available for high scorers in qualifying exams. Verify with the official admissions portal for the latest criteria.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://jaipur.manipal.edu/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2011</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">Private / Deemed University</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-gold">NAAC A, NBA</span></div>
+      <div class="key-val"><span class="k">NIRF Rank</span><span class="v v-gold">Top 150 (Engineering)</span></div>
+      <div class="key-val"><span class="k">Parent Group</span><span class="v">Manipal Education Group</span></div>
+      <div class="key-val"><span class="k">Campus Area</span><span class="v">~122 Acres</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Dehmi Kalan, Jaipur</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">MUJ / Manipal Jaipur</span></div>
+      <div class="key-val"><span class="k">Programs Offered</span><span class="v">200+ Programs</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course</th><th>Exam</th></tr>
+        <tr><td>B.Tech</td><td><span class="tag tag-exam">MET / JEE Main</span></td></tr>
+        <tr><td>B.Arch</td><td><span class="tag tag-exam">NATA / JEE P2</span></td></tr>
+        <tr><td>B.Pharm / BBA / BCA</td><td><span class="tag tag-exam">MET / Merit</span></td></tr>
+        <tr><td>BA LLB / BBA LLB</td><td><span class="tag tag-exam">CLAT / MET</span></td></tr>
+        <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE / MET</span></td></tr>
+        <tr><td>MBA</td><td><span class="tag tag-exam">CAT / MAT / MET</span></td></tr>
+        <tr><td>M.Pharm</td><td><span class="tag tag-exam">GPAT / MET</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">MUJ Test / GATE / NET</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees</div>
+      <div class="key-val"><span class="k">B.Tech (per year)</span><span class="v v-gold">₹2.2 – ₹2.8 Lakh</span></div>
+      <div class="key-val"><span class="k">B.Tech (Total 4 Yrs)</span><span class="v v-gold">₹9 – ₹12 Lakh</span></div>
+      <div class="key-val"><span class="k">B.Arch (per year)</span><span class="v v-gold">₹2.5 – ₹3 Lakh</span></div>
+      <div class="key-val"><span class="k">MBA (per year)</span><span class="v v-gold">₹2 – ₹3 Lakh</span></div>
+      <div class="key-val"><span class="k">M.Tech (per year)</span><span class="v v-gold">₹1.5 – ₹2.5 Lakh</span></div>
+      <div class="key-val"><span class="k">BBA / BCA (per year)</span><span class="v v-gold">₹1.2 – ₹2 Lakh</span></div>
+      <div class="key-val"><span class="k">Hostel (per year)</span><span class="v v-gold">₹1.3 – ₹2.2 Lakh</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cut-Off Snapshot</div>
+      <div class="key-val"><span class="k">B.Tech CSE / AI / DS</span><span class="v" style="color:#fc8181;">MET 140+ / JEE 80%ile</span></div>
+      <div class="key-val"><span class="k">B.Tech ECE</span><span class="v" style="color:#f6ad55;">MET 125+ / JEE 70%ile</span></div>
+      <div class="key-val"><span class="k">B.Tech EEE / Mech</span><span class="v" style="color:#f6ad55;">MET 110+ / JEE 60%ile</span></div>
+      <div class="key-val"><span class="k">B.Tech Civil</span><span class="v" style="color:var(--accent-green);">MET 100+ / JEE 55%ile</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v" style="color:#f6ad55;">CAT 65%ile / MAT 600+</span></div>
+      <div class="key-val"><span class="k">M.Tech CSE / AI</span><span class="v" style="color:#fc8181;">GATE 450+</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">MET scored out of 200 · 12th 60%+ in PCM mandatory</div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Avg. Package (B.Tech)</span><span class="v v-gold">₹8 – ₹14 LPA</span></div>
+      <div class="key-val"><span class="k">Highest Package</span><span class="v v-gold">₹42 LPA</span></div>
+      <div class="key-val"><span class="k">Avg. Package (MBA)</span><span class="v v-gold">₹8 – ₹12 LPA</span></div>
+      <div class="key-val"><span class="k">Placement Rate</span><span class="v" style="color:var(--accent-green);">85%+</span></div>
+      <div class="key-val"><span class="k">Total Recruiters</span><span class="v" style="color:var(--accent-green);">500+</span></div>
+      <div class="key-val"><span class="k">Top Recruiters</span><span class="v v-gold">TCS, Amazon, Wipro, IBM</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let shortlisted = false;
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'Manipal University Jaipur added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) dd.classList.remove('open');
+  });
+
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
