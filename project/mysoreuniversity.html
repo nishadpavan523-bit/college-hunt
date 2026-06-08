@@ -15,52 +15,18 @@
     --white: #ffffff;
     --muted: #a0aec0;
     --accent-green: #48bb78;
-    --accent-blue: #63b3ed;
-    --accent-red: #fc8181;
     --card-bg: #1b2454;
     --border: rgba(245,166,35,0.2);
     --tag-bg: rgba(245,166,35,0.12);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
 
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--navy);
-    color: var(--white);
-    min-height: 100vh;
-  }
-
-  nav {
-    background: var(--navy);
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 32px;
-    height: 60px;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .nav-logo {
-    font-family: 'Raleway', sans-serif;
-    font-size: 1.3rem;
-    color: var(--gold);
-    display: flex; align-items: center; gap: 8px;
-    cursor: pointer;
-  }
+  nav { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Raleway', sans-serif; font-size: 1.3rem; color: var(--gold); display: flex; align-items: center; gap: 8px; cursor: pointer; }
   .nav-logo span { color: var(--white); }
   .nav-right { display: flex; align-items: center; gap: 12px; }
-  .nav-btn {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    display: flex; align-items: center; gap: 6px;
-    font-family: 'Poppins', sans-serif;
-    transition: all 0.18s;
-  }
+  .nav-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; transition: all 0.18s; }
   .btn-stream { background: var(--navy-card); color: var(--white); border: 1px solid var(--border); position: relative; }
   .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
   .btn-shortlist { background: var(--gold); color: var(--navy); }
@@ -68,152 +34,63 @@
   .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
   .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
   .btn-logout:hover { border-color: #f56565; color: #f56565; }
-  .badge {
-    background: var(--navy); color: var(--gold); border-radius: 50%;
-    width: 18px; height: 18px; font-size: 0.65rem;
-    display: inline-flex; align-items: center; justify-content: center; font-weight: 700;
-    transition: all 0.2s;
-  }
+  .badge { background: var(--navy); color: var(--gold); border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
   .badge.pop { animation: badgePop 0.3s ease; }
   @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
 
-  .stream-dropdown {
-    position: absolute; top: calc(100% + 8px); left: 0;
-    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 8px; min-width: 220px; display: none; z-index: 200;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
+  .stream-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 220px; display: none; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
   @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
   .stream-opt { padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
   .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
   .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
 
-  .toast {
-    position: fixed; bottom: 28px; right: 28px;
-    background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999;
-    display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none;
-  }
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 0.82rem; font-weight: 500; color: var(--white); z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
   .toast.show { transform: translateY(0); opacity: 1; }
 
-  .hero {
-    background: linear-gradient(135deg, #1a0d2e 0%, #3a1a5e 40%, #1a0d3e 100%);
-    padding: 40px 48px 36px;
-    position: relative; overflow: hidden;
-  }
-  .hero::before {
-    content: ''; position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
-    width: 300px; height: 300px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.15);
-  }
-  .hero::after {
-    content: ''; position: absolute; right: 95px; top: 50%; transform: translateY(-50%);
-    width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.08);
-  }
-  .hero-ring3 {
-    position: absolute; right: 130px; top: 50%; transform: translateY(-50%);
-    width: 140px; height: 140px; border-radius: 50%; border: 1px solid rgba(159,122,234,0.12);
-  }
-
+  .hero { background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 260px; height: 260px; border-radius: 50%; border: 2px solid rgba(245,166,35,0.2); }
+  .hero::after { content: ''; position: absolute; right: 110px; top: 50%; transform: translateY(-50%); width: 190px; height: 190px; border-radius: 50%; border: 1px solid rgba(245,166,35,0.1); }
   .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
   .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
   .breadcrumb a:hover { text-decoration: underline; }
-
   .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
-  .uni-logo {
-    width: 70px; height: 70px; background: var(--white); border-radius: 14px;
-    display: flex; align-items: center; justify-content: center; font-size: 2rem;
-    flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  }
+  .uni-logo { width: 70px; height: 70px; background: var(--white); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
   .uni-title h1 span { color: var(--gold); }
   .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-  .meta-chip {
-    background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted);
-    display: flex; align-items: center; gap: 5px;
-  }
-  .meta-chip strong { color: var(--white); }
+  .meta-chip { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
   .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
   .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
-
+  .meta-chip strong { color: var(--white); }
   .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
-  .hero-badge {
-    border-radius: 10px; padding: 10px 20px;
-    display: flex; flex-direction: column; align-items: center; min-width: 110px;
-  }
+  .hero-badge { border-radius: 10px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; min-width: 100px; }
   .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
-  .hb-rank { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
-  .hb-institute { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
-  .hb-research { background: rgba(159,122,234,0.15); border: 1px solid rgba(159,122,234,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
   .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
   .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
   .hb-naac .value { color: var(--accent-green); }
-  .hb-rank .value { color: var(--gold); }
-  .hb-institute .value { color: var(--accent-blue); }
-  .hb-research .value { color: #b794f4; }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
 
-  .elite-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
-  .elite-badge {
-    background: rgba(252,129,74,0.12); border: 1px solid rgba(252,129,74,0.3);
-    border-radius: 6px; padding: 3px 12px; font-size: 0.7rem; font-weight: 700;
-    color: #fbd38d; letter-spacing: 0.03em;
-  }
-  .elite-badge.blue { background: rgba(99,179,237,0.1); border-color: rgba(99,179,237,0.3); color: var(--accent-blue); }
-  .elite-badge.green { background: rgba(72,187,120,0.1); border-color: rgba(72,187,120,0.3); color: var(--accent-green); }
-  .elite-badge.purple { background: rgba(159,122,234,0.1); border-color: rgba(159,122,234,0.3); color: #b794f4; }
-
-  .tabs-bar {
-    background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07);
-    display: flex; padding: 0 48px; gap: 4px; overflow-x: auto;
-  }
-  .tab {
-    padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer;
-    border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none;
-  }
+  .tabs-bar { background: var(--navy-mid); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; padding: 0 48px; gap: 4px; overflow-x: auto; }
+  .tab { padding: 14px 20px; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; user-select: none; }
   .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
   .tab:hover:not(.active) { color: var(--white); }
 
-  .content-wrap {
-    max-width: 1200px; margin: 0 auto; padding: 36px 32px;
-    display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start;
-  }
+  .content-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  .card {
-    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px; padding: 24px; margin-bottom: 22px;
-  }
-  .card-title {
-    font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px;
-    display: flex; align-items: center; gap: 8px;
-  }
+  .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin-bottom: 22px; }
+  .card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
   .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .info-chip {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 10px; padding: 10px 14px; font-size: 0.78rem;
-  }
-  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
-  .info-chip .val { font-weight: 600; color: var(--white); }
 
   .course-block { margin-bottom: 26px; }
   .course-block:last-child { margin-bottom: 0; }
-  .course-type-label {
-    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border);
-    border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px;
-  }
-  .course-row {
-    display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px;
-    align-items: center; padding: 11px 14px; border-radius: 10px;
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-    margin-bottom: 8px; transition: background 0.2s;
-  }
+  .course-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--tag-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; display: inline-block; margin-bottom: 14px; }
+  .course-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; transition: background 0.2s; }
   .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
   .course-name { font-size: 0.82rem; font-weight: 500; }
   .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
@@ -221,151 +98,83 @@
   .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
   .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
   .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
-  .tag-gate { background: rgba(159,122,234,0.15); color: #b794f4; border: 1px solid rgba(159,122,234,0.25); }
-  .tag-elite { background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid var(--border); }
+
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; cursor: default; }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
 
   .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .fac-item {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem;
-    transition: all 0.2s;
-  }
+  .fac-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; text-align: center; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
   .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
   .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
 
-  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
-
-  .research-item {
-    display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px;
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 10px; margin-bottom: 8px; font-size: 0.8rem; transition: all 0.2s;
-  }
-  .research-item:hover { border-color: var(--border); background: rgba(245,166,35,0.04); }
-  .research-icon { font-size: 1.2rem; flex-shrink: 0; }
-
-  .phd-category { margin-bottom: 14px; }
-  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
-  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .phd-tag {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted);
-  }
-
-  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
-  .recruiter-tag {
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500;
-    transition: all 0.2s;
-  }
-  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
-
-  .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 18px; }
-  .stat-box {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 16px; text-align: center;
-  }
-  .stat-box .s-val { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
-  .stat-box .s-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-
-  .timeline { position: relative; padding-left: 28px; }
-  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
-  .tl-item { position:relative; margin-bottom:20px; }
-  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--card-bg); }
-  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
-  .tl-desc { font-size:0.75rem; color:var(--muted); line-height: 1.6; }
-
-  .rank-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
-  .rank-table th {
-    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
-    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
-    text-align: left; border-bottom: 1px solid var(--border);
-  }
-  .rank-table td {
-    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: var(--muted); vertical-align: middle;
-  }
-  .rank-table tr:last-child td { border-bottom: none; }
-  .rank-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
-  .rank-table td:first-child { color: var(--white); font-weight: 500; }
-  .rank-1 { color: var(--gold) !important; font-weight: 700; font-size: 1rem; }
-  .rank-top { color: var(--accent-green) !important; font-weight: 600; }
-  .rank-mid { color: var(--accent-blue) !important; font-weight: 600; }
-
-  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
-  .cutoff-table th {
-    background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem;
-    text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px;
-    text-align: left; border-bottom: 1px solid var(--border);
-  }
-  .cutoff-table td {
-    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: var(--muted); vertical-align: middle;
-  }
-  .cutoff-table tr:last-child td { border-bottom: none; }
-  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
-  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
-  .level-very-high { color: #fc8181 !important; font-weight: 700; }
-  .level-high { color: #f6ad55 !important; font-weight: 600; }
-  .level-moderate { color: var(--accent-green) !important; font-weight: 600; }
-
-  .sidebar-card {
-    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px; padding: 22px; margin-bottom: 20px;
-  }
-  .sidebar-title {
-    font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px;
-    text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .key-val {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem;
-  }
+  .sidebar-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .key-val { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
   .key-val:last-child { border-bottom: none; }
   .key-val .k { color: var(--muted); }
   .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 60%; }
   .v-gold { color: var(--gold) !important; }
-  .v-green { color: var(--accent-green) !important; }
-  .v-blue { color: var(--accent-blue) !important; }
-  .v-purple { color: #b794f4 !important; }
 
   .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
   .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
   .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
   .exam-table tr:last-child td { border-bottom: none; }
 
-  .cta-btn {
-    display: block; width: 100%; padding: 12px; border-radius: 10px; border: none;
-    font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px;
-    transition: all 0.2s; font-family: 'Poppins', sans-serif;
-  }
+  .cta-btn { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
   .cta-primary { background: var(--gold); color: var(--navy); }
   .cta-primary:hover { background: var(--gold-light); }
   .cta-primary.added { background: var(--accent-green); color: var(--white); }
   .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
   .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
 
-  .campus-section { margin-bottom: 22px; }
-  .campus-section-title { font-size: 0.78rem; font-weight: 600; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
-  .event-list { display: flex; flex-direction: column; gap: 8px; }
-  .event-item { display: flex; align-items: flex-start; gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; }
-  .event-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
 
-  .cutoff-note {
-    background: rgba(99,179,237,0.08); border: 1px solid rgba(99,179,237,0.2);
-    border-radius: 10px; padding: 12px 16px; font-size: 0.75rem; color: #90cdf4;
-    margin-top: 14px; line-height: 1.6;
-  }
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: var(--muted); }
 
-  .modal-overlay {
-    position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
-    z-index:999; display:none; align-items:center; justify-content:center;
-  }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th { background: rgba(245,166,35,0.1); color: var(--gold); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  .cutoff-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--muted); vertical-align: middle; }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-high { color: #fc8181 !important; font-weight: 600; }
+  .level-moderate { color: #f6ad55 !important; font-weight: 600; }
+  .level-low { color: var(--accent-green) !important; font-weight: 600; }
+  .cutoff-note { background: rgba(99,179,237,0.08); border: 1px solid rgba(99,179,237,0.2); border-radius: 10px; padding: 12px 16px; font-size: 0.75rem; color: #90cdf4; margin-top: 14px; line-height: 1.6; }
+  .cutoff-branch-head { font-size: 0.78rem; font-weight: 700; color: var(--white); background: rgba(245,166,35,0.08); border-left: 3px solid var(--gold); padding: 8px 14px; margin: 18px 0 0 0; border-radius: 0 6px 6px 0; }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:999; display:none; align-items:center; justify-content:center; }
   .modal-overlay.open { display:flex; }
-  .modal {
-    background:var(--navy-card); border:1px solid var(--border); border-radius:20px;
-    padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease;
-  }
+  .modal { background:var(--navy-card); border:1px solid var(--border); border-radius:20px; padding:32px; max-width:360px; width:90%; text-align:center; animation: fadeDown 0.2s ease; }
   .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
   .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
   .modal-btns { display:flex; gap:10px; }
@@ -373,34 +182,16 @@
   .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
   .modal-confirm { background:#f56565; color:var(--white); }
 
-  .research-highlight {
-    background: linear-gradient(135deg, rgba(159,122,234,0.1) 0%, rgba(99,179,237,0.08) 100%);
-    border: 1px solid rgba(159,122,234,0.25); border-radius: 12px; padding: 16px;
-    margin-bottom: 14px;
-  }
-  .research-highlight .rh-title { font-size: 0.78rem; font-weight: 700; color: #b794f4; margin-bottom: 6px; }
-  .research-highlight .rh-val { font-size: 1.1rem; font-weight: 700; color: var(--white); }
-  .research-highlight .rh-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
-
   @media (max-width: 768px) {
     .content-wrap { grid-template-columns: 1fr; }
     .hero { padding: 24px 20px; }
     .tabs-bar { padding: 0 16px; }
     .facility-grid { grid-template-columns: repeat(2,1fr); }
     .grid-3 { grid-template-columns: 1fr 1fr; }
-    .stat-row { grid-template-columns: 1fr 1fr; }
-    nav { padding: 0 8px; gap: 4px; }
-    .nav-logo { font-size: 0.9rem; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    nav { padding: 0 8px; }
+    .nav-logo { font-size: 0.85rem; }
     .nav-btn { padding: 4px 8px; font-size: 0.65rem; }
-  }
-  @media (max-width: 768px) {
-    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
-    .nav-logo { font-size: 0.85rem; gap: 4px; }
-    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
-    .nav-right { gap: 4px; flex-shrink: 0; }
-    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
-    #streamBtn span { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
-    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
   }
   @media (max-width: 768px) {
   nav {
@@ -452,7 +243,6 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
   <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
@@ -468,7 +258,6 @@
         <div class="stream-opt active" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
         <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
         <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
-        <div class="stream-opt" onclick="selectStream(this,'Medical &amp; Health Sciences','🏥')">🏥 Medical &amp; Health Sciences</div>
       </div>
     </div>
     <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
@@ -480,381 +269,340 @@
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-ring3"></div>
   <div class="breadcrumb">
     <a onclick="showToast('🏠','Home')">Home</a> ›
     <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
-    University of Mysore, Mysuru
+    University of Mysore
   </div>
   <div class="uni-header">
     <div class="uni-logo">🏛️</div>
     <div class="uni-title">
-      <h1>University of <span>Mysore, Mysuru</span></h1>
+      <h1>University of <span>Mysore</span></h1>
       <div class="uni-meta">
         <span class="meta-chip"><strong>Mysuru, Karnataka</strong></span>
-        <span class="meta-chip">🏛️ <strong>State University (Karnataka)</strong></span>
+        <span class="meta-chip">🏛️ <strong>State University</strong></span>
         <span class="meta-chip">📅 Est. <strong>1916</strong></span>
-        <span class="meta-chip">🏷️ <strong>UoM / Manasagangotri</strong></span>
+        <span class="meta-chip">🏅 <strong>NAAC – A+ Grade</strong></span>
         <span class="meta-chip clickable" onclick="window.open('https://uni-mysore.ac.in/','_blank')">🌐 <strong>uni-mysore.ac.in ↗</strong></span>
       </div>
     </div>
   </div>
   <div class="hero-badges">
-    <div class="hero-badge hb-naac">
-      <span class="label">NAAC</span>
-      <span class="value">A+ Grade</span>
-    </div>
-    <div class="hero-badge hb-rank">
-      <span class="label">NIRF 2024</span>
-      <span class="value">#51–75</span>
-    </div>
-    <div class="hero-badge hb-institute">
-      <span class="label">Campus Area</span>
-      <span class="value">~700 Acres</span>
-    </div>
-    <div class="hero-badge hb-research">
-      <span class="label">Status</span>
-      <span class="value">Heritage University</span>
-    </div>
-  </div>
-  <div class="elite-strip">
-    <span class="elite-badge">Oldest University in Karnataka</span>
-    <span class="elite-badge blue">NAAC A+ Accredited</span>
-    <span class="elite-badge green">Affiliating University – 200+ Colleges</span>
-    <span class="elite-badge purple">UGC Category-I University</span>
-    <span class="elite-badge">NIRF Ranked – University Category</span>
-    <span class="elite-badge blue">State University Est. 1916</span>
+    <div class="hero-badge hb-naac"><span class="label">Accreditation</span><span class="value">NAAC A+</span></div>
+    <div class="hero-badge hb-central"><span class="label">Campus Area</span><span class="value">~750 Acres</span></div>
+    <div class="hero-badge hb-campus"><span class="label">Est. Year</span><span class="value">1916</span></div>
   </div>
 </div>
 
 <!-- TABS -->
 <div class="tabs-bar">
   <div class="tab active" onclick="switchTab(0,this)">Overview</div>
-  <div class="tab" onclick="switchTab(1,this)">UG Programs</div>
-  <div class="tab" onclick="switchTab(2,this)">PG Programs</div>
-  <div class="tab" onclick="switchTab(3,this)">PhD / Research</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
   <div class="tab" onclick="switchTab(4,this)">Admissions</div>
   <div class="tab" onclick="switchTab(5,this)">Placements</div>
   <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
-  <div class="tab" onclick="switchTab(7,this)">Rankings &amp; Cut-Off</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
 </div>
 
-<!-- CONTENT -->
 <div class="content-wrap">
   <div>
 
     <!-- TAB 0: OVERVIEW -->
     <div class="tab-panel active" id="panel-0">
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>Basic Information</div>
         <div class="grid-3">
           <div class="info-chip"><div class="lbl">Established</div><div class="val">1916</div></div>
-          <div class="info-chip"><div class="lbl">Type</div><div class="val">State University (Karnataka)</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State University</div></div>
           <div class="info-chip"><div class="lbl">Location</div><div class="val">Mysuru, Karnataka</div></div>
-          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC / AICTE / Govt. of Karnataka</div></div>
-          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~700 Acres (Manasagangotri)</div></div>
-          <div class="info-chip"><div class="lbl">NIRF Rank</div><div class="val" style="color:var(--gold);">#51–75 University (2024)</div></div>
-          <div class="info-chip"><div class="lbl">Departments</div><div class="val">43 PG Departments</div></div>
-          <div class="info-chip"><div class="lbl">Affiliated Colleges</div><div class="val">200+ Colleges</div></div>
-          <div class="info-chip"><div class="lbl">Status</div><div class="val" style="color:var(--accent-green);">UGC Category-I University</div></div>
+          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC – A+ Grade</div></div>
+          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~750 Acres</div></div>
+          <div class="info-chip"><div class="lbl">Affiliating University</div><div class="val">550+ Affiliated Colleges</div></div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>About University of Mysore</div>
-        <p style="font-size:0.82rem;color:var(--muted);line-height:1.8;">
-          The <strong style="color:var(--white);">University of Mysore</strong>, established in <strong style="color:var(--white);">1916</strong> by the erstwhile Mysore Maharaja <strong style="color:var(--white);">Krishnaraja Wadiyar IV</strong>, is the sixth oldest university in India and the oldest in Karnataka. Located on the picturesque <strong style="color:var(--white);">Manasagangotri campus</strong> spanning ~700 acres in Mysuru — the cultural capital of Karnataka — it is one of India's most scenic and heritage-rich universities. Accredited with <strong style="color:var(--white);">NAAC A+ Grade</strong> and recognized as a <strong style="color:var(--white);">UGC Category-I University</strong>, UoM offers a comprehensive range of programs across <strong style="color:var(--white);">Arts, Science, Commerce, Law, Education, Engineering, and Management</strong>. It houses <strong style="color:var(--white);">43 postgraduate departments</strong> and serves as the affiliating university for over <strong style="color:var(--white);">200 colleges</strong> across the Mysuru, Mandya, Chamarajanagar, and Kodagu districts. The university is celebrated for its <strong style="color:var(--white);">vibrant research culture</strong>, rich cultural heritage, and deep academic tradition in humanities and sciences.
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          University of Mysore (UoM), established in <strong style="color:var(--white);">1916</strong>, is one of the oldest and most prestigious universities in India, situated in the culturally rich city of <strong style="color:var(--white);">Mysuru, Karnataka</strong>. It is a <strong style="color:var(--white);">State University</strong> recognized by the University Grants Commission (UGC) and accredited with <strong style="color:var(--white);">NAAC A+ grade</strong>. Spread over a magnificent <strong style="color:var(--white);">750-acre</strong> campus that includes the stunning Manasagangothri campus with iconic Gothic architecture, it is home to 40+ postgraduate departments and research centres spanning Arts, Science, Commerce, Law, Management, and Education. The university has over <strong style="color:var(--white);">550 affiliated colleges</strong> across 4 districts of Karnataka. UoM is celebrated for its heritage, academic excellence, and contribution to regional and national education for over a century.
         </p>
       </div>
-
-      <!-- Research Highlights -->
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Research &amp; Innovation Highlights</div>
-        <div class="grid-2" style="margin-bottom:14px;">
-          <div class="research-highlight">
-            <div class="rh-title">Annual Research Publications</div>
-            <div class="rh-val">1,200+</div>
-            <div class="rh-sub">Indexed Journals &amp; Conferences / Year</div>
-          </div>
-          <div class="research-highlight">
-            <div class="rh-title">Active Patents</div>
-            <div class="rh-val">80+</div>
-            <div class="rh-sub">Granted Indian &amp; International Patents</div>
-          </div>
-          <div class="research-highlight">
-            <div class="rh-title">PhD Scholars (Active)</div>
-            <div class="rh-val">2,000+</div>
-            <div class="rh-sub">Pursuing Research Across All Departments</div>
-          </div>
-          <div class="research-highlight">
-            <div class="rh-title">Research Funding</div>
-            <div class="rh-val">₹50+ Cr</div>
-            <div class="rh-sub">DST, UGC, ICMR, DBT &amp; Govt. Grants</div>
-          </div>
-        </div>
-        <div class="event-list">
-          <div class="event-item"><span class="event-icon">🌿</span><div><strong>Biodiversity &amp; Environmental Sciences</strong> — Nationally recognized research in natural resource management, ecology, and environmental chemistry</div></div>
-          <div class="event-item"><span class="event-icon">🧬</span><div><strong>Life Sciences &amp; Biochemistry</strong> — Strong tradition in biochemistry, microbiology, biotechnology, and food science research</div></div>
-          <div class="event-item"><span class="event-icon">📜</span><div><strong>Humanities &amp; Social Sciences</strong> — Premier research in Kannada literature, history, linguistics, philosophy, and folklore studies</div></div>
-          <div class="event-item"><span class="event-icon">⚗️</span><div><strong>Chemistry &amp; Materials Science</strong> — Active research in synthetic chemistry, nano-materials, and applied chemistry</div></div>
-          <div class="event-item"><span class="event-icon">💻</span><div><strong>Computer Science &amp; Electronics</strong> — Emerging research in artificial intelligence, data science, and VLSI design</div></div>
-        </div>
-      </div>
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>Campus Facilities</div>
         <div class="facility-grid">
-          <div class="fac-item"><div class="fac-icon">📚</div>Central Library (B.M. Sri Library)</div>
-          <div class="fac-item"><div class="fac-icon">🔬</div>Advanced Research Laboratories</div>
-          <div class="fac-item"><div class="fac-icon">🖥️</div>Central Computing Facility</div>
-          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex &amp; Grounds</div>
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centres</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Ground</div>
+          <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
           <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
-          <div class="fac-item"><div class="fac-icon">🎭</div>Crawford Hall / Auditorium</div>
-          <div class="fac-item"><div class="fac-icon">🩺</div>University Health Centre</div>
-          <div class="fac-item"><div class="fac-icon">☕</div>Multiple Cafeterias &amp; Canteens</div>
-          <div class="fac-item"><div class="fac-icon">🌿</div>Heritage Green Campus</div>
-          <div class="fac-item"><div class="fac-icon">🚌</div>Campus Bus Service</div>
-          <div class="fac-item"><div class="fac-icon">💡</div>Innovation &amp; Incubation Centre</div>
-          <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security</div>
+          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏦</div>Banks &amp; ATM</div>
+          <div class="fac-item"><div class="fac-icon">🎭</div>Cultural Auditorium</div>
         </div>
-
         <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
         <div class="hostel-grid">
-          <div class="hostel-item"><span>🏠</span> Multiple Boys Hostels</div>
-          <div class="hostel-item"><span>🏡</span> Girls Hostels (Separate Blocks)</div>
-          <div class="hostel-item"><span>📶</span> Wi-Fi Enabled Campus</div>
-          <div class="hostel-item"><span>🍽️</span> Subsidized Dining Facilities</div>
-          <div class="hostel-item"><span>📖</span> Reading Rooms &amp; Common Areas</div>
-          <div class="hostel-item"><span>🏆</span> Sports &amp; Recreational Facilities</div>
-          <div class="hostel-item"><span>🩺</span> On-Campus Health Centre</div>
-          <div class="hostel-item"><span>🌿</span> Lush Green Heritage Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Campus</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Canteen &amp; Mess</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">📹</span> 24×7 Security</div>
+          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+          <div class="hostel-item"><span class="hostel-icon">🚌</span> Transport Facility</div>
         </div>
         <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
           <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
-          <span style="color:var(--muted);"> ₹5,000 – ₹20,000/year (hostel) + Mess charges vary · Highly subsidized accommodation for SC/ST and meritorious students · Fellowship holders get priority</span>
+          <span style="color:var(--muted);"> Seat Rent ₹5,000–15,000/semester + Mess ₹10,000–18,000/semester | Total Annual: ₹30,000 – ₹60,000</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Why University of Mysore?</div>
+        <div class="phd-tags">
+          <span class="phd-tag">100+ Years of Academic Legacy</span>
+          <span class="phd-tag">NAAC A+ Grade</span>
+          <span class="phd-tag">550+ Affiliated Colleges</span>
+          <span class="phd-tag">Iconic Heritage Campus</span>
+          <span class="phd-tag">Affordable Quality Education</span>
+          <span class="phd-tag">Strong Arts &amp; Science Programs</span>
+          <span class="phd-tag">Excellent Research Facilities</span>
+          <span class="phd-tag">UGC Recognized</span>
+          <span class="phd-tag">Rich Cultural Heritage</span>
         </div>
       </div>
     </div>
 
-    <!-- TAB 1: UG PROGRAMS -->
+    <!-- TAB 1: UG COURSES -->
     <div class="tab-panel" id="panel-1">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>UG Programs</div>
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
 
-        <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;font-size:0.8rem;color:var(--muted);line-height:1.7;">
-          <strong style="color:var(--gold);">Note:</strong> UG programs at the University of Mysore are primarily offered through its <strong style="color:var(--white);">affiliated colleges</strong>. The university campus directly offers UG programs in select departments. Admission to affiliated colleges follows Karnataka-level processes (DCET, KEA, etc.).
+        <div class="course-block">
+          <span class="course-type-label">B.A. · 3 Years · UGCET / Merit · ₹10K–30K Total</span>
+          <div class="course-row"><div class="course-name">B.A. History</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. Political Science</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. Economics</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. Sociology</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. English Literature</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. Kannada</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. Psychology</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. Sanskrit</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div class="course-row"><div class="course-name">B.A. Journalism &amp; Mass Communication</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–30K Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 (PUC) from recognized board · Admission: UGCET / Merit basis</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Bachelor of Arts (BA) · 3 Years · Merit-Based</span>
-          <div class="course-row"><div class="course-name">BA – Kannada / Hindi / English Literature</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5K – ₹15K/yr</span></div>
-          <div class="course-row"><div class="course-name">BA – History, Economics, Political Science</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5K – ₹15K/yr</span></div>
-          <div class="course-row"><div class="course-name">BA – Sociology, Philosophy, Psychology</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5K – ₹15K/yr</span></div>
+          <span class="course-type-label">B.Sc. · 3 Years · UGCET / Merit · ₹15K–40K Total</span>
+          <div class="course-row"><div class="course-name">B.Sc. Physics</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Chemistry</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Mathematics</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Botany</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Zoology</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Computer Science</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Biotechnology</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Electronics</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Sc. Statistics</div><div class="course-meta"><strong>UGCET/Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹15–40K Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with relevant Science stream · Admission: UGCET / Merit basis</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Bachelor of Science (BSc) · 3 Years · Merit-Based</span>
-          <div class="course-row"><div class="course-name">BSc – Physics, Chemistry, Mathematics</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹8K – ₹20K/yr</span></div>
-          <div class="course-row"><div class="course-name">BSc – Botany, Zoology, Microbiology</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹8K – ₹20K/yr</span></div>
-          <div class="course-row"><div class="course-name">BSc – Computer Science, Electronics</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10K – ₹25K/yr</span></div>
-          <div class="course-row"><div class="course-name">BSc – Biochemistry, Biotechnology, Food Science</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10K – ₹25K/yr</span></div>
+          <span class="course-type-label">B.Com. · 3 Years · Merit · ₹10K–25K Total</span>
+          <div class="course-row"><div class="course-name">B.Com. General</div><div class="course-meta"><strong>Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–25K Total</span></div>
+          <div class="course-row"><div class="course-name">B.Com. Computer Applications</div><div class="course-meta"><strong>Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10–25K Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Commerce / any stream · Admission: Merit basis</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Bachelor of Commerce (BCom) · 3 Years · Merit-Based</span>
-          <div class="course-row"><div class="course-name">BCom – General / Computer Applications</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹5K – ₹15K/yr</span></div>
+          <span class="course-type-label">B.B.A. / BBA TTM · 3 Years · Merit · ₹30K–60K Total</span>
+          <div class="course-row"><div class="course-name">Bachelor of Business Administration (BBA)</div><div class="course-meta"><strong>Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹30–60K Total</span></div>
+          <div class="course-row"><div class="course-name">BBA (Tourism &amp; Travel Management)</div><div class="course-meta"><strong>Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹30–60K Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 any stream · Admission: Merit basis</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Bachelor of Education (BEd) · 2 Years · PGCET / Merit</span>
-          <div class="course-row"><div class="course-name">BEd – General Education</div><div class="course-meta"><strong>PGCET</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹15K – ₹40K/yr</span></div>
+          <span class="course-type-label">B.C.A. · 3 Years · Merit · ₹25K–50K Total</span>
+          <div class="course-row"><div class="course-name">Bachelor of Computer Applications (BCA)</div><div class="course-meta"><strong>Merit</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹25–50K Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Math / Science · Admission: Merit basis</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Bachelor of Law (LLB) · 3 Years · KLEE / Merit</span>
-          <div class="course-row"><div class="course-name">LLB – 3-Year Law Program (Post-Graduation)</div><div class="course-meta"><strong>KLEE</strong>Entrance</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹10K – ₹30K/yr</span></div>
+          <span class="course-type-label">LL.B. (5-Year Integrated) · CLAT / KLEE · ₹30K–60K Total</span>
+          <div class="course-row"><div class="course-name">B.A. LL.B. (Hons.) – 5 Year Integrated</div><div class="course-meta"><strong>CLAT/KLEE</strong>Entrance</div><div class="course-meta"><strong>5 Yrs</strong>Duration</div><span class="tag tag-fees">₹30–60K Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 any stream · Admission: CLAT / KLEE Score</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Integrated / Honors Programs · 5 Years</span>
-          <div class="course-row"><div class="course-name">BA LLB (Integrated) – 5 Years</div><div class="course-meta"><strong>KLEE</strong>Entrance</div><div class="course-meta"><strong>5 Yrs</strong>Duration</div><span class="tag tag-fees">₹15K – ₹35K/yr</span></div>
-          <div class="course-row"><div class="course-name">BSc (Hons) – Special Programs (Select Depts.)</div><div class="course-meta"><strong>Merit</strong>Based</div><div class="course-meta"><strong>3 Yrs</strong>Duration</div><span class="tag tag-fees">₹8K – ₹20K/yr</span></div>
+          <span class="course-type-label">B.Ed. · 2 Years · KSET/Merit · ₹20K–45K Total</span>
+          <div class="course-row"><div class="course-name">Bachelor of Education (B.Ed.)</div><div class="course-meta"><strong>Merit</strong>Entrance</div><div class="course-meta"><strong>2 Yrs</strong>Duration</div><span class="tag tag-fees">₹20–45K Total</span></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: Any Graduation with 50% · Admission: Merit basis</div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: PG PROGRAMS -->
+    <!-- TAB 2: PG COURSES -->
     <div class="tab-panel" id="panel-2">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>PG Programs</div>
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
 
         <div class="course-block">
-          <span class="course-type-label">Master of Arts (MA) · 2 Years · PGCET / Merit</span>
-          <div class="phd-tags" style="margin-bottom:8px;">
-            <span class="phd-tag">MA – Kannada</span>
-            <span class="phd-tag">MA – Hindi</span>
-            <span class="phd-tag">MA – English</span>
-            <span class="phd-tag">MA – Sanskrit</span>
-            <span class="phd-tag">MA – Urdu</span>
-            <span class="phd-tag">MA – Tamil</span>
-            <span class="phd-tag">MA – History</span>
-            <span class="phd-tag">MA – Economics</span>
-            <span class="phd-tag">MA – Political Science</span>
-            <span class="phd-tag">MA – Sociology</span>
-            <span class="phd-tag">MA – Philosophy</span>
-            <span class="phd-tag">MA – Psychology</span>
-            <span class="phd-tag">MA – Public Administration</span>
-            <span class="phd-tag">MA – Folklore Studies</span>
-            <span class="phd-tag">MA – Music</span>
+          <span class="course-type-label">M.A. · 2 Years · PGCET / Entrance · ₹15K–50K</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.A. History</span>
+            <span class="phd-tag">M.A. Political Science</span>
+            <span class="phd-tag">M.A. Economics</span>
+            <span class="phd-tag">M.A. Sociology</span>
+            <span class="phd-tag">M.A. English Literature</span>
+            <span class="phd-tag">M.A. Kannada</span>
+            <span class="phd-tag">M.A. Sanskrit</span>
+            <span class="phd-tag">M.A. Psychology</span>
+            <span class="phd-tag">M.A. Folklore</span>
+            <span class="phd-tag">M.A. Journalism &amp; Mass Communication</span>
+            <span class="phd-tag">M.A. Social Work</span>
+            <span class="phd-tag">M.A. Education</span>
           </div>
-          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: BA / BCom / BSc in relevant field · Admission: PGCET (Karnataka) / Merit-based · Fee: ₹10,000 – ₹30,000/year</div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Relevant UG Degree with 50% · Admission: PGCET / Entrance Test</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Master of Science (MSc) · 2 Years · PGCET / JAM</span>
-          <div class="phd-tags" style="margin-bottom:8px;">
-            <span class="phd-tag">MSc – Physics</span>
-            <span class="phd-tag">MSc – Chemistry</span>
-            <span class="phd-tag">MSc – Mathematics</span>
-            <span class="phd-tag">MSc – Statistics</span>
-            <span class="phd-tag">MSc – Computer Science</span>
-            <span class="phd-tag">MSc – Electronics</span>
-            <span class="phd-tag">MSc – Botany</span>
-            <span class="phd-tag">MSc – Zoology</span>
-            <span class="phd-tag">MSc – Biochemistry</span>
-            <span class="phd-tag">MSc – Microbiology</span>
-            <span class="phd-tag">MSc – Biotechnology</span>
-            <span class="phd-tag">MSc – Environmental Science</span>
-            <span class="phd-tag">MSc – Food Technology</span>
-            <span class="phd-tag">MSc – Geology</span>
-            <span class="phd-tag">MSc – Geography</span>
+          <span class="course-type-label">M.Sc. · 2 Years · PGCET / Entrance · ₹20K–60K</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.Sc. Physics</span>
+            <span class="phd-tag">M.Sc. Chemistry</span>
+            <span class="phd-tag">M.Sc. Mathematics</span>
+            <span class="phd-tag">M.Sc. Botany</span>
+            <span class="phd-tag">M.Sc. Zoology</span>
+            <span class="phd-tag">M.Sc. Computer Science</span>
+            <span class="phd-tag">M.Sc. Biotechnology</span>
+            <span class="phd-tag">M.Sc. Electronics</span>
+            <span class="phd-tag">M.Sc. Statistics</span>
+            <span class="phd-tag">M.Sc. Biochemistry</span>
+            <span class="phd-tag">M.Sc. Microbiology</span>
+            <span class="phd-tag">M.Sc. Environmental Science</span>
           </div>
-          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: BSc / B.Tech in relevant field · Admission: PGCET / IIT JAM / Departmental Entrance · Fee: ₹15,000 – ₹40,000/year</div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Sc. in relevant subject · Admission: PGCET / Entrance Test</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Master of Commerce (MCom) · 2 Years · PGCET</span>
-          <div class="phd-tags" style="margin-bottom:8px;">
-            <span class="phd-tag">MCom – Commerce</span>
-            <span class="phd-tag">MCom – Finance &amp; Taxation</span>
+          <span class="course-type-label">M.Com. · 2 Years · PGCET / Merit · ₹15K–35K</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">M.Com. (General)</span>
+            <span class="phd-tag">M.Com. (Finance &amp; Accounting)</span>
           </div>
-          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: BCom / BBA · Admission: PGCET / Merit · Fee: ₹10,000 – ₹20,000/year</div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Com. / BBA · Admission: PGCET / Merit</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">MBA – Management · 2 Years · PGCET / KMAT / CAT</span>
-          <div class="phd-tags" style="margin-bottom:8px;">
-            <span class="phd-tag">MBA – Business Administration</span>
-            <span class="phd-tag">MBA – Tourism Administration</span>
+          <span class="course-type-label">MBA · 2 Years · PGCET / KMAT / CAT · ₹80K–1.5L</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">MBA – General Management</span>
+            <span class="phd-tag">MBA – Human Resource Management</span>
+            <span class="phd-tag">MBA – Finance</span>
+            <span class="phd-tag">MBA – Marketing</span>
+            <span class="phd-tag">MBA – Tourism Management</span>
           </div>
-          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Any Graduate · Admission: PGCET / KMAT / CAT · Fee: ₹40,000 – ₹90,000/year</div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Any Graduation with 50% · Admission: PGCET / KMAT / CAT</div>
         </div>
 
         <div class="course-block">
-          <span class="course-type-label">Other PG Programs</span>
-          <div class="phd-tags" style="margin-bottom:8px;">
-            <span class="phd-tag">MCA – Computer Applications</span>
-            <span class="phd-tag">MEd – Education</span>
-            <span class="phd-tag">LLM – Law (Constitutional / Corporate Law)</span>
-            <span class="phd-tag">MLib – Library &amp; Information Science</span>
-            <span class="phd-tag">MSW – Social Work</span>
-            <span class="phd-tag">MPA – Performing Arts</span>
-            <span class="phd-tag">MVA – Visual Arts</span>
-            <span class="phd-tag">MSc – Yoga &amp; Naturopathy</span>
+          <span class="course-type-label">M.C.A. · 3 Years · PGCET · ₹40K–80K</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Master of Computer Applications (MCA)</span>
           </div>
-          <div style="font-size:0.73rem;color:var(--muted);">Admission: PGCET / Relevant Entrance / Direct Merit · Fees vary by program</div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: BCA / B.Sc. (CS/Maths) / BBA (IT) · Admission: PGCET</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">LL.M. · 1–2 Years · Entrance Test · ₹20K–50K</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">LL.M. – Constitutional Law</span>
+            <span class="phd-tag">LL.M. – Business Law</span>
+            <span class="phd-tag">LL.M. – International Law</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: LL.B. / BA LL.B. with 50% · Admission: Entrance Test</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Lib.Sc. · 1 Year · Merit · ₹15K–30K</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Master of Library &amp; Information Science (M.Lib.Sc.)</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Lib.Sc. or relevant UG Degree · Admission: Merit basis</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Ed. · 2 Years · Entrance · ₹25K–50K</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Master of Education (M.Ed.)</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Ed. with 50% · Admission: Entrance Test</div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 3: PhD / RESEARCH -->
+    <!-- TAB 3: PhD -->
     <div class="tab-panel" id="panel-3">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>PhD Programs — Research Areas</div>
-
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
         <div class="phd-category">
           <div class="phd-cat-label">Arts &amp; Humanities</div>
           <div class="phd-tags">
-            <span class="phd-tag">Kannada Literature &amp; Linguistics</span>
-            <span class="phd-tag">English Literature</span>
-            <span class="phd-tag">Hindi</span>
-            <span class="phd-tag">Sanskrit Studies</span>
-            <span class="phd-tag">Urdu</span>
-            <span class="phd-tag">History &amp; Archaeology</span>
-            <span class="phd-tag">Philosophy</span>
-            <span class="phd-tag">Music &amp; Fine Arts</span>
-            <span class="phd-tag">Folklore Studies</span>
-          </div>
-        </div>
-
-        <div class="phd-category">
-          <div class="phd-cat-label">Social Sciences</div>
-          <div class="phd-tags">
-            <span class="phd-tag">Sociology</span>
-            <span class="phd-tag">Economics</span>
+            <span class="phd-tag">Kannada</span>
+            <span class="phd-tag">English</span>
+            <span class="phd-tag">Sanskrit</span>
+            <span class="phd-tag">History</span>
             <span class="phd-tag">Political Science</span>
+            <span class="phd-tag">Sociology</span>
             <span class="phd-tag">Psychology</span>
-            <span class="phd-tag">Public Administration</span>
-            <span class="phd-tag">Social Work</span>
-            <span class="phd-tag">Women's Studies</span>
-            <span class="phd-tag">Library &amp; Information Science</span>
+            <span class="phd-tag">Folklore</span>
+            <span class="phd-tag">Journalism &amp; Mass Communication</span>
           </div>
         </div>
-
         <div class="phd-category">
-          <div class="phd-cat-label">Natural Sciences</div>
+          <div class="phd-cat-label">Sciences</div>
           <div class="phd-tags">
             <span class="phd-tag">Physics</span>
             <span class="phd-tag">Chemistry</span>
             <span class="phd-tag">Mathematics</span>
-            <span class="phd-tag">Statistics</span>
-            <span class="phd-tag">Geology</span>
-            <span class="phd-tag">Geography</span>
-            <span class="phd-tag">Environmental Sciences</span>
-          </div>
-        </div>
-
-        <div class="phd-category">
-          <div class="phd-cat-label">Life Sciences &amp; Applied Sciences</div>
-          <div class="phd-tags">
-            <span class="phd-tag">Biochemistry</span>
-            <span class="phd-tag">Microbiology</span>
-            <span class="phd-tag">Biotechnology</span>
-            <span class="phd-tag">Zoology</span>
             <span class="phd-tag">Botany</span>
-            <span class="phd-tag">Food Science &amp; Nutrition</span>
-            <span class="phd-tag">Sericulture</span>
-          </div>
-        </div>
-
-        <div class="phd-category">
-          <div class="phd-cat-label">Technology &amp; Commerce</div>
-          <div class="phd-tags">
+            <span class="phd-tag">Zoology</span>
+            <span class="phd-tag">Biochemistry</span>
+            <span class="phd-tag">Biotechnology</span>
             <span class="phd-tag">Computer Science</span>
-            <span class="phd-tag">Electronics</span>
-            <span class="phd-tag">Commerce &amp; Management</span>
-            <span class="phd-tag">Law (Constitutional / Corporate)</span>
-            <span class="phd-tag">Education</span>
-            <span class="phd-tag">Physical Education</span>
+            <span class="phd-tag">Statistics</span>
+            <span class="phd-tag">Environmental Science</span>
+            <span class="phd-tag">Microbiology</span>
           </div>
         </div>
-
-        <div style="margin-top:14px;background:rgba(159,122,234,0.08);border:1px solid rgba(159,122,234,0.25);border-radius:10px;padding:16px;">
-          <div style="font-size:0.78rem;font-weight:600;color:#b794f4;margin-bottom:10px;">PhD Eligibility &amp; Admission</div>
-          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree (Relevant Field)</span></div>
-          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">55%+ in PG (50% for SC/ST)</span></div>
-          <div class="key-val"><span class="k">Entrance</span><span class="v">UoM Research Entrance Test (RET) / UGC-NET / SLET</span></div>
-          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">Written Test + Research Interview</span></div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Commerce, Management &amp; Law</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Commerce</span>
+            <span class="phd-tag">Business Administration</span>
+            <span class="phd-tag">Tourism Studies</span>
+            <span class="phd-tag">Law</span>
+          </div>
         </div>
-
+        <div class="phd-category">
+          <div class="phd-cat-label">Education &amp; Library Science</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Education</span>
+            <span class="phd-tag">Library &amp; Information Science</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree with 55%+ Marks</span></div>
+          <div class="key-val"><span class="k">Entrance Requirement</span><span class="v">UoM PhD Entrance Test / NET / SLET</span></div>
+          <div class="key-val"><span class="k">Selection Process</span><span class="v">Written Test + Interview</span></div>
+          <div class="key-val" style="border:none"><span class="k">Fellowship</span><span class="v">UGC / CSIR (for eligible scholars)</span></div>
+        </div>
         <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
-          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Fellowships &amp; Stipends</div>
-          <div class="key-val"><span class="k">UGC-JRF Fellowship</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
-          <div class="key-val"><span class="k">CSIR-JRF Fellowship</span><span class="v" style="color:var(--accent-green);">₹31,000 – ₹37,000/month</span></div>
-          <div class="key-val"><span class="k">DST INSPIRE Fellowship</span><span class="v" style="color:var(--accent-green);">₹28,000/month</span></div>
-          <div class="key-val"><span class="k">RGNF (SC/ST Scholars)</span><span class="v" style="color:var(--accent-green);">₹25,000 – ₹28,000/month</span></div>
-          <div class="key-val" style="border:none"><span class="k">MHRD / UGC NFOBC</span><span class="v" style="color:var(--accent-green);">Applicable (OBC Scholars)</span></div>
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">PhD Fee Structure (Approx.)</div>
+          <div class="key-val"><span class="k">Registration Fee</span><span class="v" style="color:var(--accent-green);">₹5,000 – ₹15,000</span></div>
+          <div class="key-val"><span class="k">Annual Fee</span><span class="v" style="color:var(--accent-green);">₹10,000 – ₹25,000</span></div>
+          <div class="key-val"><span class="k">Hostel Charges</span><span class="v" style="color:var(--accent-green);">Separate (as applicable)</span></div>
+          <div class="key-val" style="border:none"><span class="k">Fellowship</span><span class="v" style="color:var(--accent-green);">As per UGC / CSIR Norms</span></div>
         </div>
       </div>
     </div>
@@ -864,58 +612,41 @@
       <div class="card">
         <div class="card-title"><span class="dot"></span>Admission Process</div>
         <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-title">Step 1 — Register at UoM Admissions Portal</div>
-            <div class="tl-desc">Visit the official University of Mysore admissions website (uni-mysore.ac.in). Create an account and select the program — UG, PG, LLB, MBA, MCA, or PhD. Note that PG admissions are largely through the PGCET (Karnataka State) while PhD uses the University's own Research Entrance Test (RET).</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 2 — Ensure Valid Entrance Score / Eligibility</div>
-            <div class="tl-desc">PG programs require a valid PGCET (Karnataka Postgraduate Common Entrance Test) score. MBA requires PGCET / KMAT / CAT. Law programs require KLEE. For Science PG, IIT JAM scores may also be accepted. For PhD, candidates need a valid UGC-NET / SLET or must appear in the UoM Research Entrance Test (RET).</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 3 — Fill Application &amp; Upload Documents</div>
-            <div class="tl-desc">Complete the online application with academic transcripts, entrance exam scorecards, category certificate (SC/ST/OBC), domicile certificate, ID proof, recent photograph, and relevant experience certificate (for MBA/PhD). Check document requirements specific to each department.</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 4 — PGCET Counselling / Departmental Selection</div>
-            <div class="tl-desc">PG admissions primarily occur through centralized KEA-PGCET counselling for Karnataka candidates. Seats are allotted based on PGCET rank, category, and preference choices. Some departments conduct their own additional written tests and interviews, especially for specialized programs like MSc Biotechnology.</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 5 — Research Entrance Test + Interview (PhD)</div>
-            <div class="tl-desc">PhD candidates who do not hold UGC-NET/SLET appear in UoM's Research Entrance Test (RET). Shortlisted candidates then attend an interview before the Doctoral Committee of the respective department. The research proposal, subject knowledge, and research aptitude are assessed.</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 6 — Seat Acceptance, Document Verification &amp; Enrollment</div>
-            <div class="tl-desc">Accept the allotted seat online within the stipulated time. Visit the university/department for document verification with originals — degrees, marksheets, entrance scorecard, category and domicile certificate. Pay tuition and hostel fees and complete enrollment for the academic term (typically July–August).</div>
-          </div>
+          <div class="tl-item"><div class="tl-title">Step 1 — Check Eligibility &amp; Notification</div><div class="tl-desc">Check the official UoM website for admission notifications for the desired UG / PG / PhD program and confirm eligibility criteria.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 2 — Register Online</div><div class="tl-desc">Register on the UoM Admission Portal (admission.uni-mysore.ac.in) or Karnataka PGCET / UGCET portal for respective programs.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 3 — Appear in Entrance Exam</div><div class="tl-desc">Appear in Karnataka PGCET (for PG), UGCET (for UG professional courses), CLAT/KLEE (for Law), or UoM Department Entrance Test as applicable.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 4 — Merit List &amp; Counselling</div><div class="tl-desc">Download the merit list / counselling schedule from the UoM website and participate in online / offline counselling for seat allotment.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 5 — Document Verification</div><div class="tl-desc">Submit original documents: 10th, 12th, UG marksheets/degree, caste certificate (if applicable), ID proof, and passport photographs.</div></div>
+          <div class="tl-item"><div class="tl-title">Step 6 — Fee Payment &amp; Enrollment</div><div class="tl-desc">Pay the prescribed fee online/offline and complete the enrollment process at the respective department to confirm admission.</div></div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
-        <div class="course-row"><div class="course-name">UG Programs (Affiliated Colleges)</div><div></div><div></div><span class="tag tag-exam">10+2 Merit / KEA</span></div>
-        <div class="course-row"><div class="course-name">PG – MA / MSc / MCom / MCA</div><div></div><div></div><span class="tag tag-exam">PGCET (Karnataka) / IIT JAM</span></div>
-        <div class="course-row"><div class="course-name">MBA – Management</div><div></div><div></div><span class="tag tag-exam">PGCET / KMAT / CAT</span></div>
-        <div class="course-row"><div class="course-name">LLB / LLM – Law Programs</div><div></div><div></div><span class="tag tag-exam">KLEE / Merit</span></div>
-        <div class="course-row"><div class="course-name">BEd / MEd – Education</div><div></div><div></div><span class="tag tag-exam">PGCET / Merit</span></div>
-        <div class="course-row"><div class="course-name">PhD – All Departments</div><div></div><div></div><span class="tag tag-gate">UGC-NET / SLET / UoM-RET</span></div>
+        <div class="course-row"><div class="course-name">UG Programs (B.A. / B.Sc. / B.Com.)</div><div></div><div></div><span class="tag tag-exam">10+2 Merit / UGCET</span></div>
+        <div class="course-row"><div class="course-name">BA LL.B. (5-Year Integrated)</div><div></div><div></div><span class="tag tag-exam">CLAT / KLEE</span></div>
+        <div class="course-row"><div class="course-name">PG Programs (M.A. / M.Sc. / M.Com.)</div><div></div><div></div><span class="tag tag-exam">Karnataka PGCET</span></div>
+        <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">PGCET / KMAT / CAT</span></div>
+        <div class="course-row"><div class="course-name">MCA</div><div></div><div></div><span class="tag tag-exam">Karnataka PGCET</span></div>
+        <div class="course-row"><div class="course-name">LL.M.</div><div></div><div></div><span class="tag tag-exam">Entrance Test</span></div>
+        <div class="course-row"><div class="course-name">PhD Programs</div><div></div><div></div><span class="tag tag-exam">UoM Entrance / NET / SLET</span></div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="dot"></span>Scholarships &amp; Fellowships</div>
+        <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">UG Scholarships</div>
+        <div class="phd-tags" style="margin-bottom:16px;">
+          <span class="phd-tag">Post-Matric SC/ST Scholarship</span>
+          <span class="phd-tag">OBC Scholarship (Karnataka)</span>
+          <span class="phd-tag">NSP Scholarships</span>
+          <span class="phd-tag">Chief Minister's Scholarship</span>
+          <span class="phd-tag">Minority Scholarships</span>
+        </div>
+        <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">PG &amp; Research Fellowships</div>
         <div class="phd-tags">
-          <span class="phd-tag">UGC-JRF / SRF Fellowship</span>
-          <span class="phd-tag">CSIR-JRF / SRF Fellowship</span>
-          <span class="phd-tag">DST INSPIRE Fellowship</span>
-          <span class="phd-tag">RGNF (SC/ST Research Scholars)</span>
-          <span class="phd-tag">NFOBC (OBC Research Scholars)</span>
-          <span class="phd-tag">Maulana Azad National Fellowship (Minority)</span>
-          <span class="phd-tag">Karnataka State Post-Matric Scholarship (SC/ST)</span>
-          <span class="phd-tag">UoM Merit Scholarship</span>
-          <span class="phd-tag">Fee Waiver – SC/ST/OBC Students</span>
-          <span class="phd-tag">Sports Quota Scholarship</span>
-          <span class="phd-tag">PM Scholarship (Central Govt.)</span>
-          <span class="phd-tag">Vidyanidhi (Karnataka Govt.)</span>
+          <span class="phd-tag">UGC-NET Fellowship</span>
+          <span class="phd-tag">CSIR-NET Fellowship</span>
+          <span class="phd-tag">SLET Fellowship</span>
+          <span class="phd-tag">Rajiv Gandhi National Fellowship (SC/ST)</span>
+          <span class="phd-tag">UoM Research Fellowships</span>
         </div>
       </div>
     </div>
@@ -923,65 +654,48 @@
     <!-- TAB 5: PLACEMENTS -->
     <div class="tab-panel" id="panel-5">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Placement &amp; Career Overview</div>
+        <div class="card-title"><span class="dot"></span>Placement Overview</div>
         <div class="stat-row">
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--gold);">₹8 – ₹20 LPA</div>
-            <div class="s-lbl">Highest Package (MSc/MBA)</div>
-          </div>
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--accent-green);">₹3 – ₹8 LPA</div>
-            <div class="s-lbl">Average Package</div>
-          </div>
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--accent-blue);">70%+</div>
-            <div class="s-lbl">Placement / Higher Studies</div>
-          </div>
+          <div class="stat-box"><div class="s-val" style="color:var(--gold);">₹10–15L</div><div class="s-lbl">Highest Package</div></div>
+          <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">₹3–6L</div><div class="s-lbl">Average Package</div></div>
+          <div class="stat-box"><div class="s-val" style="color:#63b3ed;">55–70%</div><div class="s-lbl">Placement Rate</div></div>
         </div>
-        <div class="stat-row">
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--gold);">Govt. / Research / IT</div>
-            <div class="s-lbl">Top Career Paths</div>
-          </div>
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--accent-green);">UPSC / KPSC</div>
-            <div class="s-lbl">Civil Services Achievers</div>
-          </div>
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--accent-blue);">Academia</div>
-            <div class="s-lbl">Research &amp; Teaching Careers</div>
-          </div>
-        </div>
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Career Pathways</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Placement Highlights</div>
         <div class="event-list">
-          <div class="event-item"><span class="event-icon">💻</span><div><strong>IT &amp; Software Companies</strong> — MSc Computer Science, MCA, and MSc Electronics graduates find placements in Infosys, Wipro, TCS, Cognizant, and Mysuru-based IT firms at ₹3–8 LPA</div></div>
-          <div class="event-item"><span class="event-icon">🏛️</span><div><strong>Civil Services &amp; Government Jobs</strong> — Strong tradition of UoM alumni in UPSC, KPSC, KAS, teaching services; UoM's humanities &amp; social science departments have produced numerous IAS/IPS officers</div></div>
-          <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research &amp; Academia</strong> — PhD graduates and MSc students pursue postdoctoral research at IISc, NCBS, CFTRI, NIMHANS, and other premier institutions in Bengaluru-Mysuru corridor</div></div>
-          <div class="event-item"><span class="event-icon">🏫</span><div><strong>Teaching &amp; Education Sector</strong> — UoM graduates are widely recruited as faculty in degree colleges, schools (for BEd graduates), and as university lecturers through Karnataka State's SET/NET qualification</div></div>
-          <div class="event-item"><span class="event-icon">📈</span><div><strong>Banking, Finance &amp; Commerce</strong> — MCom, MBA, and BCom graduates are recruited in banking, insurance, and financial services; RBI, SBI, LIC, and NABARD are notable employers</div></div>
-          <div class="event-item"><span class="event-icon">🌿</span><div><strong>Life Sciences &amp; Biotech Industry</strong> — MSc Biotechnology, Biochemistry, Microbiology graduates find opportunities in pharmaceutical firms, CFTRI (Mysuru), food labs, and biotechnology startups in Karnataka</div></div>
+          <div class="event-item"><span class="event-icon">🎓</span><div><strong>Government Jobs &amp; Civil Services</strong> — Strong track record of students qualifying UPSC, KPSC, KAS, Banking &amp; other competitive exams</div></div>
+          <div class="event-item"><span class="event-icon">💼</span><div><strong>MBA Placements</strong> — MBA students placed in BFSI, IT, Retail, FMCG, and Tourism sectors with decent packages</div></div>
+          <div class="event-item"><span class="event-icon">🖥️</span><div><strong>MCA &amp; BCA Placements</strong> — Software and IT companies hire from MCA/BCA programs; packages in ₹3–8 LPA range</div></div>
+          <div class="event-item"><span class="event-icon">🏫</span><div><strong>Teaching &amp; Education Sector</strong> — Strong placements in academia, schools, and coaching institutions for Arts &amp; Science graduates</div></div>
+          <div class="event-item"><span class="event-icon">🔬</span><div><strong>Research &amp; Public Sector</strong> — Science graduates placed in DRDO, ISRO (as support staff), CSIR labs, and public sector labs</div></div>
         </div>
       </div>
-
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Top Recruiters &amp; Employers</div>
+        <div class="card-title"><span class="dot"></span>Program-wise Placement Highlights</div>
+        <table class="cutoff-table">
+          <thead><tr><th>Program</th><th>Average Package</th><th>Placement Trend</th></tr></thead>
+          <tbody>
+            <tr><td>MBA</td><td style="color:var(--accent-green);font-weight:600;">₹4 – ₹10 LPA</td><td><span class="level-moderate">Very Good</span></td></tr>
+            <tr><td>MCA</td><td style="color:var(--accent-green);font-weight:600;">₹3 – ₹8 LPA</td><td><span class="level-moderate">Good</span></td></tr>
+            <tr><td>M.Sc. Computer Science</td><td style="color:#f6ad55;font-weight:600;">₹3 – ₹6 LPA</td><td><span class="level-moderate">Good</span></td></tr>
+            <tr><td>M.Sc. Biotechnology</td><td style="color:var(--muted);font-weight:600;">₹2.5 – ₹5 LPA</td><td><span class="level-low">Moderate</span></td></tr>
+            <tr><td>M.Com. / B.Com.</td><td style="color:var(--muted);font-weight:600;">₹2 – ₹4 LPA</td><td><span class="level-low">Moderate</span></td></tr>
+            <tr><td>B.A. / M.A.</td><td style="color:var(--muted);font-weight:600;">Govt. / Teaching</td><td><span class="level-low">Govt. Oriented</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters</div>
         <div class="recruiter-list">
           <span class="recruiter-tag">Infosys</span>
           <span class="recruiter-tag">Wipro</span>
           <span class="recruiter-tag">TCS</span>
-          <span class="recruiter-tag">Cognizant</span>
-          <span class="recruiter-tag">HCL Technologies</span>
-          <span class="recruiter-tag">State Bank of India</span>
+          <span class="recruiter-tag">HDFC Bank</span>
           <span class="recruiter-tag">Karnataka Bank</span>
-          <span class="recruiter-tag">LIC of India</span>
-          <span class="recruiter-tag">CFTRI Mysuru</span>
-          <span class="recruiter-tag">DRDO (Labs)</span>
-          <span class="recruiter-tag">ISRO (VSSC)</span>
-          <span class="recruiter-tag">Biocon</span>
-          <span class="recruiter-tag">Strides Pharma</span>
-          <span class="recruiter-tag">Karnataka Govt. Depts.</span>
-          <span class="recruiter-tag">Nielsen</span>
-          <span class="recruiter-tag">Deloitte</span>
+          <span class="recruiter-tag">Axis Bank</span>
+          <span class="recruiter-tag">Mphasis</span>
+          <span class="recruiter-tag">Govt. of Karnataka</span>
+          <span class="recruiter-tag">DRDO (Support Roles)</span>
+          <span class="recruiter-tag">Tourism Dept., Karnataka</span>
         </div>
       </div>
     </div>
@@ -989,222 +703,123 @@
     <!-- TAB 6: CAMPUS LIFE -->
     <div class="tab-panel" id="panel-6">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Campus Life at University of Mysore</div>
-
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
         <div class="campus-section">
           <div class="campus-section-title">🎉 Events &amp; Activities</div>
           <div class="event-list">
-            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Yuva Dasara – Annual Cultural Festival</strong> — Coinciding with the grand Mysuru Dasara celebrations, UoM hosts its annual fest featuring music, dance, drama, literary events, and intercollegiate competitions</div></div>
-            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Annual Science Exhibition &amp; Research Day</strong> — Departments showcase research projects, innovations, and student research to the wider academic community</div></div>
-            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Inter-Department &amp; Inter-College Sports Meet</strong> — The university conducts annual sports championships across cricket, football, athletics, kabaddi, volleyball, and more</div></div>
-            <div class="event-item"><span class="event-icon">📖</span><div><strong>Kannada Rajyotsava &amp; Literary Celebrations</strong> — Rich celebrations of Karnataka's cultural heritage including poetry recitals, debates, and Kannada literary competitions every November</div></div>
-            <div class="event-item"><span class="event-icon">🌿</span><div><strong>Manasagangotri Campus Heritage Walk</strong> — Annual guided tours of the historic campus featuring Crawford Hall, the Oriental Research Institute, Botanical Gardens, and century-old buildings</div></div>
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Yuva Dasara</strong> — UoM students actively participate in Mysuru's world-famous Dasara festivities and cultural programs</div></div>
+            <div class="event-item"><span class="event-icon">🎤</span><div><strong>Manasagangothri Utsava</strong> — Annual campus cultural festival with music, dance, drama, and literary competitions</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Science &amp; Research Seminars</strong> — Regular national and international seminars, conferences, and workshops across departments</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Inter-University Sports</strong> — UoM participates in AIU (Association of Indian Universities) sports meets across disciplines</div></div>
           </div>
         </div>
-
         <div class="campus-section">
           <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
           <div class="facility-grid">
-            <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
             <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
-            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏊</div>Swimming Pool</div>
             <div class="fac-item"><div class="fac-icon">🎾</div>Tennis Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
             <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
-            <div class="fac-item"><div class="fac-icon">🤸</div>Athletics Track</div>
           </div>
         </div>
-
         <div class="campus-section">
           <div class="campus-section-title">🎓 Student Clubs &amp; Societies</div>
           <div class="phd-tags">
-            <span class="phd-tag">Student Union (MUSU)</span>
+            <span class="phd-tag">NSS</span>
+            <span class="phd-tag">NCC</span>
             <span class="phd-tag">Kannada Sangha</span>
-            <span class="phd-tag">Nature Club</span>
+            <span class="phd-tag">English Literary Circle</span>
             <span class="phd-tag">Science Forum</span>
-            <span class="phd-tag">Music &amp; Arts Society</span>
-            <span class="phd-tag">Photography Club</span>
-            <span class="phd-tag">Trekking &amp; Adventure Club</span>
-            <span class="phd-tag">Debate &amp; Elocution Society</span>
             <span class="phd-tag">Quiz Club</span>
+            <span class="phd-tag">Drama Club</span>
+            <span class="phd-tag">Photography Society</span>
+            <span class="phd-tag">Environment Club</span>
             <span class="phd-tag">Entrepreneurship Cell</span>
-            <span class="phd-tag">NSS Unit</span>
-            <span class="phd-tag">NCC Wing</span>
-            <span class="phd-tag">Literary Circle</span>
-            <span class="phd-tag">Yoga &amp; Wellness Club</span>
-            <span class="phd-tag">Women's Cell</span>
-          </div>
-        </div>
-
-        <div class="campus-section">
-          <div class="campus-section-title">🏛️ Heritage &amp; Unique Features</div>
-          <div class="event-list">
-            <div class="event-item"><span class="event-icon">🏰</span><div><strong>Crawford Hall (1916)</strong> — The iconic Indo-Saracenic main administrative building, a heritage landmark and one of the most photographed university buildings in South India</div></div>
-            <div class="event-item"><span class="event-icon">📜</span><div><strong>Oriental Research Institute (ORI)</strong> — Houses over 70,000 rare manuscripts in Sanskrit, Kannada, and other classical languages — one of the largest manuscript collections in India</div></div>
-            <div class="event-item"><span class="event-icon">🌸</div><div><strong>University Botanical Garden</strong> — Sprawling gardens housing rare plant species, used for research by Botany and Environmental Science departments</div></div>
-            <div class="event-item"><span class="event-icon">🔭</span><div><strong>Observatory &amp; Planetarium</strong> — The university maintains an astronomical observatory; physics students have access for research and public outreach programs</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 7: RANKINGS & CUT-OFF -->
+    <!-- TAB 7: CUT-OFF -->
     <div class="tab-panel" id="panel-7">
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Rankings &amp; Recognition</div>
-        <table class="rank-table">
-          <thead>
-            <tr>
-              <th>Ranking Body</th>
-              <th>Category</th>
-              <th>Rank / Score</th>
-              <th>Year</th>
-            </tr>
-          </thead>
+        <div class="card-title"><span class="dot"></span>PG Admission Cutoff – Karnataka PGCET (Indicative)</div>
+
+        <div class="cutoff-branch-head">🖥️ M.Sc. Computer Science</div>
+        <table class="cutoff-table" style="margin-top:10px;">
+          <thead><tr><th>Category</th><th>Indicative Cutoff %</th><th>Competition Level</th></tr></thead>
           <tbody>
-            <tr>
-              <td>NIRF India Rankings</td>
-              <td>University</td>
-              <td><span class="rank-top">#51–75</span></td>
-              <td>2024</td>
-            </tr>
-            <tr>
-              <td>NIRF India Rankings</td>
-              <td>Overall</td>
-              <td><span class="rank-top">Top 100</span></td>
-              <td>2024</td>
-            </tr>
-            <tr>
-              <td>NAAC Accreditation</td>
-              <td>National</td>
-              <td><span class="rank-top">A+ Grade</span></td>
-              <td>2023</td>
-            </tr>
-            <tr>
-              <td>UGC Classification</td>
-              <td>Category</td>
-              <td><span class="rank-top">Category-I University</span></td>
-              <td>Ongoing</td>
-            </tr>
-            <tr>
-              <td>India Today Rankings</td>
-              <td>State University</td>
-              <td><span class="rank-mid">Top 10 in Karnataka</span></td>
-              <td>2024</td>
-            </tr>
-            <tr>
-              <td>Outlook ICARE Rankings</td>
-              <td>Arts &amp; Science</td>
-              <td><span class="rank-mid">Top 15 India</span></td>
-              <td>2024</td>
-            </tr>
-            <tr>
-              <td>Govt. of Karnataka</td>
-              <td>Status</td>
-              <td><span class="rank-top">Oldest University in Karnataka</span></td>
-              <td>Est. 1916</td>
-            </tr>
+            <tr><td>General (GM)</td><td>65% – 75%</td><td><span class="level-high">High</span></td></tr>
+            <tr><td>OBC 2A/2B/3A/3B</td><td>58% – 68%</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>SC</td><td>50% – 60%</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>ST</td><td>45% – 55%</td><td><span class="level-low">Low–Moderate</span></td></tr>
           </tbody>
         </table>
+
+        <div class="cutoff-branch-head">🧪 M.Sc. Chemistry / Physics / Mathematics</div>
+        <table class="cutoff-table" style="margin-top:10px;">
+          <thead><tr><th>Category</th><th>Indicative Cutoff %</th><th>Competition Level</th></tr></thead>
+          <tbody>
+            <tr><td>General (GM)</td><td>60% – 72%</td><td><span class="level-moderate">Moderate–High</span></td></tr>
+            <tr><td>OBC 2A/2B/3A/3B</td><td>52% – 65%</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>SC</td><td>45% – 57%</td><td><span class="level-low">Low–Moderate</span></td></tr>
+            <tr><td>ST</td><td>40% – 50%</td><td><span class="level-low">Low</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="cutoff-branch-head">🧬 M.Sc. Biotechnology / Biochemistry</div>
+        <table class="cutoff-table" style="margin-top:10px;">
+          <thead><tr><th>Category</th><th>Indicative Cutoff %</th><th>Competition Level</th></tr></thead>
+          <tbody>
+            <tr><td>General (GM)</td><td>62% – 74%</td><td><span class="level-moderate">Moderate–High</span></td></tr>
+            <tr><td>OBC 2A/2B/3A/3B</td><td>55% – 65%</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>SC</td><td>48% – 58%</td><td><span class="level-low">Low–Moderate</span></td></tr>
+            <tr><td>ST</td><td>42% – 52%</td><td><span class="level-low">Low</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="cutoff-branch-head">💼 MBA (Management Studies)</div>
+        <table class="cutoff-table" style="margin-top:10px;">
+          <thead><tr><th>Category</th><th>PGCET Score / Cutoff</th><th>Competition Level</th></tr></thead>
+          <tbody>
+            <tr><td>General (GM)</td><td>65 – 80 Percentile</td><td><span class="level-high">High</span></td></tr>
+            <tr><td>OBC 2A/2B/3A/3B</td><td>55 – 70 Percentile</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>SC</td><td>45 – 58 Percentile</td><td><span class="level-low">Low–Moderate</span></td></tr>
+            <tr><td>ST</td><td>40 – 50 Percentile</td><td><span class="level-low">Low</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="cutoff-branch-head">📜 M.A. (Arts &amp; Humanities Programs)</div>
+        <table class="cutoff-table" style="margin-top:10px;">
+          <thead><tr><th>Category</th><th>Indicative Cutoff %</th><th>Competition Level</th></tr></thead>
+          <tbody>
+            <tr><td>General (GM)</td><td>50% – 65%</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>OBC 2A/2B/3A/3B</td><td>45% – 58%</td><td><span class="level-low">Low–Moderate</span></td></tr>
+            <tr><td>SC</td><td>40% – 52%</td><td><span class="level-low">Low</span></td></tr>
+            <tr><td>ST</td><td>38% – 48%</td><td><span class="level-low">Low</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="cutoff-note">
+          ℹ️ <strong>Note:</strong> Cutoffs for University of Mysore PG programs are based on UG degree percentage and PGCET scores (for professional courses). For B.A./B.Sc./B.Com. UG programs in affiliated colleges, cutoffs vary by college. These are indicative figures based on recent trends. Always check the official UoM admission portal for current year cutoffs.
+        </div>
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span>Expected Cut-Off — PG Programs (PGCET Karnataka)</div>
+        <div class="card-title"><span class="dot"></span>UG (B.Sc. / B.A. / B.Com.) Indicative Cutoff – Direct PUC Merit</div>
         <table class="cutoff-table">
-          <thead>
-            <tr>
-              <th>Program</th>
-              <th>Category</th>
-              <th>Expected PGCET Rank (Approx.)</th>
-              <th>Competition</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Program</th><th>Min. PUC % (GM)</th><th>Seats Availability</th></tr></thead>
           <tbody>
-            <tr>
-              <td>MSc Computer Science / Electronics</td>
-              <td>General</td>
-              <td>Top 500 – 1,500 Rank</td>
-              <td><span class="level-very-high">Very High</span></td>
-            </tr>
-            <tr>
-              <td>MSc Physics / Chemistry / Mathematics</td>
-              <td>General</td>
-              <td>Top 800 – 2,500 Rank</td>
-              <td><span class="level-high">High</span></td>
-            </tr>
-            <tr>
-              <td>MSc Biotechnology / Biochemistry</td>
-              <td>General</td>
-              <td>Top 500 – 2,000 Rank</td>
-              <td><span class="level-high">High</span></td>
-            </tr>
-            <tr>
-              <td>MA Economics / History / Sociology</td>
-              <td>General</td>
-              <td>Top 1,000 – 4,000 Rank</td>
-              <td><span class="level-moderate">Moderate</span></td>
-            </tr>
-            <tr>
-              <td>MA Kannada / Hindi / English</td>
-              <td>General</td>
-              <td>Top 2,000 – 6,000 Rank</td>
-              <td><span class="level-moderate">Moderate</span></td>
-            </tr>
-            <tr>
-              <td>MBA – Business Administration</td>
-              <td>General</td>
-              <td>Top 1,000 – 3,000 Rank (PGCET)</td>
-              <td><span class="level-high">High</span></td>
-            </tr>
+            <tr><td>B.Sc. Computer Science</td><td style="color:#f6ad55;font-weight:600;">65% – 75%</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>B.Sc. Biotechnology</td><td style="color:#f6ad55;font-weight:600;">60% – 70%</td><td><span class="level-moderate">Moderate</span></td></tr>
+            <tr><td>B.Sc. Physics / Chem / Maths</td><td style="color:var(--accent-green);font-weight:600;">50% – 65%</td><td><span class="level-low">Good Availability</span></td></tr>
+            <tr><td>B.A. (General)</td><td style="color:var(--accent-green);font-weight:600;">40% – 55%</td><td><span class="level-low">Ample Seats</span></td></tr>
+            <tr><td>B.Com. (General)</td><td style="color:var(--accent-green);font-weight:600;">45% – 58%</td><td><span class="level-low">Ample Seats</span></td></tr>
           </tbody>
         </table>
-        <div class="cutoff-note">ℹ️ PGCET cut-offs are based on centralized Karnataka Examination Authority (KEA) counselling. Ranks vary year to year based on difficulty of the PGCET exam and number of applicants. SC/ST/OBC candidates have relaxed cutoffs. Always verify at the official KEA portal (kea.kar.nic.in) for current-year closing ranks.</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Expected Cut-Off — PhD Admission (UoM Research Entrance Test)</div>
-        <table class="cutoff-table">
-          <thead>
-            <tr>
-              <th>Department</th>
-              <th>Eligibility</th>
-              <th>Expected Score / Criteria</th>
-              <th>Competition</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Computer Science / Electronics</td>
-              <td>MSc / MCA / BE</td>
-              <td>65%+ in RET / UGC-NET qualified</td>
-              <td><span class="level-high">High</span></td>
-            </tr>
-            <tr>
-              <td>Biochemistry / Microbiology / Biotech</td>
-              <td>MSc Life Sciences</td>
-              <td>60%+ in RET / CSIR-NET preferred</td>
-              <td><span class="level-high">High</span></td>
-            </tr>
-            <tr>
-              <td>Physics / Chemistry / Mathematics</td>
-              <td>MSc Science</td>
-              <td>60%+ in RET / CSIR / GATE Score</td>
-              <td><span class="level-high">High</span></td>
-            </tr>
-            <tr>
-              <td>Kannada / History / Sociology / Economics</td>
-              <td>MA / MCom</td>
-              <td>55%+ in RET / UGC-NET / SLET</td>
-              <td><span class="level-moderate">Moderate</span></td>
-            </tr>
-            <tr>
-              <td>Commerce / Management / Law</td>
-              <td>MCom / MBA / LLM</td>
-              <td>55%+ in RET / UGC-NET</td>
-              <td><span class="level-moderate">Moderate</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="cutoff-note">ℹ️ Candidates with valid UGC-NET / CSIR-NET / SLET are generally exempted from the UoM Research Entrance Test (RET) but must still appear for the departmental research interview. Seats are limited per supervisor, so even NET-qualified candidates may face competition. Verify details at the official admissions portal.</div>
+        <div class="cutoff-note">ℹ️ UG program cutoffs at Manasagangothri campus are based on PUC (10+2) marks. Cutoffs at affiliated colleges vary. Check individual college / UoM admission portal for final cutoffs.</div>
       </div>
     </div>
 
@@ -1216,71 +831,59 @@
       <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
       <button class="cta-btn cta-outline" onclick="window.open('https://uni-mysore.ac.in/','_blank')">🌐 Visit Official Website</button>
     </div>
-
     <div class="sidebar-card">
       <div class="sidebar-title">Key Facts</div>
       <div class="key-val"><span class="k">Established</span><span class="v">1916</span></div>
-      <div class="key-val"><span class="k">Type</span><span class="v">State University (Karnataka)</span></div>
-      <div class="key-val"><span class="k">Status</span><span class="v v-purple">UGC Category-I University</span></div>
-      <div class="key-val"><span class="k">NIRF 2024</span><span class="v v-gold">#51–75 University</span></div>
-      <div class="key-val"><span class="k">NAAC</span><span class="v v-green">A+ Accredited</span></div>
-      <div class="key-val"><span class="k">Campus</span><span class="v">~700 Acres (Heritage)</span></div>
-      <div class="key-val"><span class="k">PG Departments</span><span class="v">43 Departments</span></div>
-      <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v">200+ Colleges</span></div>
-      <div class="key-val"><span class="k">PhD Scholars</span><span class="v">2,000+ Active</span></div>
-      <div class="key-val"><span class="k">Annual Publications</span><span class="v">1,200+</span></div>
-      <div class="key-val"><span class="k">Active Patents</span><span class="v">80+</span></div>
-      <div class="key-val"><span class="k">Manuscripts (ORI)</span><span class="v">70,000+ Rare MSS</span></div>
+      <div class="key-val"><span class="k">Type</span><span class="v">State University</span></div>
+      <div class="key-val"><span class="k">Accreditation</span><span class="v v-gold">NAAC – A+ Grade</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v v-gold">UGC / Govt. of Karnataka</span></div>
+      <div class="key-val"><span class="k">Campus</span><span class="v">~750 Acres</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Mysuru, Karnataka</span></div>
+      <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v">550+</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">UoM / Mysore University</span></div>
     </div>
-
     <div class="sidebar-card">
       <div class="sidebar-title">Entrance Exams</div>
       <table class="exam-table">
-        <tr><th>Program</th><th>Exam</th></tr>
-        <tr><td>UG (Affiliated)</td><td><span class="tag tag-exam">KEA / Merit</span></td></tr>
-        <tr><td>PG – MA / MSc / MCom</td><td><span class="tag tag-exam">PGCET / JAM</span></td></tr>
+        <tr><th>Course Type</th><th>Exam</th></tr>
+        <tr><td>B.A. / B.Sc. / B.Com.</td><td><span class="tag tag-exam">Merit / UGCET</span></td></tr>
+        <tr><td>BA LL.B. (5-yr)</td><td><span class="tag tag-exam">CLAT / KLEE</span></td></tr>
+        <tr><td>M.A. / M.Sc. / M.Com.</td><td><span class="tag tag-exam">Karnataka PGCET</span></td></tr>
         <tr><td>MBA</td><td><span class="tag tag-exam">PGCET / KMAT / CAT</span></td></tr>
-        <tr><td>LLB / LLM</td><td><span class="tag tag-exam">KLEE / Merit</span></td></tr>
-        <tr><td>BEd / MEd</td><td><span class="tag tag-exam">PGCET / Merit</span></td></tr>
-        <tr><td>PhD</td><td><span class="tag tag-gate">UGC-NET / UoM-RET</span></td></tr>
+        <tr><td>MCA</td><td><span class="tag tag-exam">Karnataka PGCET</span></td></tr>
+        <tr><td>LL.M.</td><td><span class="tag tag-exam">Entrance Test</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">UoM Test / NET / SLET</span></td></tr>
       </table>
     </div>
-
     <div class="sidebar-card">
-      <div class="sidebar-title">Approx. Fees (Per Year)</div>
-      <div class="key-val"><span class="k">BA / BCom / BSc (UG)</span><span class="v v-gold">₹5K – ₹25K/yr</span></div>
-      <div class="key-val"><span class="k">MA / MCom</span><span class="v v-gold">₹10K – ₹30K/yr</span></div>
-      <div class="key-val"><span class="k">MSc</span><span class="v v-gold">₹15K – ₹40K/yr</span></div>
-      <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹40K – ₹90K/yr</span></div>
-      <div class="key-val"><span class="k">MCA</span><span class="v v-gold">₹20K – ₹50K/yr</span></div>
-      <div class="key-val"><span class="k">LLB / LLM</span><span class="v v-gold">₹10K – ₹30K/yr</span></div>
-      <div class="key-val"><span class="k">PhD</span><span class="v v-gold">Nominal + Fellowship</span></div>
-      <div class="key-val"><span class="k">Hostel/yr</span><span class="v v-gold">₹5,000 – ₹20,000</span></div>
+      <div class="sidebar-title">Approx. Fees (Total Program)</div>
+      <div class="key-val"><span class="k">B.A. / B.Sc. / B.Com.</span><span class="v v-gold">₹10K – ₹40K</span></div>
+      <div class="key-val"><span class="k">BCA / BBA</span><span class="v v-gold">₹25K – ₹60K</span></div>
+      <div class="key-val"><span class="k">M.A. / M.Sc. / M.Com.</span><span class="v v-gold">₹15K – ₹60K</span></div>
+      <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹80K – ₹1.5L</span></div>
+      <div class="key-val"><span class="k">MCA</span><span class="v v-gold">₹40K – ₹80K</span></div>
+      <div class="key-val"><span class="k">LL.M.</span><span class="v v-gold">₹20K – ₹50K</span></div>
+      <div class="key-val"><span class="k">Hostel/year</span><span class="v v-gold">₹30K – ₹60K</span></div>
     </div>
-
     <div class="sidebar-card">
-      <div class="sidebar-title">Cut-Off Snapshot</div>
-      <div class="key-val"><span class="k">MSc CS (Gen) – PGCET</span><span class="v" style="color:#fc8181;">Top 500–1,500</span></div>
-      <div class="key-val"><span class="k">MSc Biotech (Gen)</span><span class="v" style="color:#fc8181;">Top 500–2,000</span></div>
-      <div class="key-val"><span class="k">MSc Physics/Chem</span><span class="v" style="color:#f6ad55;">Top 800–2,500</span></div>
-      <div class="key-val"><span class="k">MBA (PGCET)</span><span class="v" style="color:#f6ad55;">Top 1,000–3,000</span></div>
-      <div class="key-val"><span class="k">MA Kannada/Hindi</span><span class="v" style="color:var(--accent-green);">Top 2,000–6,000</span></div>
-      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">PGCET Rank (indicative) — verify at KEA portal</div>
+      <div class="sidebar-title">Cut-Off Snapshot (GM)</div>
+      <div class="key-val"><span class="k">M.Sc. CS</span><span class="v" style="color:#f6ad55;">65%–75% PUC</span></div>
+      <div class="key-val"><span class="k">MBA (PGCET)</span><span class="v" style="color:#f6ad55;">65–80 %tile</span></div>
+      <div class="key-val"><span class="k">M.Sc. Sciences</span><span class="v" style="color:var(--accent-green);">60%–72% PUC</span></div>
+      <div class="key-val"><span class="k">M.A. (Arts)</span><span class="v" style="color:var(--accent-green);">50%–65% UG</span></div>
+      <div class="key-val"><span class="k">B.A. / B.Com.</span><span class="v" style="color:var(--accent-green);">40%–58% PUC</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">Based on PUC % / PGCET score trends (Indicative)</div>
     </div>
-
     <div class="sidebar-card">
       <div class="sidebar-title">Placement Snapshot</div>
-      <div class="key-val"><span class="k">Highest Package</span><span class="v v-gold">₹8L – ₹20 LPA</span></div>
-      <div class="key-val"><span class="k">Average Package</span><span class="v v-gold">₹3 – ₹8 LPA</span></div>
-      <div class="key-val"><span class="k">Top Sectors</span><span class="v v-green">IT / Govt. / Research</span></div>
-      <div class="key-val"><span class="k">Top IT Hirers</span><span class="v v-green">Infosys / Wipro / TCS</span></div>
-      <div class="key-val"><span class="k">Research Careers</span><span class="v v-blue">CFTRI / DRDO / Acad.</span></div>
-      <div class="key-val"><span class="k">Civil Services</span><span class="v v-purple">UPSC / KPSC / KAS</span></div>
+      <div class="key-val"><span class="k">Highest Package</span><span class="v v-gold">₹10 – ₹15 LPA</span></div>
+      <div class="key-val"><span class="k">Average Package</span><span class="v" style="color:var(--accent-green);">₹3 – ₹6 LPA</span></div>
+      <div class="key-val"><span class="k">MBA Average</span><span class="v" style="color:var(--accent-green);">₹4 – ₹10 LPA</span></div>
+      <div class="key-val"><span class="k">Placement Rate</span><span class="v" style="color:#f6ad55;">55% – 70%</span></div>
     </div>
   </div>
 </div>
 
-<!-- LOGOUT MODAL -->
 <div class="modal-overlay" id="logoutModal">
   <div class="modal">
     <div style="font-size:2rem;margin-bottom:10px;">👋</div>
@@ -1300,11 +903,10 @@
 
 <script>
   let shortlisted = false;
-
   function toggleShortlist() {
     shortlisted = !shortlisted;
-    const badge   = document.getElementById('shortlistBadge');
-    const navBtn  = document.getElementById('navShortlistBtn');
+    const badge = document.getElementById('shortlistBadge');
+    const navBtn = document.getElementById('navShortlistBtn');
     const sideBtn = document.getElementById('sidebarShortlistBtn');
     badge.textContent = shortlisted ? '1' : '0';
     badge.classList.add('pop');
@@ -1323,7 +925,6 @@
       showToast('🗑️', 'Removed from shortlist.');
     }
   }
-
   function switchTab(index, el) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -1331,12 +932,10 @@
     document.getElementById('panel-' + index).classList.add('active');
     window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
   }
-
   function toggleStream(e) {
     e.stopPropagation();
     document.getElementById('streamDropdown').classList.toggle('open');
   }
-
   function selectStream(el, name, icon) {
     document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
     el.classList.add('active');
@@ -1344,25 +943,21 @@
     document.getElementById('streamDropdown').classList.remove('open');
     showToast(icon, 'Stream changed to ' + name);
   }
-
   document.addEventListener('click', function(e) {
-    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
-      document.getElementById('streamDropdown').classList.remove('open');
-    }
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) dd.classList.remove('open');
   });
-
-  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function openLogout() { document.getElementById('logoutModal').classList.add('open'); }
   function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
-
   let toastTimer;
   function showToast(icon, msg) {
     const t = document.getElementById('toast');
     document.getElementById('toastIcon').textContent = icon;
-    document.getElementById('toastMsg').textContent  = msg;
+    document.getElementById('toastMsg').textContent = msg;
     t.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
   }
 </script>
 </body>
-</html>  
+</html>
