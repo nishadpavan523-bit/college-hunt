@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lala Lajpat Rai University of Veterinary and Animal Sciences – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1535;
+    --navy-mid: #1a2250;
+    --navy-card: #1e2a5e;
+    --gold: #f5a623;
+    --gold-light: #ffc152;
+    --white: #ffffff;
+    --muted: #a0aec0;
+    --accent-green: #48bb78;
+    --card-bg: #1b2454;
+    --border: rgba(245,166,35,0.2);
+    --tag-bg: rgba(245,166,35,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-stream {
+    background: var(--navy-card);
+    color: var(--white);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
+  .btn-shortlist { background: var(--gold); color: var(--navy); }
+  .btn-shortlist:hover { background: var(--gold-light); }
+  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
+  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+  .btn-logout:hover { border-color: #f56565; color: #f56565; }
+  .badge {
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 0.65rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .badge.pop { animation: badgePop 0.3s ease; }
+  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+
+  /* Stream Dropdown */
+  .stream-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .stream-opt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
+  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,166,35,0.2);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.1);
+  }
+  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
+  .uni-logo {
+    width: 70px; height: 70px;
+    background: var(--white);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .uni-title h1 span { color: var(--gold); }
+  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .meta-chip {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+    cursor: default;
+  }
+  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
+  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
+  .meta-chip strong { color: var(--white); }
+
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 100px;
+  }
+  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
+  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
+  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
+  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .hb-naac .value { color: var(--accent-green); }
+  .hb-central .value { color: var(--gold); }
+  .hb-campus .value { color: #63b3ed; }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    padding: 0 48px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
+
+  /* ── COURSE TABLE ── */
+  .course-block { margin-bottom: 26px; }
+  .course-block:last-child { margin-bottom: 0; }
+  .course-type-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .course-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: background 0.2s;
+  }
+  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
+  .course-name { font-size: 0.82rem; font-weight: 500; }
+  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
+  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+
+  /* ── GRID LIST ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .info-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+  }
+  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .info-chip .val { font-weight: 600; color: var(--white); }
+
+  /* ── RECRUITERS ── */
+  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .recruiter-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
+
+  /* ── FACILITIES ── */
+  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fac-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
+  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .key-val {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .key-val:last-child { border-bottom: none; }
+  .key-val .k { color: var(--muted); }
+  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
+  .v-gold { color: var(--gold) !important; }
+
+  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .cta-primary { background: var(--gold); color: var(--navy); }
+  .cta-primary:hover { background: var(--gold-light); }
+  .cta-primary.added { background: var(--accent-green); color: var(--white); }
+  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── HOSTEL ── */
+  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .hostel-icon { font-size: 1.1rem; }
+
+  /* ── PhD/PG LIST ── */
+  .phd-category { margin-bottom: 14px; }
+  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phd-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── ADMISSIONS TAB ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
+  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
+  .tl-desc { font-size:0.75rem; color:var(--muted); }
+
+  /* ── PLACEMENTS TAB ── */
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
+  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
+  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ── CAMPUS LIFE TAB ── */
+  .campus-section { margin-bottom:22px; }
+  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  .event-list { display:flex; flex-direction:column; gap:8px; }
+  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
+  .event-icon { font-size:1.2rem; flex-shrink:0; }
+
+  /* ── CUT-OFF TAB ── */
+  .cutoff-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .cutoff-table th {
+    background: rgba(245,166,35,0.1);
+    color: var(--gold);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .cutoff-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted);
+    vertical-align: middle;
+  }
+  .cutoff-table tr:last-child td { border-bottom: none; }
+  .cutoff-table tr:hover td { background: rgba(245,166,35,0.04); color: var(--white); }
+  .cutoff-table td:first-child { color: var(--white); font-weight: 500; }
+  .level-high { color: #fc8181 !important; font-weight: 600; }
+  .level-moderate { color: #f6ad55 !important; font-weight: 600; }
+  .level-low { color: var(--accent-green) !important; font-weight: 600; }
+  .cutoff-note {
+    background: rgba(99,179,237,0.08);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    color: #90cdf4;
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+
+  /* Logout modal */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--navy-card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    max-width:360px;
+    width:90%;
+    text-align:center;
+    animation: fadeDown 0.2s ease;
+  }
+  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
+  .modal-confirm { background:#f56565; color:var(--white); }
+
+  @media (max-width: 768px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .hero { padding: 24px 20px; }
+    .tabs-bar { padding: 0 16px; }
+    .facility-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns:1fr 1fr; }
+    nav { padding: 0 8px; gap: 4px; flex-wrap: nowrap; }
+    .nav-logo { font-size: 0.85rem; gap: 4px; }
+    #welcomeUser { font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1; }
+    .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-btn { padding: 4px 8px; font-size: 0.65rem; gap: 3px; }
+    #streamBtn span { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+    .badge { width: 15px; height: 15px; font-size: 0.55rem; }
+  }
+  @media (max-width: 768px) {
+  nav {
+    padding: 0 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-logo {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  #welcomeUser {
+    font-size: 0.65rem;
+    max-width: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .nav-right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+  }
+
+  #streamBtn span {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .badge {
+    width: 15px;
+    height: 15px;
+    font-size: 0.55rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        🐄 <span id="streamLabel">Veterinary &amp; Animal Sciences</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+        <div class="stream-opt" onclick="selectStream(this,'Medical &amp; Health Sciences','🏥')">🏥 Medical &amp; Health Sciences</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Veterinary &amp; Animal Sciences','🐄')">🐄 Veterinary &amp; Animal Sciences</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    Lala Lajpat Rai University of Veterinary and Animal Sciences
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🐄</div>
+    <div class="uni-title">
+      <h1>Lala Lajpat Rai University of <span>Veterinary &amp; Animal Sciences</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Hisar, Haryana</strong></span>
+        <span class="meta-chip">🏛️ <strong>State Government University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2010</strong></span>
+        <span class="meta-chip">🏷️ <strong>LUVAS</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.luvas.edu.in/','_blank')" title="Open official website">🌐 <strong>luvas.edu.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">Recognition</span>
+      <span class="value">UGC / VCI</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Established</span>
+      <span class="value">2010</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Type</span>
+      <span class="value">State University</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- ── TAB 0: OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-0">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Basic Information</div>
+        <div class="grid-3">
+          <div class="info-chip"><div class="lbl">Established</div><div class="val">2010</div></div>
+          <div class="info-chip"><div class="lbl">Type</div><div class="val">State Government University</div></div>
+          <div class="info-chip"><div class="lbl">Location</div><div class="val">Hisar, Haryana</div></div>
+          <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC / VCI</div></div>
+          <div class="info-chip"><div class="lbl">Specialization</div><div class="val">Veterinary &amp; Animal Sciences</div></div>
+          <div class="info-chip"><div class="lbl">Admission</div><div class="val">NEET UG / ICAR AIEEA / Merit</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>About LUVAS</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          Lala Lajpat Rai University of Veterinary and Animal Sciences (LUVAS) was established on <strong style="color:var(--white);">1 December 2010</strong> by the Government of Haryana under <strong style="color:var(--white);">Haryana Act No. 7 of 2010</strong>. The university was carved out of the College of Veterinary Sciences of <strong style="color:var(--white);">CCS Haryana Agricultural University, Hisar</strong>. It is one of India's specialized veterinary universities and serves as a major centre for <strong style="color:var(--white);">veterinary education, livestock research, animal healthcare, dairy technology, and extension services</strong>. Recognized by the <strong style="color:var(--white);">University Grants Commission (UGC)</strong> and the <strong style="color:var(--white);">Veterinary Council of India (VCI)</strong>, LUVAS aims to provide quality education in Veterinary Sciences, Animal Husbandry, Dairy Sciences, Fisheries Sciences, and allied fields while supporting the livestock sector of Haryana and India. The <strong style="color:var(--white);">Chancellor</strong> of the university is the Governor of Haryana.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+        <div class="facility-grid">
+          <div class="fac-item"><div class="fac-icon">🏥</div>Veterinary Hospital</div>
+          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+          <div class="fac-item"><div class="fac-icon">🧪</div>Biotech Labs</div>
+          <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Centre</div>
+          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+          <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
+          <div class="fac-item"><div class="fac-icon">🔒</div>24×7 Security</div>
+          <div class="fac-item"><div class="fac-icon">🐄</div>Livestock Research Farms</div>
+          <div class="fac-item"><div class="fac-icon">🐔</div>Poultry Research Units</div>
+          <div class="fac-item"><div class="fac-icon">🎓</div>Seminar Halls</div>
+        </div>
+        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+        <div class="hostel-grid">
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Aravali Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Vrindavan Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏠</span> Shivalik Boys Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">🏡</span> Godavari Girls Hostel</div>
+          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Connectivity</div>
+          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Hostel Mess</div>
+          <div class="hostel-item"><span class="hostel-icon">📖</span> Reading Rooms</div>
+          <div class="hostel-item"><span class="hostel-icon">🏸</span> Badminton Courts</div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+          <span style="color:var(--muted);"> ₹10,000–₹25,000 per year (rent) + Mess charges extra · Security deposit refundable</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 1: UG COURSES ── -->
+    <div class="tab-panel" id="panel-1">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">BVSc &amp; AH · 5 Years (incl. Internship) · NEET UG</span>
+          <div class="course-row">
+            <div class="course-name">BVSc &amp; AH (Bachelor of Veterinary Science and Animal Husbandry)</div>
+            <div class="course-meta"><strong>NEET UG</strong>Entrance</div>
+            <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹25K–₹45K / Year</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCB &amp; English · Admission: NEET UG + Haryana State Counselling · Very High competition</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">B.Tech Dairy Technology · 4 Years · Merit / Counselling</span>
+          <div class="course-row">
+            <div class="course-name">B.Tech (Dairy Technology)</div>
+            <div class="course-meta"><strong>Merit / CET</strong>Entrance</div>
+            <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹35K–₹60K / Year</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with PCM/PCB · Admission: State Merit / Counselling</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">VLDA Diploma · 2 Years · Entrance / Merit</span>
+          <div class="course-row">
+            <div class="course-name">Veterinary Livestock Development Assistant (VLDA) Diploma</div>
+            <div class="course-meta"><strong>Entrance / Merit</strong>Admission</div>
+            <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+            <span class="tag tag-fees">₹15K–₹30K / Year</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Eligibility: 10+2 with Science · Admission: Entrance / Merit basis</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Allied Animal Science Programs</span>
+          <div class="course-row">
+            <div class="course-name">Livestock Production Training Program</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>Varies</strong>Duration</div>
+            <span class="tag tag-fees">As Applicable</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Dairy Production Training Program</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>Varies</strong>Duration</div>
+            <span class="tag tag-fees">As Applicable</span>
+          </div>
+          <div class="course-row">
+            <div class="course-name">Animal Husbandry Training Program</div>
+            <div class="course-meta"><strong>Merit</strong>Admission</div>
+            <div class="course-meta"><strong>Varies</strong>Duration</div>
+            <span class="tag tag-fees">As Applicable</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:8px;">Offered through the College of Veterinary Sciences and allied institutes. Check official website for current availability.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PG COURSES ── -->
+    <div class="tab-panel" id="panel-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PG Courses</div>
+
+        <div class="course-block">
+          <span class="course-type-label">MVSc · 2 Years · ICAR AIEEA PG</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Veterinary Surgery &amp; Radiology</span>
+            <span class="phd-tag">Veterinary Medicine</span>
+            <span class="phd-tag">Veterinary Pathology</span>
+            <span class="phd-tag">Veterinary Microbiology</span>
+            <span class="phd-tag">Veterinary Public Health</span>
+            <span class="phd-tag">Animal Genetics &amp; Breeding</span>
+            <span class="phd-tag">Animal Nutrition</span>
+            <span class="phd-tag">Livestock Production Management</span>
+            <span class="phd-tag">Veterinary Pharmacology</span>
+            <span class="phd-tag">Animal Biotechnology</span>
+            <span class="phd-tag">Veterinary Gynaecology &amp; Obstetrics</span>
+            <span class="phd-tag">Veterinary Physiology</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: BVSc &amp; AH · Admission: ICAR AIEEA PG Score + Counselling · Total Fee: ₹60K – ₹1.5L</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">M.Tech Dairy Technology · 2 Years · Merit / Entrance</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Dairy Technology</span>
+            <span class="phd-tag">Dairy Processing</span>
+            <span class="phd-tag">Dairy Engineering</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Relevant Bachelor's Degree · Admission: Merit / Entrance · Total Fee: ₹80K – ₹2L</div>
+        </div>
+
+        <div class="course-block">
+          <span class="course-type-label">Other PG Programs · Merit / Entrance</span>
+          <div class="phd-tags" style="margin-bottom:6px;">
+            <span class="phd-tag">Livestock Production</span>
+            <span class="phd-tag">Animal Biotechnology</span>
+            <span class="phd-tag">Veterinary Public Health</span>
+          </div>
+          <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Relevant Graduation · Admission: Merit / Entrance · Total Fee: ₹50K – ₹1.5L</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PhD ── -->
+    <div class="tab-panel" id="panel-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>PhD Programs</div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Veterinary Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Veterinary Medicine</span>
+            <span class="phd-tag">Veterinary Surgery</span>
+            <span class="phd-tag">Veterinary Pathology</span>
+            <span class="phd-tag">Veterinary Microbiology</span>
+            <span class="phd-tag">Veterinary Pharmacology</span>
+            <span class="phd-tag">Veterinary Physiology</span>
+            <span class="phd-tag">Veterinary Gynaecology &amp; Obstetrics</span>
+            <span class="phd-tag">Veterinary Public Health</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Animal Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Animal Genetics &amp; Breeding</span>
+            <span class="phd-tag">Animal Nutrition</span>
+            <span class="phd-tag">Animal Biotechnology</span>
+            <span class="phd-tag">Livestock Production Management</span>
+          </div>
+        </div>
+        <div class="phd-category">
+          <div class="phd-cat-label">Dairy &amp; Allied Sciences</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Dairy Technology</span>
+            <span class="phd-tag">Fisheries and Allied Sciences</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's Degree in Relevant Discipline</span></div>
+          <div class="key-val"><span class="k">Minimum Marks</span><span class="v">As per ICAR / UGC Norms</span></div>
+          <div class="key-val"><span class="k">Entrance</span><span class="v">ICAR AICE-JRF/SRF (PhD) Score + Counselling</span></div>
+          <div class="key-val" style="border:none"><span class="k">Selection</span><span class="v">Merit and Document Verification</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(72,187,120,0.06);border:1px solid rgba(72,187,120,0.2);border-radius:10px;padding:14px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--accent-green);margin-bottom:8px;">Research Fellowships Available</div>
+          <div class="key-val"><span class="k">ICAR Fellowships</span><span class="v" style="color:var(--accent-green);">Applicable</span></div>
+          <div class="key-val"><span class="k">UGC Fellowships</span><span class="v" style="color:var(--accent-green);">Applicable</span></div>
+          <div class="key-val"><span class="k">JRF / SRF Programs</span><span class="v" style="color:var(--accent-green);">Applicable</span></div>
+          <div class="key-val" style="border:none"><span class="k">State Government Fellowships</span><span class="v" style="color:var(--accent-green);">Available</span></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:12px 14px;font-size:0.75rem;color:#90cdf4;">
+          <strong>PhD Fee Structure (Approx.):</strong> Registration ₹5,000–₹10,000 · Annual Research Fee ₹15,000–₹30,000 · Laboratory fee additional as applicable · Thesis evaluation fee separate.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: ADMISSIONS ── -->
+    <div class="tab-panel" id="panel-4">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process — BVSc &amp; AH</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Appear in NEET-UG</div>
+            <div class="tl-desc">Qualify the National Eligibility cum Entrance Test (NEET UG). This is the mandatory gateway for BVSc &amp; AH admission at LUVAS and all other veterinary colleges in India.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Participate in Haryana State Counselling</div>
+            <div class="tl-desc">Register on the Haryana State Veterinary Counselling portal with your NEET UG scorecard, personal details, category certificate, and required documents. Fill college and course preferences.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Seat Allotment</div>
+            <div class="tl-desc">Seat allotment is done based on NEET UG merit rank, category, Haryana domicile status, and seat availability. Multiple counselling rounds are held until seats are filled.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Document Verification</div>
+            <div class="tl-desc">Submit original documents: 10th &amp; 12th marksheets, NEET UG scorecard, category certificate (if applicable), domicile proof, ID proof, passport photographs, and gap certificate (if applicable).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Payment and Admission Confirmation</div>
+            <div class="tl-desc">Pay the prescribed tuition fee and confirm admission by reporting to LUVAS and completing all enrollment formalities within the stipulated deadline.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Admission Process — MVSc &amp; PhD</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">Step 1 — Qualify ICAR Entrance Examination</div>
+            <div class="tl-desc">Qualify ICAR AIEEA PG (for MVSc) or ICAR AICE-JRF/SRF PhD examination. These are national-level exams conducted by the Indian Council of Agricultural Research.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 2 — Submit Application Form</div>
+            <div class="tl-desc">Fill the LUVAS application form online or offline with ICAR score, academic records, category certificate, and other required documents.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 3 — Counselling and Merit Preparation</div>
+            <div class="tl-desc">Attend LUVAS counselling sessions. Merit list is prepared based on ICAR score, academic performance, and category. Seat allotment follows.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 4 — Verification of Documents</div>
+            <div class="tl-desc">Submit all original documents including degree certificates, marksheets, ICAR scorecard, category documents, and ID proof for verification.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Step 5 — Fee Submission and Enrolment</div>
+            <div class="tl-desc">Complete fee payment and formal enrolment. PhD scholars may also apply for ICAR / UGC fellowships at this stage.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+        <div class="course-row">
+          <div class="course-name">BVSc &amp; AH</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">NEET UG + State Counselling</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">B.Tech Dairy Technology</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">State Merit / Counselling</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">VLDA Diploma</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Entrance / Merit</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">MVSc</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">ICAR AIEEA PG + Counselling</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">M.Tech Dairy Technology / Other PG</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">Merit / Entrance</span>
+        </div>
+        <div class="course-row">
+          <div class="course-name">PhD Programs</div>
+          <div></div><div></div>
+          <span class="tag tag-exam">ICAR AICE-JRF/SRF (PhD)</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Scholarships Available</div>
+        <div class="phd-tags">
+          <span class="phd-tag">Haryana State Scholarships</span>
+          <span class="phd-tag">SC Scholarships</span>
+          <span class="phd-tag">ST Scholarships</span>
+          <span class="phd-tag">OBC Scholarships</span>
+          <span class="phd-tag">Post-Matric Scholarships</span>
+          <span class="phd-tag">ICAR Fellowships</span>
+          <span class="phd-tag">UGC Fellowships</span>
+          <span class="phd-tag">JRF / SRF Programs</span>
+          <span class="phd-tag">State Government Fellowships</span>
+          <span class="phd-tag">Academic Merit Awards</span>
+          <span class="phd-tag">Sports Scholarships</span>
+          <span class="phd-tag">EWS Financial Assistance</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 5: PLACEMENTS ── -->
+    <div class="tab-panel" id="panel-5">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Placement &amp; Career Overview</div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--gold);">Govt. &amp; Pvt.</div>
+            <div class="s-lbl">Veterinary Services</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:var(--accent-green);">Available</div>
+            <div class="s-lbl">Internship Programs</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" style="color:#63b3ed;">Higher Studies</div>
+            <div class="s-lbl">Opportunities</div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Career Pathways &amp; Opportunities</div>
+        <div class="event-list">
+          <div class="event-item"><span class="event-icon">🏥</span><div><strong>State Animal Husbandry Departments</strong> — LUVAS graduates are recruited as Veterinary Officers and Animal Husbandry Assistants by the Haryana government and other state departments</div></div>
+          <div class="event-item"><span class="event-icon">🐄</span><div><strong>Livestock Farms &amp; Dairy Industries</strong> — Opportunities at dairy cooperatives, livestock farms, and animal feed industries, including NDDB, Amul, Haryana Dairy, and private dairy firms</div></div>
+          <div class="event-item"><span class="event-icon">🐔</span><div><strong>Poultry Industry</strong> — Roles in poultry farm management, disease control, and research with leading poultry industry players</div></div>
+          <div class="event-item"><span class="event-icon">💊</span><div><strong>Pharmaceutical Companies</strong> — Veterinary pharma and animal healthcare product companies actively recruit LUVAS graduates for regulatory, R&amp;D, and field roles</div></div>
+          <div class="event-item"><span class="event-icon">🎓</span><div><strong>Research Institutes &amp; Universities</strong> — ICAR research institutes, SAUs (State Agricultural Universities), and central universities hire MVSc and PhD holders</div></div>
+          <div class="event-item"><span class="event-icon">🚀</span><div><strong>Entrepreneurship &amp; Private Practice</strong> — Set up own veterinary clinic, dairy consultancy, or animal nutrition enterprise with state startup support</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Top Recruiters / Employers</div>
+        <div class="recruiter-list">
+          <span class="recruiter-tag">Haryana Animal Husbandry Dept.</span>
+          <span class="recruiter-tag">ICAR Research Institutes</span>
+          <span class="recruiter-tag">NDDB (National Dairy Development Board)</span>
+          <span class="recruiter-tag">Amul / Gujarat Cooperative</span>
+          <span class="recruiter-tag">Haryana Dairy Development Co-op</span>
+          <span class="recruiter-tag">Venkys India</span>
+          <span class="recruiter-tag">Zoetis Animal Health</span>
+          <span class="recruiter-tag">Elanco Animal Health</span>
+          <span class="recruiter-tag">Peptech Animal Health</span>
+          <span class="recruiter-tag">Hester Biosciences</span>
+          <span class="recruiter-tag">State Veterinary Hospitals</span>
+          <span class="recruiter-tag">CCS HAU, Hisar</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Career Notes</div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+          LUVAS graduates are highly sought after in the <strong style="color:var(--white);">government veterinary services</strong> of Haryana and other states. BVSc &amp; AH graduates can register as <strong style="color:var(--white);">veterinary practitioners</strong> and are eligible for recruitment by state animal husbandry departments, NDDB, ICAR, and defence animal services. The dairy technology stream has strong placement in <strong style="color:var(--white);">dairy cooperatives and the private dairy sector</strong>. Research-oriented graduates pursue MVSc and PhD with ICAR fellowships, leading to academic and research careers. The university's strong ties with the <strong style="color:var(--white);">Haryana livestock sector</strong> ensure steady employment for its graduates.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── TAB 6: CAMPUS LIFE ── -->
+    <div class="tab-panel" id="panel-6">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Campus Life</div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎉 Events &amp; Activities</div>
+          <div class="event-list">
+            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Cultural Fest</strong> — Music, dance, drama, and literary competitions bringing together students from all constituent colleges</div></div>
+            <div class="event-item"><span class="event-icon">🏆</span><div><strong>LUVAS Sports Meet</strong> — Inter-department and inter-college athletic meets, cricket, football, and indoor sports championships</div></div>
+            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Veterinary Science Symposium</strong> — Annual academic conferences, paper presentations, and workshops for students and faculty</div></div>
+            <div class="event-item"><span class="event-icon">🐄</span><div><strong>Livestock Health Camps</strong> — NSS-driven community outreach programs and free animal healthcare camps organized by students</div></div>
+            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony for graduating BVSc &amp; AH, MVSc, and other program students</div></div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+          <div class="facility-grid">
+            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+            <div class="fac-item"><div class="fac-icon">⚽</div>Football Ground</div>
+            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Courts</div>
+            <div class="fac-item"><div class="fac-icon">🏋️</div>Mini Gymnasium</div>
+            <div class="fac-item"><div class="fac-icon">🤸</div>Common Rooms</div>
+            <div class="fac-item"><div class="fac-icon">🌳</div>Green Campus</div>
+          </div>
+        </div>
+
+        <div class="campus-section">
+          <div class="campus-section-title">🎓 Student Clubs &amp; Societies</div>
+          <div class="phd-tags">
+            <span class="phd-tag">Veterinary Students Association</span>
+            <span class="phd-tag">NSS Unit</span>
+            <span class="phd-tag">NCC Unit</span>
+            <span class="phd-tag">Debate &amp; Elocution Club</span>
+            <span class="phd-tag">Cultural Society</span>
+            <span class="phd-tag">Photography Club</span>
+            <span class="phd-tag">Literary Society</span>
+            <span class="phd-tag">Animal Welfare Club</span>
+            <span class="phd-tag">Research &amp; Innovation Cell</span>
+            <span class="phd-tag">Sports Club</span>
+            <span class="phd-tag">Dairy Technology Students Forum</span>
+            <span class="phd-tag">Wildlife Conservation Society</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 7: CUT-OFF ── -->
+    <div class="tab-panel" id="panel-7">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off Trends — BVSc &amp; AH (NEET UG)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Category</th>
+              <th>Expected NEET UG Percentile / Marks</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>BVSc &amp; AH (State Quota)</td>
+              <td>General (UR)</td>
+              <td>95–98th / 530–570+</td>
+              <td><span class="level-high">Very High</span></td>
+            </tr>
+            <tr>
+              <td>BVSc &amp; AH (State Quota)</td>
+              <td>OBC (Haryana)</td>
+              <td>90–95th / 490–530</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>BVSc &amp; AH (State Quota)</td>
+              <td>SC / ST</td>
+              <td>80–90th / 430–490</td>
+              <td><span class="level-moderate">Moderate–High</span></td>
+            </tr>
+            <tr>
+              <td>BVSc &amp; AH (All India Quota)</td>
+              <td>General (UR)</td>
+              <td>97–99th / 560–590+</td>
+              <td><span class="level-high">Extremely High</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ <strong>Note:</strong> These are indicative/expected cutoff ranges based on recent NEET UG Haryana state counselling trends. BVSc &amp; AH is highly competitive nationally. Actual cutoffs vary each year based on NEET difficulty, total candidates, seat matrix, and category. Refer to the official LUVAS website and Haryana State Veterinary Counselling portal for verified current-year data.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Expected Cut-Off Trends — PG Programs (ICAR AIEEA / Merit)</div>
+        <table class="cutoff-table">
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Admission Basis</th>
+              <th>Expected Score / Criteria</th>
+              <th>Competition Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>MVSc (Clinical Specializations)</td>
+              <td>ICAR AIEEA PG</td>
+              <td>High ICAR Score + Merit</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>MVSc (Non-Clinical Specializations)</td>
+              <td>ICAR AIEEA PG</td>
+              <td>Moderate ICAR Score + Merit</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>M.Tech Dairy Technology</td>
+              <td>Merit / Entrance</td>
+              <td>Relevant B.Tech + Merit</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+            <tr>
+              <td>PhD (Veterinary / Animal Sciences)</td>
+              <td>ICAR AICE-JRF/SRF</td>
+              <td>JRF/SRF Qualified</td>
+              <td><span class="level-high">High</span></td>
+            </tr>
+            <tr>
+              <td>VLDA Diploma</td>
+              <td>Entrance / Merit</td>
+              <td>10+2 Science Merit</td>
+              <td><span class="level-moderate">Moderate to High</span></td>
+            </tr>
+            <tr>
+              <td>B.Tech Dairy Technology</td>
+              <td>Merit / Counselling</td>
+              <td>10+2 PCM/PCB Merit</td>
+              <td><span class="level-moderate">Moderate</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cutoff-note">
+          ℹ️ PG veterinary cutoffs are competitive, especially for clinical MVSc specializations. ICAR AIEEA PG scores are the primary criteria for MVSc. Always refer to the official LUVAS portal and ICAR admission notifications for current-year data.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <!-- Quick Action -->
+    <div class="sidebar-card">
+      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+      <button class="cta-btn cta-outline" onclick="window.open('https://www.luvas.edu.in/','_blank')">🌐 Visit Official Website</button>
+    </div>
+
+    <!-- Key Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Key Facts</div>
+      <div class="key-val"><span class="k">Established</span><span class="v">2010</span></div>
+      <div class="key-val"><span class="k">University Type</span><span class="v">State Government University</span></div>
+      <div class="key-val"><span class="k">Status</span><span class="v v-gold">UGC / VCI Recognized</span></div>
+      <div class="key-val"><span class="k">Recognition</span><span class="v v-gold">UGC / VCI</span></div>
+      <div class="key-val"><span class="k">Established Under</span><span class="v">Haryana Act No. 7 of 2010</span></div>
+      <div class="key-val"><span class="k">Location</span><span class="v">Hisar, Haryana</span></div>
+      <div class="key-val"><span class="k">Short Name</span><span class="v">LUVAS</span></div>
+      <div class="key-val"><span class="k">Chancellor</span><span class="v">Governor of Haryana</span></div>
+    </div>
+
+    <!-- Entrance Exams -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Entrance Exams</div>
+      <table class="exam-table">
+        <tr><th>Course Type</th><th>Exam</th></tr>
+        <tr><td>BVSc &amp; AH</td><td><span class="tag tag-exam">NEET UG</span></td></tr>
+        <tr><td>B.Tech Dairy Tech</td><td><span class="tag tag-exam">Merit / CET</span></td></tr>
+        <tr><td>VLDA Diploma</td><td><span class="tag tag-exam">Entrance / Merit</span></td></tr>
+        <tr><td>MVSc</td><td><span class="tag tag-exam">ICAR AIEEA PG</span></td></tr>
+        <tr><td>M.Tech / Other PG</td><td><span class="tag tag-exam">Merit / Entrance</span></td></tr>
+        <tr><td>PhD</td><td><span class="tag tag-exam">ICAR AICE-JRF/SRF</span></td></tr>
+      </table>
+    </div>
+
+    <!-- Approx Fees Summary -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Approx. Fees (Annual)</div>
+      <div class="key-val"><span class="k">BVSc &amp; AH</span><span class="v v-gold">₹25K – ₹45K</span></div>
+      <div class="key-val"><span class="k">B.Tech Dairy Tech</span><span class="v v-gold">₹35K – ₹60K</span></div>
+      <div class="key-val"><span class="k">VLDA Diploma</span><span class="v v-gold">₹15K – ₹30K</span></div>
+      <div class="key-val"><span class="k">MVSc (Total)</span><span class="v v-gold">₹60K – ₹1.5L</span></div>
+      <div class="key-val"><span class="k">M.Tech Dairy (Total)</span><span class="v v-gold">₹80K – ₹2L</span></div>
+      <div class="key-val"><span class="k">PhD (Annual Research)</span><span class="v v-gold">₹15K – ₹30K</span></div>
+      <div class="key-val"><span class="k">Hostel/year</span><span class="v v-gold">₹10K – ₹25K</span></div>
+    </div>
+
+    <!-- Cut-Off Snapshot -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Cut-Off Snapshot (NEET UG)</div>
+      <div class="key-val"><span class="k">BVSc &amp; AH (Gen – State)</span><span class="v" style="color:#fc8181;">530–570+ Marks</span></div>
+      <div class="key-val"><span class="k">BVSc &amp; AH (OBC – State)</span><span class="v" style="color:#fc8181;">490–530</span></div>
+      <div class="key-val"><span class="k">BVSc &amp; AH (SC/ST)</span><span class="v" style="color:#f6ad55;">430–490</span></div>
+      <div class="key-val"><span class="k">BVSc &amp; AH (AIQ Gen)</span><span class="v" style="color:#fc8181;">560–590+</span></div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:8px;">NEET UG Marks (indicative, Haryana State Quota)</div>
+    </div>
+
+    <!-- Placement Snapshot -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Placement Snapshot</div>
+      <div class="key-val"><span class="k">Govt. Vet. Services</span><span class="v" style="color:var(--accent-green);">State AH Depts.</span></div>
+      <div class="key-val"><span class="k">Research Institutes</span><span class="v" style="color:var(--accent-green);">ICAR / SAUs</span></div>
+      <div class="key-val"><span class="k">Dairy Industry</span><span class="v" style="color:var(--accent-green);">NDDB / Amul / Pvt.</span></div>
+      <div class="key-val"><span class="k">Pharma Companies</span><span class="v" style="color:var(--accent-green);">Vet. Pharma Firms</span></div>
+      <div class="key-val"><span class="k">Higher Studies</span><span class="v" style="color:var(--accent-green);">MVSc / PhD / Abroad</span></div>
+      <div class="key-val"><span class="k">Entrepreneurship</span><span class="v" style="color:var(--accent-green);">Private Practice</span></div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  /* ── SHORTLIST STATE ── */
+  let shortlisted = false;
+
+  function toggleShortlist() {
+    shortlisted = !shortlisted;
+    const badge   = document.getElementById('shortlistBadge');
+    const navBtn  = document.getElementById('navShortlistBtn');
+    const sideBtn = document.getElementById('sidebarShortlistBtn');
+
+    badge.textContent = shortlisted ? '1' : '0';
+    badge.classList.add('pop');
+    setTimeout(() => badge.classList.remove('pop'), 300);
+
+    if (shortlisted) {
+      navBtn.classList.add('added');
+      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+      sideBtn.classList.add('added');
+      sideBtn.textContent = '✅ Shortlisted';
+      showToast('⭐', 'LUVAS added to shortlist!');
+    } else {
+      navBtn.classList.remove('added');
+      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+      sideBtn.classList.remove('added');
+      sideBtn.textContent = '⭐ Add to Shortlist';
+      showToast('🗑️', 'Removed from shortlist.');
+    }
+  }
+
+  /* ── TABS ── */
+  function switchTab(index, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + index).classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
+  }
+
+  /* ── STREAM DROPDOWN ── */
+  function toggleStream(e) {
+    e.stopPropagation();
+    document.getElementById('streamDropdown').classList.toggle('open');
+  }
+
+  function selectStream(el, name, icon) {
+    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML = name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon, 'Stream changed to ' + name);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('streamDropdown');
+    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
+      dd.classList.remove('open');
+    }
+  });
+
+  /* ── LOGOUT MODAL ── */
+  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
+  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
+
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent  = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

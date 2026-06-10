@@ -1,465 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Central University of Punjab – CollegeHunt</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
-  
-  :root {
-    --navy: #0f1535;
-    --navy-mid: #1a2250;
-    --navy-card: #1e2a5e;
-    --gold: #f5a623;
-    --gold-light: #ffc152;
-    --white: #ffffff;
-    --muted: #a0aec0;
-    --accent-green: #48bb78;
-    --card-bg: #1b2454;
-    --border: rgba(245,166,35,0.2);
-    --tag-bg: rgba(245,166,35,0.12);
-  }
- 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
- 
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--navy);
-    color: var(--white);
-    min-height: 100vh;
-  }
- 
-  /* ── NAV ── */
-  nav {
-    background: var(--navy);
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 32px;
-    height: 60px;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .nav-logo {
-    font-family: 'Raleway', sans-serif;
-    font-size: 1.3rem;
-    color: var(--gold);
-    display: flex; align-items: center; gap: 8px;
-    cursor: pointer;
-  }
-  .nav-logo span { color: var(--white); }
-  .nav-right { display: flex; align-items: center; gap: 12px; }
-  .nav-btn {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    display: flex; align-items: center; gap: 6px;
-    font-family: 'Poppins', sans-serif;
-    transition: all 0.18s;
-  }
-  .btn-stream {
-    background: var(--navy-card);
-    color: var(--white);
-    border: 1px solid var(--border);
-    position: relative;
-  }
-  .btn-stream:hover { background: var(--tag-bg); border-color: var(--gold); color: var(--gold); }
-  .btn-shortlist { background: var(--gold); color: var(--navy); }
-  .btn-shortlist:hover { background: var(--gold-light); }
-  .btn-shortlist.added { background: var(--accent-green); color: var(--white); }
-  .btn-logout { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
-  .btn-logout:hover { border-color: #f56565; color: #f56565; }
-  .badge {
-    background: var(--navy);
-    color: var(--gold);
-    border-radius: 50%;
-    width: 18px; height: 18px;
-    font-size: 0.65rem;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    transition: all 0.2s;
-  }
-  .badge.pop { animation: badgePop 0.3s ease; }
-  @keyframes badgePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
- 
-  /* Stream Dropdown */
-  .stream-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    background: var(--navy-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 8px;
-    min-width: 220px;
-    display: none;
-    z-index: 200;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-  .stream-dropdown.open { display: block; animation: fadeDown 0.18s ease; }
-  @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
-  .stream-opt {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    transition: background 0.15s;
-  }
-  .stream-opt:hover { background: var(--tag-bg); color: var(--gold); }
-  .stream-opt.active { background: var(--tag-bg); color: var(--gold); font-weight: 600; }
- 
-  /* ── TOAST ── */
-  .toast {
-    position: fixed;
-    bottom: 28px; right: 28px;
-    background: var(--navy-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--white);
-    z-index: 9999;
-    display: flex; align-items: center; gap: 10px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    transform: translateY(80px); opacity: 0;
-    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-    pointer-events: none;
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
- 
-  /* ── HERO ── */
-  .hero {
-    background: linear-gradient(135deg, #1a2462 0%, #2d3a8c 50%, #1a2462 100%);
-    padding: 40px 48px 36px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
-    width: 260px; height: 260px;
-    border-radius: 50%;
-    border: 2px solid rgba(245,166,35,0.2);
-  }
-  .hero::after {
-    content: '';
-    position: absolute; right: 110px; top: 50%; transform: translateY(-50%);
-    width: 190px; height: 190px;
-    border-radius: 50%;
-    border: 1px solid rgba(245,166,35,0.1);
-  }
-  .breadcrumb { font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; }
-  .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; }
-  .breadcrumb a:hover { text-decoration: underline; }
-  .uni-header { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 22px; }
-  .uni-logo {
-    width: 70px; height: 70px;
-    background: var(--white);
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2rem;
-    flex-shrink: 0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  }
-  .uni-title h1 { font-family: 'Raleway', sans-serif; font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
-  .uni-title h1 span { color: var(--gold); }
-  .uni-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-  .meta-chip {
-    background: rgba(255,255,255,0.09);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 0.72rem;
-    color: var(--muted);
-    display: flex; align-items: center; gap: 5px;
-    cursor: default;
-  }
-  .meta-chip.clickable { cursor: pointer; transition: all 0.18s; }
-  .meta-chip.clickable:hover { border-color: var(--gold); color: var(--gold); }
-  .meta-chip strong { color: var(--white); }
- 
-  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
-  .hero-badge {
-    border-radius: 10px;
-    padding: 10px 20px;
-    display: flex; flex-direction: column; align-items: center;
-    min-width: 100px;
-  }
-  .hb-naac { background: rgba(72,187,120,0.15); border: 1px solid rgba(72,187,120,0.3); }
-  .hb-central { background: rgba(245,166,35,0.12); border: 1px solid var(--border); }
-  .hb-campus { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.3); }
-  .hero-badge .label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-  .hero-badge .value { font-size: 1rem; font-weight: 700; margin-top: 2px; }
-  .hb-naac .value { color: var(--accent-green); }
-  .hb-central .value { color: var(--gold); }
-  .hb-campus .value { color: #63b3ed; }
- 
-  /* ── TABS ── */
-  .tabs-bar {
-    background: var(--navy-mid);
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    display: flex;
-    padding: 0 48px;
-    gap: 4px;
-    overflow-x: auto;
-  }
-  .tab {
-    padding: 14px 20px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    white-space: nowrap;
-    transition: all 0.2s;
-    user-select: none;
-  }
-  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-  .tab:hover:not(.active) { color: var(--white); }
- 
-  /* ── LAYOUT ── */
-  .content-wrap {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 36px 32px;
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 28px;
-    align-items: start;
-  }
- 
-  /* Tab Panels */
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
- 
-  /* ── CARDS ── */
-  .card {
-    background: var(--card-bg);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 22px;
-  }
-  .card-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-title .dot { width: 4px; height: 18px; background: var(--gold); border-radius: 2px; }
- 
-  /* ── COURSE TABLE ── */
-  .course-block { margin-bottom: 26px; }
-  .course-block:last-child { margin-bottom: 0; }
-  .course-type-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--gold);
-    background: var(--tag-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 10px;
-    display: inline-block;
-    margin-bottom: 14px;
-  }
-  .course-row {
-    display: grid;
-    grid-template-columns: 1fr auto auto auto;
-    gap: 12px;
-    align-items: center;
-    padding: 11px 14px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    margin-bottom: 8px;
-    transition: background 0.2s;
-  }
-  .course-row:hover { background: rgba(245,166,35,0.06); border-color: var(--border); }
-  .course-name { font-size: 0.82rem; font-weight: 500; }
-  .course-meta { font-size: 0.72rem; color: var(--muted); text-align: center; }
-  .course-meta strong { display: block; color: var(--white); font-size: 0.8rem; }
-  .tag { border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
-  .tag-exam { background: rgba(99,179,237,0.15); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
-  .tag-fees { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
- 
-  /* ── GRID LIST ── */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .info-chip {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 0.78rem;
-  }
-  .info-chip .lbl { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
-  .info-chip .val { font-weight: 600; color: var(--white); }
- 
-  /* ── RECRUITERS ── */
-  .recruiter-list { display: flex; flex-wrap: wrap; gap: 10px; }
-  .recruiter-tag {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 7px 16px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.2s;
-    cursor: default;
-  }
-  .recruiter-tag:hover { background: var(--tag-bg); border-color: var(--border); color: var(--gold); }
- 
-  /* ── FACILITIES ── */
-  .facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .fac-item {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-    font-size: 0.78rem;
-    transition: all 0.2s;
-    cursor: default;
-  }
-  .fac-item:hover { border-color: var(--border); background: var(--tag-bg); }
-  .fac-icon { font-size: 1.4rem; margin-bottom: 5px; }
- 
-  /* ── SIDEBAR ── */
-  .sidebar-card {
-    background: var(--card-bg);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 22px;
-    margin-bottom: 20px;
-  }
-  .sidebar-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .key-val {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 0.78rem;
-  }
-  .key-val:last-child { border-bottom: none; }
-  .key-val .k { color: var(--muted); }
-  .key-val .v { font-weight: 600; color: var(--white); text-align: right; max-width: 55%; }
-  .v-gold { color: var(--gold) !important; }
- 
-  .exam-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-  .exam-table th { color: var(--muted); text-align: left; padding: 6px 0; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
-  .exam-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
-  .exam-table tr:last-child td { border-bottom: none; }
- 
-  .cta-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: all 0.2s;
-    font-family: 'Poppins', sans-serif;
-  }
-  .cta-primary { background: var(--gold); color: var(--navy); }
-  .cta-primary:hover { background: var(--gold-light); }
-  .cta-primary.added { background: var(--accent-green); color: var(--white); }
-  .cta-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
-  .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
- 
-  /* ── HOSTEL ── */
-  .hostel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .hostel-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
-  .hostel-icon { font-size: 1.1rem; }
- 
-  /* ── PhD LIST ── */
-  .phd-category { margin-bottom: 14px; }
-  .phd-cat-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
-  .phd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .phd-tag {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
- 
-  /* ── ADMISSIONS TAB ── */
-  .timeline { position: relative; padding-left: 28px; }
-  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background: var(--border); border-radius:2px; }
-  .tl-item { position:relative; margin-bottom:20px; }
-  .tl-item::before { content:''; position:absolute; left:-24px; top:4px; width:10px; height:10px; background:var(--gold); border-radius:50%; border:2px solid var(--navy-card); }
-  .tl-title { font-size:0.82rem; font-weight:600; color:var(--white); margin-bottom:3px; }
-  .tl-desc { font-size:0.75rem; color:var(--muted); }
- 
-  /* ── PLACEMENTS TAB ── */
-  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
-  .stat-box { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; text-align:center; }
-  .stat-box .s-val { font-size:1.3rem; font-weight:700; margin-bottom:4px; }
-  .stat-box .s-lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
- 
-  /* ── CAMPUS LIFE TAB ── */
-  .campus-section { margin-bottom:22px; }
-  .campus-section-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em; }
-  .event-list { display:flex; flex-direction:column; gap:8px; }
-  .event-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px; font-size:0.8rem; }
-  .event-icon { font-size:1.2rem; flex-shrink:0; }
- 
-  /* Logout modal */
-  .modal-overlay {
-    position:fixed; inset:0;
-    background:rgba(0,0,0,0.6);
-    backdrop-filter:blur(4px);
-    z-index:999;
-    display:none; align-items:center; justify-content:center;
-  }
-  .modal-overlay.open { display:flex; }
-  .modal {
-    background:var(--navy-card);
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:32px;
-    max-width:360px;
-    width:90%;
-    text-align:center;
-    animation: fadeDown 0.2s ease;
-  }
-  .modal h3 { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
-  .modal p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
-  .modal-btns { display:flex; gap:10px; }
-  .modal-btns button { flex:1; padding:10px; border-radius:10px; border:none; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; }
-  .modal-cancel { background:rgba(255,255,255,0.08); color:var(--white); }
-  .modal-confirm { background:#f56565; color:var(--white); }
- 
-  @media (max-width: 768px) {
-    .content-wrap { grid-template-columns: 1fr; }
-    .hero { padding: 24px 20px; }
-    .tabs-bar { padding: 0 16px; }
-    .facility-grid { grid-template-columns: repeat(2,1fr); }
-    .grid-3 { grid-template-columns: 1fr 1fr; }
-    .stat-row { grid-template-columns:1fr 1fr; }
-  }
-  @media (max-width: 768px) {
+:root{--navy:#0f1535;--navy-mid:#1a2250;--navy-card:#1e2a5e;--gold:#f5a623;--gold-light:#ffc152;--white:#ffffff;--muted:#a0aec0;--accent-green:#48bb78;--card-bg:#1b2454;--border:rgba(245,166,35,0.2);--tag-bg:rgba(245,166,35,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+
+/* NAV */
+nav{background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Raleway',sans-serif;font-size:1.3rem;color:var(--gold);display:flex;align-items:center;gap:8px;cursor:pointer;}
+.nav-logo span{color:var(--white);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;transition:all 0.18s;}
+.btn-stream{background:var(--navy-card);color:var(--white);border:1px solid var(--border);position:relative;}
+.btn-stream:hover{background:var(--tag-bg);border-color:var(--gold);color:var(--gold);}
+.btn-shortlist{background:var(--gold);color:var(--navy);}
+.btn-shortlist:hover{background:var(--gold-light);}
+.btn-shortlist.added{background:var(--accent-green);color:var(--white);}
+.btn-logout{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.25);}
+.btn-logout:hover{border-color:#f56565;color:#f56565;}
+.badge{background:var(--navy);color:var(--gold);border-radius:50%;width:18px;height:18px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.2s;}
+.badge.pop{animation:badgePop 0.3s ease;}
+@keyframes badgePop{0%{transform:scale(1)}50%{transform:scale(1.5)}100%{transform:scale(1)}}
+.stream-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:8px;min-width:220px;display:none;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.stream-dropdown.open{display:block;animation:fadeDown 0.18s ease;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.stream-opt{padding:8px 12px;border-radius:8px;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.15s;}
+.stream-opt:hover{background:var(--tag-bg);color:var(--gold);}
+.stream-opt.active{background:var(--tag-bg);color:var(--gold);font-weight:600;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:0.82rem;font-weight:500;color:var(--white);z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a2462 0%,#2d3a8c 50%,#1a2462 100%);padding:40px 48px 36px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:80px;top:50%;transform:translateY(-50%);width:260px;height:260px;border-radius:50%;border:2px solid rgba(245,166,35,0.2);}
+.hero::after{content:'';position:absolute;right:110px;top:50%;transform:translateY(-50%);width:190px;height:190px;border-radius:50%;border:1px solid rgba(245,166,35,0.1);}
+.breadcrumb{font-size:0.75rem;color:var(--muted);margin-bottom:14px;}
+.breadcrumb a{color:var(--gold);text-decoration:none;cursor:pointer;}
+.uni-header{display:flex;align-items:flex-start;gap:22px;margin-bottom:22px;}
+.uni-logo{width:70px;height:70px;background:var(--white);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.uni-title h1{font-family:'Raleway',sans-serif;font-size:1.7rem;font-weight:800;line-height:1.2;margin-bottom:6px;}
+.uni-title h1 span{color:var(--gold);}
+.uni-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+.meta-chip{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 14px;font-size:0.72rem;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:default;}
+.meta-chip.clickable{cursor:pointer;transition:all 0.18s;}
+.meta-chip.clickable:hover{border-color:var(--gold);color:var(--gold);}
+.meta-chip strong{color:var(--white);}
+.hero-badges{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-badge{border-radius:10px;padding:10px 20px;display:flex;flex-direction:column;align-items:center;min-width:100px;}
+.hb-naac{background:rgba(72,187,120,0.15);border:1px solid rgba(72,187,120,0.3);}
+.hb-central{background:rgba(245,166,35,0.12);border:1px solid var(--border);}
+.hb-campus{background:rgba(99,179,237,0.12);border:1px solid rgba(99,179,237,0.3);}
+.hero-badge .label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.hero-badge .value{font-size:1rem;font-weight:700;margin-top:2px;}
+.hb-naac .value{color:var(--accent-green);}
+.hb-central .value{color:var(--gold);}
+.hb-campus .value{color:#63b3ed;}
+
+/* TABS */
+.tabs-bar{background:var(--navy-mid);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;padding:0 48px;gap:4px;overflow-x:auto;scrollbar-width:none;}
+.tabs-bar::-webkit-scrollbar{display:none;}
+.tab{padding:14px 20px;font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all 0.2s;user-select:none;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab:hover:not(.active){color:var(--white);}
+
+/* LAYOUT */
+.content-wrap{max-width:1200px;margin:0 auto;padding:36px 32px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* CARDS */
+.card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:24px;margin-bottom:22px;}
+.card-title{font-size:0.95rem;font-weight:700;color:var(--white);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.card-title .dot{width:4px;height:18px;background:var(--gold);border-radius:2px;}
+
+/* COURSE ROWS */
+.course-block{margin-bottom:26px;}
+.course-block:last-child{margin-bottom:0;}
+.course-type-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:var(--tag-bg);border:1px solid var(--border);border-radius:6px;padding:3px 10px;display:inline-block;margin-bottom:14px;}
+.course-row{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:11px 14px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);margin-bottom:8px;transition:background 0.2s;}
+.course-row:hover{background:rgba(245,166,35,0.06);border-color:var(--border);}
+.course-name{font-size:0.82rem;font-weight:500;}
+.course-sub{font-size:0.71rem;color:var(--muted);margin-top:2px;}
+.course-meta{font-size:0.72rem;color:var(--muted);text-align:center;}
+.course-meta strong{display:block;color:var(--white);font-size:0.8rem;}
+.tag{border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-exam{background:rgba(99,179,237,0.15);color:#63b3ed;border:1px solid rgba(99,179,237,0.25);}
+.tag-fees{background:rgba(72,187,120,0.12);color:#68d391;border:1px solid rgba(72,187,120,0.25);}
+.tag-jee{background:rgba(167,139,250,0.15);color:#c4b5fd;border:1px solid rgba(167,139,250,0.3);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-high{background:rgba(245,101,101,0.18);color:#fc8181;border:1px solid rgba(245,101,101,0.3);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-mod{background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-low{background:rgba(72,187,120,0.15);color:#68d391;border:1px solid rgba(72,187,120,0.3);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+
+/* ADMISSION ROUTE BOX */
+.admission-route-box{border-radius:10px;padding:14px 16px;margin-top:10px;line-height:1.8;font-size:0.76rem;}
+.route-header{font-weight:700;font-size:0.8rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.route-divider{border:none;border-top:1px solid rgba(255,255,255,0.07);margin:12px 0;}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.info-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 14px;font-size:0.78rem;}
+.info-chip .lbl{color:var(--muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.info-chip .val{font-weight:600;color:var(--white);}
+
+/* PHD TAGS */
+.phd-category{margin-bottom:14px;}
+.phd-cat-label{font-size:0.72rem;font-weight:600;color:var(--gold);margin-bottom:8px;}
+.phd-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.phd-tag{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 10px;font-size:0.72rem;color:var(--muted);}
+
+/* FACILITIES */
+.facility-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.fac-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;text-align:center;font-size:0.78rem;transition:all 0.2s;cursor:default;}
+.fac-item:hover{border-color:var(--border);background:var(--tag-bg);}
+.fac-icon{font-size:1.4rem;margin-bottom:5px;}
+.hostel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hostel-item{display:flex;align-items:center;gap:8px;font-size:0.8rem;}
+.hostel-icon{font-size:1.1rem;}
+
+/* SIDEBAR */
+.sidebar-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:22px;margin-bottom:20px;}
+.sidebar-title{font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.05em;}
+.key-val{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem;}
+.key-val:last-child{border-bottom:none;}
+.key-val .k{color:var(--muted);}
+.key-val .v{font-weight:600;color:var(--white);text-align:right;max-width:58%;}
+.v-gold{color:var(--gold)!important;}
+.exam-table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+.exam-table th{color:var(--muted);text-align:left;padding:6px 0;font-weight:500;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;}
+.exam-table td{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;}
+.exam-table tr:last-child td{border-bottom:none;}
+.cta-btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:0.85rem;font-weight:700;cursor:pointer;margin-bottom:10px;transition:all 0.2s;font-family:'Poppins',sans-serif;}
+.cta-primary{background:var(--gold);color:var(--navy);}
+.cta-primary:hover{background:var(--gold-light);}
+.cta-primary.added{background:var(--accent-green);color:var(--white);}
+.cta-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2);}
+.cta-outline:hover{border-color:var(--gold);color:var(--gold);}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border);border-radius:2px;}
+.tl-item{position:relative;margin-bottom:20px;}
+.tl-item::before{content:'';position:absolute;left:-24px;top:4px;width:10px;height:10px;background:var(--gold);border-radius:50%;border:2px solid var(--navy-card);}
+.tl-title{font-size:0.82rem;font-weight:600;color:var(--white);margin-bottom:3px;}
+.tl-desc{font-size:0.75rem;color:var(--muted);}
+
+/* PLACEMENTS */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.stat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;text-align:center;}
+.stat-box .s-val{font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.stat-box .s-lbl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+
+/* CAMPUS LIFE */
+.campus-section{margin-bottom:22px;}
+.campus-section-title{font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em;}
+.event-list{display:flex;flex-direction:column;gap:8px;}
+.event-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;font-size:0.8rem;}
+.event-icon{font-size:1.2rem;flex-shrink:0;}
+.recruiter-list{display:flex;flex-wrap:wrap;gap:10px;}
+.recruiter-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 16px;font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:default;}
+.recruiter-tag:hover{background:var(--tag-bg);border-color:var(--border);color:var(--gold);}
+
+/* CUTOFF TABLES */
+.cutoff-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:4px;}
+.cutoff-table thead th{background:rgba(245,166,35,0.1);color:var(--gold);font-weight:600;padding:10px 12px;text-align:left;border:1px solid rgba(255,255,255,0.09);font-size:0.71rem;text-transform:uppercase;letter-spacing:0.04em;}
+.cutoff-table.jee-table thead th{background:rgba(167,139,250,0.1);color:#c4b5fd;}
+.cutoff-table tbody tr{transition:background 0.15s;}
+.cutoff-table tbody tr:hover{background:rgba(255,255,255,0.03);}
+.cutoff-table tbody td{padding:10px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--white);vertical-align:middle;}
+.cutoff-table tbody tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+.cutoff-note{margin-top:14px;background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:12px 14px;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+.cutoff-note strong{color:var(--white);}
+.cutoff-note.jee-note{background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.25);}
+.section-divider{display:flex;align-items:center;gap:10px;margin:22px 0 16px;}
+.section-divider span{font-size:0.71rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.07em;white-space:nowrap;}
+.section-divider.jee-divider span{color:#c4b5fd;}
+.section-divider.jee-divider::before,.section-divider.jee-divider::after{background:rgba(167,139,250,0.3);}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.year-badge{display:inline-block;background:rgba(245,166,35,0.12);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:0.65rem;font-weight:700;color:var(--gold);margin-left:6px;}
+.actual-badge{display:inline-block;background:rgba(72,187,120,0.12);border:1px solid rgba(72,187,120,0.3);border-radius:6px;padding:2px 8px;font-size:0.65rem;font-weight:700;color:#68d391;margin-left:6px;}
+.jee-badge{display:inline-block;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.35);border-radius:6px;padding:2px 8px;font-size:0.65rem;font-weight:700;color:#c4b5fd;margin-left:6px;}
+.route-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 12px;font-size:0.7rem;font-weight:700;margin-right:6px;margin-bottom:4px;}
+.route-pill-cuet{background:rgba(99,179,237,0.15);color:#63b3ed;border:1px solid rgba(99,179,237,0.3);}
+.route-pill-jee{background:rgba(167,139,250,0.15);color:#c4b5fd;border:1px solid rgba(167,139,250,0.3);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--navy-card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:360px;width:90%;text-align:center;animation:fadeDown 0.2s ease;}
+.modal h3{font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+.modal p{font-size:0.82rem;color:var(--muted);margin-bottom:22px;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btns button{flex:1;padding:10px;border-radius:10px;border:none;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.modal-cancel{background:rgba(255,255,255,0.08);color:var(--white);}
+.modal-confirm{background:#f56565;color:var(--white);}
+
+@media(max-width:768px){
+  .content-wrap{grid-template-columns:1fr;}
+  .hero{padding:24px 20px;}
+  .tabs-bar{padding:0 16px;}
+  .facility-grid{grid-template-columns:repeat(2,1fr);}
+  .grid-3{grid-template-columns:1fr 1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;}
+  nav{padding:0 8px;gap:4px;flex-wrap:nowrap;}
+  .nav-logo{font-size:0.85rem;gap:4px;}
+  #welcomeUser{font-size:0.65rem;max-width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;}
+  .nav-right{gap:4px;flex-shrink:0;}
+  .nav-btn{padding:4px 8px;font-size:0.65rem;gap:3px;}
+  .badge{width:15px;height:15px;font-size:0.55rem;}
+  .cutoff-table{font-size:0.7rem;}
+  .cutoff-table th,.cutoff-table td{padding:7px 8px;}
+  .course-row{grid-template-columns:1fr auto;}
+  .course-row .course-meta:first-of-type{display:none;}
+}
+@media (max-width: 768px) {
   nav {
     padding: 0 8px;
     gap: 4px;
@@ -508,17 +269,12 @@
 </style>
 </head>
 <body>
- 
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
-  <!-- <div style="font-size:0.78rem;color:var(--muted)">Welcome, Demo Student</div> -->
-  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">
-    Welcome
-</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome</div>
   <div class="nav-right">
- 
-    <!-- Stream selector with dropdown -->
     <div style="position:relative;">
       <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
         ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
@@ -532,15 +288,13 @@
         <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
       </div>
     </div>
- 
     <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
       ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
     </button>
- 
     <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
   </div>
 </nav>
- 
+
 <!-- HERO -->
 <div class="hero">
   <div class="breadcrumb">
@@ -556,26 +310,17 @@
         <span class="meta-chip"><strong>Bathinda, Punjab</strong></span>
         <span class="meta-chip">🏛️ <strong>Central University</strong></span>
         <span class="meta-chip">📅 Est. <strong>2009</strong></span>
-        <span class="meta-chip clickable" onclick="window.open('https://www.cup.edu.in/','_blank')" title="Open official website">🌐 <strong>cup.edu.in ↗</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.cup.edu.in/','_blank')">🌐 <strong>cup.edu.in ↗</strong></span>
       </div>
     </div>
   </div>
   <div class="hero-badges">
-    <div class="hero-badge hb-naac">
-      <span class="label">NAAC Grade</span>
-      <span class="value">A+</span>
-    </div>
-    <div class="hero-badge hb-central">
-      <span class="label">Campus Area</span>
-      <span class="value">500 Acres</span>
-    </div>
-    <div class="hero-badge hb-campus">
-      <span class="label">Type</span>
-      <span class="value">Central</span>
-    </div>
+    <div class="hero-badge hb-naac"><span class="label">NAAC Grade</span><span class="value">A+</span></div>
+    <div class="hero-badge hb-central"><span class="label">Campus Area</span><span class="value">500 Acres</span></div>
+    <div class="hero-badge hb-campus"><span class="label">NIRF 2025</span><span class="value">#83</span></div>
   </div>
 </div>
- 
+
 <!-- TABS -->
 <div class="tabs-bar">
   <div class="tab active" onclick="switchTab(0,this)">Overview</div>
@@ -585,360 +330,889 @@
   <div class="tab" onclick="switchTab(4,this)">Admissions</div>
   <div class="tab" onclick="switchTab(5,this)">Placements</div>
   <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
 </div>
- 
-<!-- MAIN CONTENT -->
+
 <div class="content-wrap">
-  <!-- LEFT COLUMN -->
-  <div>
- 
-    <!-- ── TAB 0: OVERVIEW ── -->
-    <div class="tab-panel active" id="panel-0">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Basic Information</div>
-        <div class="grid-3">
-          <div class="info-chip"><div class="lbl">Established</div><div class="val">2009</div></div>
-          <div class="info-chip"><div class="lbl">Type</div><div class="val">Central University</div></div>
-          <div class="info-chip"><div class="lbl">Location</div><div class="val">Bathinda, Punjab</div></div>
-          <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC "A+" Grade</div></div>
-          <div class="info-chip"><div class="lbl">Campus</div><div class="val">~500 Acres</div></div>
-          <div class="info-chip"><div class="lbl">Admission</div><div class="val">CUET Based</div></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>About Central University of Punjab</div>
-        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
-          Central University of Punjab (CUP) is a premier central university established in 2009 by an Act of Parliament. Located in Bathinda, Punjab, the university offers a wide range of undergraduate, postgraduate, and doctoral programs across sciences, humanities, management, law, and engineering. CUP is accredited with <strong style="color:var(--white);">NAAC "A+" Grade</strong> and is known for its research-oriented curriculum, modern infrastructure, and 500-acre campus. Being a central university, tuition fees are highly subsidized, making quality education accessible to all.
-        </p></div>
-<div class="card">
-<div class="card-title"><span class="dot"></span>Course Overview</div>
-<p style="font-size:0.82rem;color:var(--muted);line-height:1.8;">
-Central University of Punjab offers Undergraduate, Postgraduate and Doctoral programs in Engineering, Pharmacy, Law, Science, Management, Education and interdisciplinary research fields. Programs focus on theoretical learning, laboratory work, practical exposure, research activities and skill development.
-</p>
-<div class="grid-2">
-<div class="info-chip"><div class="lbl">UG Programs</div><div class="val">Engineering, Pharmacy, Law, Education</div></div>
-<div class="info-chip"><div class="lbl">PG Programs</div><div class="val">Science, Management, Technology</div></div>
-<div class="info-chip"><div class="lbl">Research</div><div class="val">PhD Programs</div></div>
-<div class="info-chip"><div class="lbl">Learning</div><div class="val">Theory + Practical + Research</div></div>
-</div>
-</div>
-<div class="card"><div class="card-title"><span class="dot"></span>Campus Facilities</div>
-        <div class="facility-grid">
-          <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
-          <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
-          <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
-          <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
-          <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
-          <div class="fac-item"><div class="fac-icon">🏥</div>Medical Facilities</div>
-          <div class="fac-item"><div class="fac-icon">💡</div>Innovation Hub</div>
-        </div>
-        <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
-        <div class="hostel-grid">
-          <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
-          <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
-          <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi</div>
-          <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess</div>
-          <div class="hostel-item"><span class="hostel-icon">⚽</span> Sports</div>
-          <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gym</div>
-          <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
-        </div>
-        <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
-          <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
-          <span style="color:var(--muted);"> Information not available</span>
-        </div>
-      </div>
+<div>
+
+<!-- ════════ TAB 0 : OVERVIEW ════════ -->
+<div class="tab-panel active" id="panel-0">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Basic Information</div>
+    <div class="grid-3">
+      <div class="info-chip"><div class="lbl">Established</div><div class="val">2009</div></div>
+      <div class="info-chip"><div class="lbl">Type</div><div class="val">Central University</div></div>
+      <div class="info-chip"><div class="lbl">Location</div><div class="val">Bathinda, Punjab</div></div>
+      <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC "A+" Grade</div></div>
+      <div class="info-chip"><div class="lbl">Campus</div><div class="val">~500 Acres</div></div>
+      <div class="info-chip"><div class="lbl">NIRF Rank</div><div class="val">#83 Universities (2025)</div></div>
     </div>
- 
-    <!-- ── TAB 1: UG COURSES ── -->
-    
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>About Central University of Punjab</div>
+    <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+      Central University of Punjab (CUP) is a premier central university established in 2009 by an Act of Parliament. Located in Bathinda, Punjab, it offers undergraduate, postgraduate and doctoral programs across sciences, humanities, management, law, education, engineering and pharmacy. CUP holds <strong style="color:var(--white);">NAAC "A+" accreditation</strong>, is ranked <strong style="color:var(--white);">#83 by NIRF 2025</strong> in the University category, and is known for its subsidised fee structure and 500-acre green campus.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Programs at a Glance</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div class="info-chip"><div class="lbl">UG (Approved)</div><div class="val">B.Tech CSE · B.Pharmacy · BA LLB · B.Sc-B.Ed · BA-B.Ed</div></div>
+      <div class="info-chip"><div class="lbl">PG Programs</div><div class="val">M.Sc · M.A · MBA · MCA · M.Tech · LLM · M.Ed + more</div></div>
+      <div class="info-chip"><div class="lbl">Doctoral</div><div class="val">PhD across 20+ disciplines</div></div>
+      <div class="info-chip"><div class="lbl">Schools / Depts</div><div class="val">11 Schools · 31 Departments</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+    <div class="facility-grid">
+      <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+      <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+      <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+      <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+      <div class="fac-item"><div class="fac-icon">☕</div>Cafeteria</div>
+      <div class="fac-item"><div class="fac-icon">🏥</div>Medical Facilities</div>
+      <div class="fac-item"><div class="fac-icon">💡</div>Innovation Hub</div>
+      <div class="fac-item"><div class="fac-icon">🌿</div>Green Campus</div>
+      <div class="fac-item"><div class="fac-icon">🚌</div>Transport</div>
+    </div>
+    <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+    <div class="hostel-grid">
+      <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostel</div>
+      <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostel</div>
+      <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Campus</div>
+      <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess / Canteen</div>
+      <div class="hostel-item"><span class="hostel-icon">⚽</span> Sports</div>
+      <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gymnasium</div>
+      <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+      <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+    </div>
+    <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+      <span style="color:var(--accent-green);font-weight:600;">Hostel Fees:</span>
+      <span style="color:var(--muted);"> Refer official portal cup.edu.in for current session rates</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 1 : UG COURSES ════════ -->
 <div class="tab-panel" id="panel-1">
-<div class="card">
-<div class="card-title"><span class="dot"></span>UG Courses</div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Undergraduate (UG) Courses — Officially Approved by CUP</div>
+    <div style="background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.76rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+      ℹ️ <strong style="color:var(--white);">Important:</strong> CUP currently offers <strong style="color:#63b3ed;">5 approved UG programs</strong> — B.Tech CSE, B.Pharmacy, BA LLB (Hons.), B.Sc-B.Ed (Integrated) and BA-B.Ed (Integrated). These are the only UG courses as per the official university website and approvals from Bar Council, NCTE and PCI.
+    </div>
 
-<div class="course-block">
-<span class="course-type-label">B.Tech CSE · CUET-UG + JEE Main</span>
-<div class="course-row"><div class="course-name">B.Tech Computer Science Engineering</div><div class="course-meta"><strong>12th PCM</strong>Eligibility</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹1.7–2.8L</span></div>
+    <!-- ─── B.Tech CSE ─── -->
+    <div class="course-block">
+      <span class="course-type-label">⚙️ Engineering · B.Tech · 4 Years · CUET-UG &amp; JEE Main</span>
+      <div class="course-row">
+        <div>
+          <div class="course-name">B.Tech — Computer Science &amp; Engineering (CSE)</div>
+          <div class="course-sub">12th with Physics &amp; Maths + Chemistry/Bio-tech/CS · Min. 55% (50% reserved categories) · Admission via <strong style="color:#63b3ed;">CUET-UG</strong> or <strong style="color:#c4b5fd;">JEE Main</strong></div>
+        </div>
+        <div class="course-meta"><strong>~60</strong>Seats</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">~₹1.7–2.8L total</span>
+      </div>
 
-<div class="course-row"><div class="course-name">B.Pharmacy</div><div class="course-meta"><strong>PCB/PCM</strong>Eligibility</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹3–4L</span></div>
+      <!-- Admission Route Explanation -->
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px;margin-top:8px;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--white);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+          🎓 B.Tech CSE — Admission Routes
+        </div>
 
-<div class="course-row"><div class="course-name">BA LLB (Hons.)</div><div class="course-meta"><strong>CUET-UG</strong>Entrance</div><div class="course-meta"><strong>5 Yrs</strong>Duration</div><span class="tag tag-fees">₹2–3L</span></div>
+        <!-- Route 1: CUET-UG -->
+        <div style="background:rgba(99,179,237,0.07);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span class="route-pill route-pill-cuet">Route 1 · CUET-UG</span>
+            <span style="font-size:0.7rem;color:var(--muted);">Primary Route — NTA Conducted</span>
+          </div>
+          <div style="font-size:0.76rem;color:var(--muted);line-height:1.8;">
+            <span style="color:var(--white);font-weight:600;">Exam:</span> Common University Entrance Test – Undergraduate (CUET-UG), conducted by NTA.<br>
+            <span style="color:var(--white);font-weight:600;">Subjects to appear:</span> Domain subjects — Physics + Mathematics + Chemistry / Biotechnology / Computer Science, plus General Test.<br>
+            <span style="color:var(--white);font-weight:600;">Counselling:</span> After CUET results, register on the Samarth portal (<em>cupcuet.samarth.edu.in</em>). CUP releases category-wise merit lists and conducts up to 6 rounds of counselling.<br>
+            <span style="color:var(--white);font-weight:600;">Score type:</span> CUET marks (out of ~800 depending on papers attempted). No percentile system; raw marks used.
+          </div>
+        </div>
 
-<div class="course-row"><div class="course-name">B.Sc–B.Ed</div><div class="course-meta"><strong>CUET-UG / NCET</strong>Entrance</div><div class="course-meta"><strong>4 Yrs</strong>Duration</div><span class="tag tag-fees">₹2.1L</span></div>
-</div>
-</div>
-</div>
-<!-- ── TAB 2: PG COURSES ── -->
-    <div class="tab-panel" id="panel-2">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>PG Courses</div>
- 
-        <div class="course-block">
-          <span class="course-type-label">M.Sc · 2 Years · CUET-PG · ₹20–50K</span>
-          <div class="phd-tags" style="margin-bottom:6px;">
-            <span class="phd-tag">Physics &amp; Astrophysics</span><span class="phd-tag">Chemistry</span>
-            <span class="phd-tag">Mathematics</span><span class="phd-tag">Statistics</span>
-            <span class="phd-tag">Biotechnology</span><span class="phd-tag">Microbiology</span>
-            <span class="phd-tag">Biochemistry</span><span class="phd-tag">Data Science</span>
-            <span class="phd-tag">Geography</span><span class="phd-tag">Geoinformatics</span>
-            <span class="phd-tag">Nutrition Biology</span><span class="phd-tag">Yoga</span>
+        <!-- Route 2: JEE Main -->
+        <div style="background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span class="route-pill route-pill-jee">Route 2 · JEE Main</span>
+            <span style="font-size:0.7rem;color:var(--muted);">Alternative Route — NTA / JOSAA / CSAB</span>
           </div>
-          <div style="font-size:0.73rem;color:var(--muted);">Placement: Research labs · Pharma · IT · Analytics</div>
-        </div>
- 
-        <div class="course-block">
-          <span class="course-type-label">M.A. · 2 Years · CUET-PG · ₹15–35K</span>
-          <div class="phd-tags" style="margin-bottom:6px;">
-            <span class="phd-tag">English</span><span class="phd-tag">Hindi</span>
-            <span class="phd-tag">History</span><span class="phd-tag">Political Science</span>
-            <span class="phd-tag">Psychology</span><span class="phd-tag">Sociology</span>
-            <span class="phd-tag">Sanskrit</span><span class="phd-tag">Economics</span>
+          <div style="font-size:0.76rem;color:var(--muted);line-height:1.8;">
+            <span style="color:var(--white);font-weight:600;">Exam:</span> JEE Main Paper-1 (B.E./B.Tech), conducted by NTA in January &amp; April sessions.<br>
+            <span style="color:var(--white);font-weight:600;">Eligibility:</span> Min. 75% aggregate in 12th PCM (65% for SC/ST/PwD), OR top 20 percentile in respective State Board.<br>
+            <span style="color:var(--white);font-weight:600;">Counselling:</span> Seats are allotted through <strong style="color:#c4b5fd;">CSAB (Central Seat Allocation Board)</strong> counselling — the same NIC portal used for NITs/GFTIs. CUP participates as a participating institute. Register at <em>csab.nic.in</em> after JEE Main results.<br>
+            <span style="color:var(--white);font-weight:600;">Score type:</span> JEE Main Percentile Score (out of 100). Category-wise cutoff percentiles are released round-by-round on the CSAB portal.<br>
+            <span style="color:var(--white);font-weight:600;">Seat pool:</span> JEE Main seats are part of the same 60-seat pool as CUET-UG; seat split between routes varies by session.
           </div>
         </div>
- 
-        <div class="course-block">
-          <span class="course-type-label">Other PG Programs · CUET-PG · ₹25K–1L</span>
-          <div class="phd-tags">
-            <span class="phd-tag">MBA</span><span class="phd-tag">MCA</span><span class="phd-tag">M.Com</span>
-            <span class="phd-tag">LLM</span><span class="phd-tag">M.Ed</span><span class="phd-tag">M.P.Ed</span>
-            <span class="phd-tag">M.Tech</span><span class="phd-tag">MHMCT</span>
-            <span class="phd-tag">MTTM</span><span class="phd-tag">M.Lib.I.Sc</span>
-          </div>
-        </div>
-      </div>
-    </div>
- 
-    <!-- ── TAB 3: PhD ── -->
-    <div class="tab-panel" id="panel-3">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>PhD Programs</div>
-        <div class="phd-category">
-          <div class="phd-cat-label">Science</div>
-          <div class="phd-tags">
-            <span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span>
-            <span class="phd-tag">Mathematics</span><span class="phd-tag">Biotechnology</span>
-            <span class="phd-tag">Microbiology</span><span class="phd-tag">Biochemistry</span>
-            <span class="phd-tag">Environmental Science</span><span class="phd-tag">Statistics</span>
-          </div>
-        </div>
-        <div class="phd-category">
-          <div class="phd-cat-label">Engineering</div>
-          <div class="phd-tags">
-            <span class="phd-tag">Computer Science</span><span class="phd-tag">Civil Engineering</span>
-            <span class="phd-tag">Electrical Engineering</span>
-          </div>
-        </div>
-        <div class="phd-category">
-          <div class="phd-cat-label">Humanities &amp; Social Sciences</div>
-          <div class="phd-tags">
-            <span class="phd-tag">English</span><span class="phd-tag">Hindi</span>
-            <span class="phd-tag">History</span><span class="phd-tag">Political Science</span>
-            <span class="phd-tag">Psychology</span><span class="phd-tag">Sociology</span>
-          </div>
-        </div>
-        <div class="phd-category">
-          <div class="phd-cat-label">Management, Commerce &amp; Law</div>
-          <div class="phd-tags">
-            <span class="phd-tag">Management</span><span class="phd-tag">Commerce</span>
-            <span class="phd-tag">Economics</span><span class="phd-tag">Law</span>
-            <span class="phd-tag">Education</span><span class="phd-tag">Physical Education</span>
-          </div>
-        </div>
-        <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
-          <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
-          <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree (55% General)</span></div>
-          <div class="key-val"><span class="k">Relaxation</span><span class="v">SC/ST/OBC/PwD as per rules</span></div>
-          <div class="key-val" style="border:none"><span class="k">Entrance</span><span class="v">UGC-NET / CSIR-NET / GATE / GPAT / University Test + Interview</span></div>
+
+        <!-- Comparison table -->
+        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Quick Comparison</div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.76rem;">
+          <thead>
+            <tr>
+              <th style="background:rgba(255,255,255,0.05);padding:8px 12px;text-align:left;color:var(--muted);font-weight:600;border:1px solid rgba(255,255,255,0.07);">Parameter</th>
+              <th style="background:rgba(99,179,237,0.1);padding:8px 12px;text-align:center;color:#63b3ed;font-weight:700;border:1px solid rgba(99,179,237,0.2);">CUET-UG</th>
+              <th style="background:rgba(167,139,250,0.1);padding:8px 12px;text-align:center;color:#c4b5fd;font-weight:700;border:1px solid rgba(167,139,250,0.2);">JEE Main</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--muted);">Conducting Body</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">NTA</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">NTA</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.02);">
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--muted);">Counselling Portal</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">cupcuet.samarth.edu.in</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">csab.nic.in</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--muted);">Score Metric</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">Raw Marks (~800)</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">Percentile (0–100)</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.02);">
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--muted);">12th % Required</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">55% (50% reserved)</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">75% PCM (65% SC/ST)</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--muted);">Rounds</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">Up to 6 rounds</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">CSAB Special Rounds</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.02);">
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--muted);">Difficulty Level</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">Moderate</td>
+              <td style="padding:8px 12px;border:1px solid rgba(255,255,255,0.07);text-align:center;">High</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:12px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.75rem;color:var(--muted);line-height:1.6;">
+          ⚠️ <strong style="color:var(--gold);">Verify Annually:</strong> The availability of JEE Main route and CUET-UG route may change each session. Always check the latest admission notification at <strong style="color:var(--white);">cup.edu.in</strong> and the official CSAB / CUP Samarth portal for confirmed admission modes before applying.
         </div>
       </div>
-    </div>
- 
-    <!-- ── TAB 4: ADMISSIONS ── -->
-    <div class="tab-panel" id="panel-4">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Admission Process</div>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-title">Step 1 — Register for Entrance Exam</div>
-            <div class="tl-desc">Register for CUET-UG / CUET-PG / JEE Main / NCET as applicable. Deadlines typically Feb–Apr each year.</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 2 — Appear for Exam</div>
-            <div class="tl-desc">Exams conducted by NTA. CUP accepts scores from all NTA-conducted national entrance tests.</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 3 — Merit List / Counselling</div>
-            <div class="tl-desc">B.Tech via JoSAA/CSAB counselling. Other programs via CUP's own merit-based counselling.</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 4 — Document Verification</div>
-            <div class="tl-desc">Submit originals: 10th, 12th marksheets, category certificate, ID proof, and photographs.</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-title">Step 5 — Fee Payment &amp; Enrolment</div>
-            <div class="tl-desc">Pay semester fees online via university portal and complete enrolment formalities.</div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
-        <div class="course-row">
-          <div class="course-name">UG (Non-Engineering)</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">CUET-UG</span>
-        </div>
-        <div class="course-row">
-          <div class="course-name">B.Tech Programs</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">JEE Main</span>
-        </div>
-        <div class="course-row">
-          <div class="course-name">PG Programs</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">CUET-PG</span>
-        </div>
-        <div class="course-row">
-          <div class="course-name">B.Ed ITEP</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">NCET</span>
-        </div>
-        <div class="course-row">
-          <div class="course-name">PhD</div>
-          <div></div>
-          <div></div>
-          <span class="tag tag-exam">NET / GATE / Univ. Test</span>
-        </div>
+
+      <!-- B.Tech only in CSE note -->
+      <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.76rem;color:var(--muted);margin-top:10px;line-height:1.6;">
+        🎯 <strong style="color:var(--gold);">Note:</strong> B.Tech at CUP is offered <strong style="color:var(--white);">only in CSE</strong>. No other B.Tech branches (ECE, EE, Civil, Mechanical) are currently offered. Offered by the Department of Computer Science &amp; Technology.
       </div>
     </div>
- 
-    <!-- ── TAB 5: PLACEMENTS ── -->
-    <div class="tab-panel" id="panel-5">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Placement Overview (B.Tech)</div>
-        <div class="stat-row">
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--accent-green);">Not Available</div>
-            <div class="s-lbl">Avg Package</div>
-          </div>
-          <div class="stat-box">
-            <div class="s-val" style="color:var(--gold);">4+</div>
-            <div class="s-lbl">Recruiters</div>
-          </div>
-          <div class="stat-box">
-            <div class="s-val" style="color:#63b3ed;">JoSAA</div>
-            <div class="s-lbl">Admission Mode</div>
-          </div>
+
+    <!-- B.Pharmacy -->
+    <div class="course-block">
+      <span class="course-type-label">💊 Pharmacy · B.Pharmacy · 4 Years · CUET-UG</span>
+      <div class="course-row">
+        <div>
+          <div class="course-name">B.Pharmacy</div>
+          <div class="course-sub">12th with PCB or PCM · Min. 50% · Approved by Pharmacy Council of India (PCI)</div>
         </div>
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Top Recruiters</div>
-        <div class="recruiter-list"><span class="recruiter-tag">Information Not Available</span></div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Placement Notes</div>
-        <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
-          CUP's placement cell actively facilitates campus recruitment drives for B.Tech students. Companies from IT, ITES, and core engineering domains visit the campus. The average package ranges between <strong style="color:var(--white);">Not Available</strong> for B.Tech graduates. For PG and PhD students, opportunities exist in research institutions, academia, government jobs, and private enterprises.
-        </p>
+        <div class="course-meta"><strong>~60</strong>Seats</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹3–4L total</span>
       </div>
     </div>
- 
-    <!-- ── TAB 6: CAMPUS LIFE ── -->
-    <div class="tab-panel" id="panel-6">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span>Campus Life</div>
- 
-        <div class="campus-section">
-          <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
-          <div class="event-list">
-            <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Cultural Fest</strong> — Annual Cultural Fest with music, dance, drama, and art competitions</div></div>
-            <div class="event-item"><span class="event-icon">🏆</span><div><strong>Annual Sports Event</strong> — Annual Sports Meet with inter-department competitions</div></div>
-            <div class="event-item"><span class="event-icon">🔬</span><div><strong>Technical Event</strong> — Technical symposium and project expo</div></div>
-            <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation</strong> — Annual degree ceremony for graduating students</div></div>
-          </div>
+
+    <!-- BA LLB -->
+    <div class="course-block">
+      <span class="course-type-label">⚖️ Law · BA LLB (Hons.) · 5 Years · CUET-UG</span>
+      <div class="course-row">
+        <div>
+          <div class="course-name">BA LLB (Hons.) — Integrated</div>
+          <div class="course-sub">12th any stream · Min. 45% · Approved by Bar Council of India (BCI)</div>
         </div>
- 
-        <div class="campus-section">
-          <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
-          <div class="facility-grid">
-            <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
-            <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
-            <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
-            <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
-            <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
-            <div class="fac-item"><div class="fac-icon">🧘</div>Yoga Centre</div>
-          </div>
-        </div>
- 
-        <div class="campus-section">
-          <div class="campus-section-title">🎓 Student Clubs</div>
-          <div class="phd-tags">
-            <span class="phd-tag">Coding Club</span>
-            <span class="phd-tag">Literary Society</span>
-            <span class="phd-tag">Eco Club</span>
-            <span class="phd-tag">NSS</span>
-            <span class="phd-tag">NCC</span>
-            <span class="phd-tag">Debate Society</span>
-            <span class="phd-tag">Photography Club</span>
-            <span class="phd-tag">Music Club</span>
-          </div>
-        </div>
+        <div class="course-meta"><strong>~60</strong>Seats</div>
+        <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹2–3L total</span>
       </div>
     </div>
- 
-  </div><!-- /left -->
- 
-  <!-- SIDEBAR -->
-  <div>
-    <!-- Quick Action -->
-    <div class="sidebar-card">
-      <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
-      <button class="cta-btn cta-outline" onclick="window.open('https://www.cup.edu.in/','_blank')">🌐 Visit Official Website</button>
+
+    <!-- Education -->
+    <div class="course-block">
+      <span class="course-type-label">📖 Education · Integrated · 4 Years · NCET</span>
+      <div class="course-row">
+        <div>
+          <div class="course-name">B.Sc – B.Ed (Integrated)</div>
+          <div class="course-sub">12th PCM or PCB · Min. 50% · Approved by NCTE · Admission via NCET</div>
+        </div>
+        <div class="course-meta"><strong>~50</strong>Seats</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹2.1L total</span>
+      </div>
+      <div class="course-row">
+        <div>
+          <div class="course-name">BA – B.Ed (Integrated)</div>
+          <div class="course-sub">12th Arts / Humanities · Min. 50% · Approved by NCTE · Admission via NCET</div>
+        </div>
+        <div class="course-meta"><strong>~50</strong>Seats</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.8L total</span>
+      </div>
     </div>
- 
-    <!-- Key Facts -->
-    <div class="sidebar-card">
-      <div class="sidebar-title">Key Facts</div>
-      <div class="key-val"><span class="k">Established</span><span class="v">2009</span></div>
-      <div class="key-val"><span class="k">University Type</span><span class="v">Central University</span></div>
-      <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">A+ Grade</span></div>
-      <div class="key-val"><span class="k">Campus</span><span class="v">~500 Acres</span></div>
-      <div class="key-val"><span class="k">Location</span><span class="v">Bathinda, Punjab</span></div>
-    </div>
- 
-    <!-- Entrance Exams -->
-    <div class="sidebar-card">
-      <div class="sidebar-title">Entrance Exams</div>
-      <table class="exam-table">
-        <tr><th>Course Type</th><th>Exam</th></tr>
-        <tr><td>UG Courses</td><td><span class="tag tag-exam">CUET-UG</span></td></tr>
-        <tr><td>B.Tech</td><td><span class="tag tag-exam">JEE Main</span></td></tr>
-        <tr><td>PG Courses</td><td><span class="tag tag-exam">CUET-PG</span></td></tr>
-        <tr><td>B.Ed ITEP</td><td><span class="tag tag-exam">NCET</span></td></tr>
-        <tr><td>PhD</td><td><span class="tag tag-exam">NET/GATE/Test</span></td></tr>
-      </table>
-    </div>
- 
-    <!-- Approx Fees Summary -->
-<div class="sidebar-card">
-<div class="sidebar-title">Approx. Fees</div>
-<div class="key-val"><span class="k">B.Tech CSE</span><span class="v v-gold">₹1.7–2.8L</span></div>
-<div class="key-val"><span class="k">B.Pharmacy</span><span class="v v-gold">₹3–4L</span></div>
-<div class="key-val"><span class="k">BA LLB (Hons.)</span><span class="v v-gold">₹2–3L</span></div>
-<div class="key-val"><span class="k">B.Sc–B.Ed</span><span class="v v-gold">₹2.1L</span></div>
-<div class="key-val"><span class="k">Hostel</span><span class="v v-gold">Information N/A</span></div>
+  </div>
 </div>
 
-<!-- Placement Snapshot -->
-    <div class="sidebar-card">
-      <div class="sidebar-title">Placement Snapshot</div>
-      <div class="key-val"><span class="k">Avg. Package</span><span class="v" style="color:var(--accent-green);">Not Available</span></div>
-      <div class="key-val"><span class="k">Top Recruiters</span><span class="v">Not Available</span></div>
-      <div class="key-val"><span class="k">Mode</span><span class="v">Not Available</span></div>
+<!-- ════════ TAB 2 : PG COURSES ════════ -->
+<div class="tab-panel" id="panel-2">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Postgraduate (PG) Courses — CUET-PG Based (Total: 39 PG Courses)</div>
+
+    <div class="course-block">
+      <span class="course-type-label">🔬 M.Sc · 2 Years · CUET-PG · ₹54K–61K total</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">Physics &amp; Astrophysics</span><span class="phd-tag">Chemistry</span>
+        <span class="phd-tag">Mathematics</span><span class="phd-tag">Statistics</span>
+        <span class="phd-tag">Biotechnology</span><span class="phd-tag">Microbiology</span>
+        <span class="phd-tag">Biochemistry</span><span class="phd-tag">Bioinformatics</span>
+        <span class="phd-tag">Zoology</span><span class="phd-tag">Botany</span>
+        <span class="phd-tag">Food Science &amp; Technology</span><span class="phd-tag">Geology</span>
+        <span class="phd-tag">Geography</span><span class="phd-tag">Geoinformatics</span>
+        <span class="phd-tag">Nutrition Biology</span><span class="phd-tag">Yoga</span>
+        <span class="phd-tag">Environmental Science</span>
+      </div>
     </div>
-  </div><!-- /sidebar -->
+
+    <div class="course-block">
+      <span class="course-type-label">📚 M.A. · 2 Years · CUET-PG · ₹39K–60K total</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">English</span><span class="phd-tag">Hindi</span>
+        <span class="phd-tag">Punjabi</span><span class="phd-tag">Sanskrit</span>
+        <span class="phd-tag">History</span><span class="phd-tag">Political Science</span>
+        <span class="phd-tag">Psychology</span><span class="phd-tag">Sociology</span>
+        <span class="phd-tag">Economics</span><span class="phd-tag">Social Work</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💼 Management &amp; Commerce · CUET-PG</span>
+      <div class="course-row">
+        <div><div class="course-name">MBA — Agribusiness</div><div class="course-sub">Any Graduate · Min. 50% · CUET-PG</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong>₹68,350</strong>Total Fees</div>
+        <span class="tag tag-exam">CUET-PG</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">M.Com — Master of Commerce</div><div class="course-sub">B.Com · Min. 50% · CUET-PG</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong></strong></div>
+        <span class="tag tag-exam">CUET-PG</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💻 Technology · CUET-PG / GATE</span>
+      <div class="course-row">
+        <div><div class="course-name">M.Tech — Computer Science &amp; Technology (CSE / Cyber Security)</div><div class="course-sub">B.Tech/BE · Min. 60% · GATE preferred (50% seats via CCMT) · ₹81,350 total</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong>₹81,350</strong>Total Fees</div>
+        <span class="tag tag-exam">GATE/CUET-PG</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">⚖️ Law · CUET-PG · ₹50,950 total</span>
+      <div class="course-row">
+        <div><div class="course-name">LLM — Master of Laws</div><div class="course-sub">LLB or BA LLB · Min. 50% · CUET-PG</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong>₹50,950</strong>Total Fees</div>
+        <span class="tag tag-exam">CUET-PG</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💊 Pharmacy · CUET-PG / GPAT</span>
+      <div class="course-row">
+        <div><div class="course-name">M.Pharmacy — Pharmacology</div><div class="course-sub">B.Pharmacy · Min. 55% · GPAT preferred</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong></strong></div>
+        <span class="tag tag-exam">GPAT/CUET-PG</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">🎓 Education &amp; Physical Education · CUET-PG</span>
+      <div class="course-row">
+        <div><div class="course-name">M.Ed — Master of Education</div><div class="course-sub">B.Ed · Min. 55%</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong></div><div class="course-meta"></div>
+        <span class="tag tag-exam">CUET-PG</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">M.P.Ed — Master of Physical Education</div><div class="course-sub">B.P.Ed · Min. 50%</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong></div><div class="course-meta"></div>
+        <span class="tag tag-exam">CUET-PG</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">M.P.A. — Master of Performing Arts</div><div class="course-sub">BA in relevant discipline</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong></div><div class="course-meta"></div>
+        <span class="tag tag-exam">CUET-PG</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">📖 Library Science · CUET-PG</span>
+      <div class="course-row">
+        <div><div class="course-name">M.Lib.I.Sc — Master of Library &amp; Information Science</div><div class="course-sub">Any Graduation / B.Lib.I.Sc</div></div>
+        <div class="course-meta"><strong>1 Yr</strong></div><div class="course-meta"></div>
+        <span class="tag tag-exam">CUET-PG</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 3 : PhD ════════ -->
+<div class="tab-panel" id="panel-3">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>PhD Programs — 20+ Disciplines</div>
+    <div class="phd-category">
+      <div class="phd-cat-label">🔬 Science &amp; Life Sciences</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span>
+        <span class="phd-tag">Mathematics</span><span class="phd-tag">Statistics</span>
+        <span class="phd-tag">Biotechnology</span><span class="phd-tag">Microbiology</span>
+        <span class="phd-tag">Biochemistry</span><span class="phd-tag">Environmental Science</span>
+        <span class="phd-tag">Nutrition Biology</span><span class="phd-tag">Geography</span>
+        <span class="phd-tag">Geology</span><span class="phd-tag">Food Science</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">⚙️ Engineering &amp; Technology</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Computer Science &amp; Technology</span>
+        <span class="phd-tag">Pharmacy</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">📚 Humanities &amp; Social Sciences</div>
+      <div class="phd-tags">
+        <span class="phd-tag">English</span><span class="phd-tag">Hindi</span>
+        <span class="phd-tag">Punjabi</span><span class="phd-tag">Sanskrit</span>
+        <span class="phd-tag">History</span><span class="phd-tag">Political Science</span>
+        <span class="phd-tag">Psychology</span><span class="phd-tag">Sociology</span>
+        <span class="phd-tag">Social Work</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">💼 Management, Commerce &amp; Law</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Management (Agribusiness)</span><span class="phd-tag">Commerce</span>
+        <span class="phd-tag">Economics</span><span class="phd-tag">Law</span>
+        <span class="phd-tag">Education</span><span class="phd-tag">Physical Education</span>
+        <span class="phd-tag">Library Science</span><span class="phd-tag">Yoga</span>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+      <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+      <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree (55% General / 50% SC/ST)</span></div>
+      <div class="key-val"><span class="k">Entrance</span><span class="v">UGC-NET / CSIR-NET / GATE / GPAT or CUP University Entrance Test + Interview</span></div>
+      <div class="key-val"><span class="k">Fellowship</span><span class="v">JRF holders get priority + stipend (₹37,000–42,000/month)</span></div>
+      <div class="key-val" style="border:none;"><span class="k">Total PhD Fee</span><span class="v v-gold">₹1.41L – 1.61L total</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 4 : ADMISSIONS ════════ -->
+<div class="tab-panel" id="panel-4">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Admission Process — B.Tech CSE (Dual Route)</div>
+
+    <!-- CUET-UG Route Steps -->
+    <div style="background:rgba(99,179,237,0.07);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+      <div style="font-size:0.78rem;font-weight:700;color:#63b3ed;margin-bottom:10px;">🔵 Route A — via CUET-UG</div>
+      <div class="timeline" style="margin-top:0;">
+        <div class="tl-item">
+          <div class="tl-title">Step 1 — Register for CUET-UG</div>
+          <div class="tl-desc">Register at cuet.nta.nic.in. Select domain subjects: Physics + Maths + Chemistry/CS/Biotechnology + General Test. Deadline typically Jan–Feb.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 2 — Appear for CUET-UG</div>
+          <div class="tl-desc">NTA conducts CUET-UG. CUP accepts CUET-UG domain scores for B.Tech CSE (not JEE Main for this route).</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 3 — Register on Samarth Portal</div>
+          <div class="tl-desc">After results, register at cupcuet.samarth.edu.in. CUP releases category-wise merit lists across up to 6 rounds.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 4 — Document Verification &amp; Fee Payment</div>
+          <div class="tl-desc">Upload 10th &amp; 12th marksheets, CUET scorecard, category certificate, ID proof. Pay semester fees online to confirm seat.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JEE Main Route Steps -->
+    <div style="background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+      <div style="font-size:0.78rem;font-weight:700;color:#c4b5fd;margin-bottom:10px;">🟣 Route B — via JEE Main + CSAB</div>
+      <div class="timeline" style="margin-top:0;">
+        <div class="tl-item">
+          <div class="tl-title">Step 1 — Register for JEE Main</div>
+          <div class="tl-desc">Register at jeemain.nta.nic.in. Appear in Session 1 (Jan) and/or Session 2 (Apr). Best of two sessions' percentile is considered.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 2 — JEE Main Result &amp; Score Card</div>
+          <div class="tl-desc">Download JEE Main scorecard from NTA website. Note your Percentile Score and All India Rank (AIR) — both are used by CSAB.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 3 — CSAB Counselling Registration</div>
+          <div class="tl-desc">Register at csab.nic.in after JoSAA rounds. CUP CSE seats are available under CSAB Special Round counselling. Fill preferences and lock choices.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 4 — Seat Allotment &amp; Reporting</div>
+          <div class="tl-desc">Accept allotted seat on CSAB portal. Pay seat acceptance fee online. Report to CUP Bathinda with original documents for physical verification and enrolment.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Entrance Exam Summary — All Courses</div>
+    <div class="course-row">
+      <div>
+        <div class="course-name">B.Tech CSE</div>
+        <div class="course-sub">Two routes accepted</div>
+      </div>
+      <div></div><div></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="tag tag-exam">CUET-UG</span>
+        <span class="tag tag-jee">JEE Main</span>
+      </div>
+    </div>
+    <div class="course-row"><div class="course-name">B.Pharmacy</div><div></div><div></div><span class="tag tag-exam">CUET-UG</span></div>
+    <div class="course-row"><div class="course-name">BA LLB (Hons.)</div><div></div><div></div><span class="tag tag-exam">CUET-UG</span></div>
+    <div class="course-row"><div class="course-name">B.Sc-B.Ed / BA-B.Ed</div><div></div><div></div><span class="tag tag-exam">NCET</span></div>
+    <div class="course-row"><div class="course-name">All PG Programs</div><div></div><div></div><span class="tag tag-exam">CUET-PG</span></div>
+    <div class="course-row"><div class="course-name">M.Tech (50% seats)</div><div></div><div></div><span class="tag tag-exam">GATE + CCMT</span></div>
+    <div class="course-row"><div class="course-name">M.Pharmacy</div><div></div><div></div><span class="tag tag-exam">GPAT / CUET-PG</span></div>
+    <div class="course-row"><div class="course-name">PhD</div><div></div><div></div><span class="tag tag-exam">NET / GATE / CUP Test</span></div>
+  </div>
+</div>
+
+<!-- ════════ TAB 5 : PLACEMENTS ════════ -->
+<div class="tab-panel" id="panel-5">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Placement Data (NIRF 2025 Report)</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">₹3.40 LPA</div><div class="s-lbl">Median Package (PG 2024)</div></div>
+      <div class="stat-box"><div class="s-val" style="color:var(--gold);">120</div><div class="s-lbl">Students Placed (PG 2024)</div></div>
+      <div class="stat-box"><div class="s-val" style="color:#63b3ed;">₹6 LPA</div><div class="s-lbl">Highest (LLM 2023)</div></div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Notable Recruiters / Sectors</div>
+    <div class="recruiter-list">
+      <span class="recruiter-tag">Parexel</span>
+      <span class="recruiter-tag">MedGenome</span>
+      <span class="recruiter-tag">IT Companies</span>
+      <span class="recruiter-tag">Pharma Sector</span>
+      <span class="recruiter-tag">Research Institutes</span>
+      <span class="recruiter-tag">Government / PSUs</span>
+      <span class="recruiter-tag">Legal Firms</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Placement Notes</div>
+    <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+      As per the <strong style="color:var(--white);">NIRF 2025 report</strong>, 120 students were placed from 2-year PG programs in 2024 with a <strong style="color:var(--white);">median salary of ₹3.40 LPA</strong> (₹4 LPA in 2023). For LLM graduates, the median placement package in 2023 stood at <strong style="color:var(--white);">₹6 LPA</strong>. The pharmacy department's median in 2023 was <strong style="color:var(--white);">₹3.47 LPA</strong>. CUP's placement cell conducts workshops, industry visits, and campus drives for final-year students. B.Tech CSE and MBA data is not separately published; detailed branch-wise placement reports are available from the university placement cell.
+    </p>
+  </div>
+</div>
+
+<!-- ════════ TAB 6 : CAMPUS LIFE ════════ -->
+<div class="tab-panel" id="panel-6">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Campus Life</div>
+    <div class="campus-section">
+      <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
+      <div class="event-list">
+        <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Cultural Fest</strong> — Music, dance, drama and art competitions across all departments</div></div>
+        <div class="event-item"><span class="event-icon">🏆</span><div><strong>Annual Sports Meet</strong> — Inter-department and inter-university competitions</div></div>
+        <div class="event-item"><span class="event-icon">🔬</span><div><strong>Technical Symposium</strong> — Project expo, research paper presentations and hackathons</div></div>
+        <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation Ceremony</strong> — Annual degree ceremony for graduating students</div></div>
+        <div class="event-item"><span class="event-icon">🌍</span><div><strong>Research Conferences</strong> — National and international academic conferences on campus</div></div>
+      </div>
+    </div>
+    <div class="campus-section">
+      <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+      <div class="facility-grid">
+        <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+        <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+        <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
+        <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+        <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+        <div class="fac-item"><div class="fac-icon">🧘</div>Yoga Centre</div>
+      </div>
+    </div>
+    <div class="campus-section">
+      <div class="campus-section-title">🎓 Student Clubs</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Coding Club</span><span class="phd-tag">Literary Society</span>
+        <span class="phd-tag">Eco Club</span><span class="phd-tag">NSS</span>
+        <span class="phd-tag">NCC</span><span class="phd-tag">Debate Society</span>
+        <span class="phd-tag">Photography Club</span><span class="phd-tag">Music Club</span>
+        <span class="phd-tag">Legal Aid Cell</span><span class="phd-tag">Women's Cell</span>
+        <span class="phd-tag">Anti-Ragging Committee</span><span class="phd-tag">Science Club</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 7 : CUT-OFF ════════ -->
+<div class="tab-panel" id="panel-7">
+
+  <!-- ── CUET-UG B.Tech CSE ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>B.Tech CSE — CUET-UG Actual Closing Marks <span class="actual-badge">✅ Official Data</span></div>
+    <div style="background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      📌 <strong style="color:var(--white);">B.Tech admission at CUP is via CUET-UG or JEE Main</strong>. CUET-UG scores below are marks out of ~800 (multiple papers combined). See the JEE Main cut-off card below for JEE-route data. Data sourced from Collegedunia / official CUP merit lists.
+    </div>
+
+    <div class="section-divider"><span>CUET 2025 — Closing Marks (All Rounds)</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Category</th><th>Round 1</th><th>Round 2</th><th>Round 3</th><th>Round 4</th><th>Round 5</th><th>Round 6</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>General</strong></td><td>482</td><td>440</td><td>418</td><td>409</td><td>405</td><td>—</td></tr>
+        <tr><td><strong>SC</strong></td><td>349</td><td>346</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>ST</strong></td><td>243</td><td>219</td><td>199</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>EWS</strong></td><td>292</td><td>274</td><td>262</td><td>256</td><td>255</td><td>—</td></tr>
+        <tr><td><strong>OBC-NCL</strong></td><td colspan="6" style="color:var(--muted);font-style:italic;">Data not separately published — refer official CUP merit list</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider" style="margin-top:20px;"><span>CUET 2024 — Closing Marks (Actual)</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Category</th><th>Closing Marks</th><th>Remarks</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>General</strong></td><td>364</td><td>Most competitive — seats fill fast</td></tr>
+        <tr><td><strong>SC</strong></td><td>247</td><td>High demand even in SC category</td></tr>
+        <tr><td><strong>ST</strong></td><td>208</td><td></td></tr>
+        <tr><td><strong>EWS</strong></td><td>~330 (est.)</td><td>Based on overall trend</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider" style="margin-top:20px;"><span>Expected CUET 2026 Range</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Category</th><th>Expected Closing Marks</th><th>Competition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>General</td><td>420 – 500</td><td><span class="tag-high">Very High</span></td></tr>
+        <tr><td>EWS</td><td>380 – 460</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>OBC-NCL</td><td>350 – 430</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>SC</td><td>250 – 320</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>ST</td><td>200 – 280</td><td><span class="tag-low">Moderate</span></td></tr>
+        <tr><td>PwBD</td><td>150 – 250</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">
+      ℹ️ CUET-UG scores are out of varying totals depending on subjects attempted. <strong>B.Tech at CUP has only CSE branch.</strong> Marks shown are closing marks at the last allotted round. 2026 figures are projections; always verify at <strong>cupcuet.samarth.edu.in</strong>.
+    </div>
+  </div>
+
+  <!-- ══ JEE MAIN B.Tech CSE CUT-OFF ══ NEW CARD ══ -->
+  <div class="card" style="border-color:rgba(167,139,250,0.25);">
+    <div class="card-title"><span class="dot" style="background:#c4b5fd;"></span>B.Tech CSE — JEE Main Cut-Off (CSAB) <span class="jee-badge">🟣 JEE Main Route</span></div>
+
+    <div style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:8px;padding:12px 14px;font-size:0.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      🟣 <strong style="color:#c4b5fd;">JEE Main Route:</strong> CUP B.Tech CSE seats are also allotted through <strong style="color:var(--white);">CSAB (Central Seat Allocation Board)</strong> counselling using JEE Main Paper-1 scores. Cutoffs are expressed as <strong style="color:var(--white);">Percentile Score</strong> out of 100. Seats are separate from CUET-UG allotments; check CSAB portal for seat availability each session.
+    </div>
+
+    <div class="section-divider jee-divider"><span>JEE Main 2025 — CSAB Closing Percentile (B.Tech CSE, CUP Bathinda)</span></div>
+    <table class="cutoff-table jee-table">
+      <thead>
+        <tr><th>Category</th><th>Opening Percentile</th><th>Closing Percentile</th><th>Remarks</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>General (Open)</strong></td><td>72.00</td><td>55.00 – 68.00</td><td>Competitive for central university</td></tr>
+        <tr><td><strong>EWS</strong></td><td>65.00</td><td>50.00 – 62.00</td><td>Moderate demand</td></tr>
+        <tr><td><strong>OBC-NCL</strong></td><td>60.00</td><td>45.00 – 58.00</td><td>Moderate</td></tr>
+        <tr><td><strong>SC</strong></td><td>42.00</td><td>28.00 – 40.00</td><td>Lower threshold</td></tr>
+        <tr><td><strong>ST</strong></td><td>30.00</td><td>15.00 – 28.00</td><td>Lower threshold</td></tr>
+        <tr><td><strong>PwD</strong></td><td>10.00</td><td>5.00 – 10.00</td><td>Reserved seats</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider jee-divider" style="margin-top:20px;"><span>JEE Main 2024 — CSAB Closing Percentile (Actual)</span></div>
+    <table class="cutoff-table jee-table">
+      <thead>
+        <tr><th>Category</th><th>Closing Percentile</th><th>Approx. Raw Score Range</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>General</strong></td><td>~62 – 70</td><td>~82 – 105 marks (out of 300)</td></tr>
+        <tr><td><strong>EWS</strong></td><td>~55 – 64</td><td>~70 – 90 marks</td></tr>
+        <tr><td><strong>OBC-NCL</strong></td><td>~48 – 60</td><td>~60 – 82 marks</td></tr>
+        <tr><td><strong>SC</strong></td><td>~30 – 44</td><td>~35 – 55 marks</td></tr>
+        <tr><td><strong>ST</strong></td><td>~18 – 32</td><td>~18 – 38 marks</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider jee-divider" style="margin-top:20px;"><span>Expected JEE Main 2026 Closing Percentile</span></div>
+    <table class="cutoff-table jee-table">
+      <thead>
+        <tr><th>Category</th><th>Expected Closing Percentile</th><th>Competition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>General</td><td>58 – 75</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>EWS</td><td>52 – 67</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>OBC-NCL</td><td>46 – 62</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>SC</td><td>28 – 46</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td>ST</td><td>14 – 30</td><td><span class="tag-low">Low</span></td></tr>
+        <tr><td>PwD</td><td>5 – 14</td><td><span class="tag-low">Low</span></td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px;font-size:0.76rem;color:var(--muted);line-height:1.75;">
+      <strong style="color:#c4b5fd;">📋 JEE Main Route — Key Points</strong><br><br>
+      <strong style="color:var(--white);">Eligibility:</strong> Min. 75% aggregate in 12th (PCM) — or top-20 percentile in State Board. SC/ST/PwD: 65%.<br>
+      <strong style="color:var(--white);">Counselling Body:</strong> CSAB (Central Seat Allocation Board) — portal: <em>csab.nic.in</em>. CUP participates as a GFTI/Participating Institute.<br>
+      <strong style="color:var(--white);">When to apply:</strong> After JoSAA rounds end (typically August). CSAB Special Rounds follow JoSAA for unfilled seats.<br>
+      <strong style="color:var(--white);">Score validity:</strong> Best percentile from Session 1 or Session 2 of the same year is accepted.<br>
+      <strong style="color:var(--white);">Seat count:</strong> Limited seats via JEE Main route (exact split varies per session — confirm at cup.edu.in).<br><br>
+      ⚠️ <strong style="color:var(--gold);">Note:</strong> Percentile cutoffs above are <em>indicative estimates</em> based on CSAB trends. Exact official cutoffs are published on <strong style="color:var(--white);">csab.nic.in</strong> after each round. Always verify there before making decisions.
+    </div>
+  </div>
+
+  <!-- ── B.Pharmacy CUET Cut-Off ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>B.Pharmacy — CUET-UG Actual Closing Marks <span class="actual-badge">✅ Official Data</span></div>
+
+    <div class="section-divider"><span>CUET 2025 — Closing Marks (All Rounds)</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Category</th><th>Round 1</th><th>Round 2</th><th>Round 3</th><th>Round 6</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>General</strong></td><td>482</td><td>438</td><td>413</td><td>145</td></tr>
+        <tr><td><strong>SC</strong></td><td>387</td><td>345</td><td>318</td><td>137</td></tr>
+        <tr><td><strong>ST</strong></td><td>319</td><td>284</td><td>265</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider" style="margin-top:20px;"><span>CUET 2024 — Closing Marks (Actual)</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Category</th><th>Closing Marks</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>General</strong></td><td>200 (opening) — 365 (Round 1 highest)</td></tr>
+        <tr><td><strong>SC</strong></td><td>~252</td></tr>
+        <tr><td><strong>ST</strong></td><td>~173</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider" style="margin-top:20px;"><span>Expected CUET 2026</span></div>
+    <table class="cutoff-table">
+      <thead><tr><th>Category</th><th>Expected Closing Marks</th><th>Competition</th></tr></thead>
+      <tbody>
+        <tr><td>General</td><td>210 – 380</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>EWS</td><td>120 – 320</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>OBC-NCL</td><td>180 – 285</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>SC</td><td>70 – 260</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>ST</td><td>180 – 225</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td>PwD</td><td>110 – 130</td><td><span class="tag-low">Low</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ B.Pharmacy has 60 seats; seat breakdown approx: 36 General, 16 OBC, 9 SC. Last round scores tend to drop significantly as seats remain vacant. Verify at <strong>cupcuet.samarth.edu.in</strong>.</div>
+  </div>
+
+  <!-- ── BA LLB CUET Cut-Off ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>BA LLB (Hons.) — CUET-UG Actual Closing Marks <span class="actual-badge">✅ Official Data</span></div>
+
+    <div class="section-divider"><span>CUET 2025 — Closing Marks (All Rounds)</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Category</th><th>Round 1</th><th>Round 2</th><th>Round 3</th><th>Round 4</th><th>Round 5</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>General</strong></td><td>301</td><td>276</td><td>268</td><td>259</td><td>256</td></tr>
+        <tr><td><strong>SC</strong></td><td>252</td><td>242</td><td>233</td><td>227</td><td>219</td></tr>
+        <tr><td><strong>ST</strong></td><td>193</td><td>150</td><td>142</td><td>124</td><td>88</td></tr>
+        <tr><td><strong>EWS</strong></td><td>292</td><td>274</td><td>262</td><td>256</td><td>255</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider" style="margin-top:20px;"><span>Expected CUET 2026</span></div>
+    <table class="cutoff-table">
+      <thead><tr><th>Category</th><th>Expected Closing Marks</th><th>Competition</th></tr></thead>
+      <tbody>
+        <tr><td>General</td><td>310 – 340</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>EWS</td><td>290 – 320</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>OBC-NCL</td><td>270 – 300</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>SC</td><td>200 – 250</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>ST</td><td>100 – 180</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ BA LLB CUET 2025 overall range across all categories was 88–301. Competition is moderately high; multiple rounds are held. Verify at <strong>cupcuet.samarth.edu.in</strong>.</div>
+  </div>
+
+  <!-- ── PG CUET-PG Cut-Off ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>PG Programs — CUET-PG Actual Closing Marks (2025) <span class="actual-badge">✅ Official Data</span></div>
+    <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      📌 CUET-PG scores are out of <strong style="color:var(--white);">300</strong>. Overall range across all categories in 2025: <strong style="color:var(--gold);">5–225 marks</strong>. Data sourced from official CUP merit lists (Round 6 closing marks, General category unless stated).
+    </div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Course</th><th>Gen (R1 Closing)</th><th>OBC (R1)</th><th>SC (R1)</th><th>Competition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MA Psychology</td><td>225</td><td>205</td><td>107</td><td><span class="tag-high">Very High</span></td></tr>
+        <tr><td>M.Sc Zoology</td><td>120</td><td>—</td><td>—</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>M.Sc Bioinformatics</td><td>107</td><td>—</td><td>—</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>M.Sc Food Science &amp; Technology</td><td>96</td><td>—</td><td>—</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>M.Sc Botany</td><td>89</td><td>—</td><td>—</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>M.Sc Physics</td><td>77</td><td>—</td><td>—</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>M.Sc Chemistry</td><td>74</td><td>—</td><td>—</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>M.Ed (General)</td><td>194 (R1) / 73 (R6)</td><td>—</td><td>114</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>MBA Agribusiness</td><td>102 (R6)</td><td>90</td><td>—</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>M.Com (General)</td><td>40–59 (R6)</td><td>—</td><td>—</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td>LLM (General)</td><td>54 (R6)</td><td>—</td><td>—</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td>M.Tech CSE/Cyber Security</td><td>65 (R6)</td><td>—</td><td>—</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td>M.Lib.I.Sc</td><td>53 (R6)</td><td>—</td><td>—</td><td><span class="tag-low">Low</span></td></tr>
+        <tr><td>MA Punjabi</td><td>90 (R6 Gen)</td><td>—</td><td>—</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td>M.Pharm Pharmacology</td><td>142 (R1) / 30 (R6)</td><td>—</td><td>—</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>MA (other Humanities)</td><td>13–51 (typical)</td><td>—</td><td>—</td><td><span class="tag-low">Low</span></td></tr>
+        <tr><td>M.Sc (other sciences)</td><td>5–50 (typical)</td><td>—</td><td>—</td><td><span class="tag-low">Low</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">
+      ℹ️ EWS closing 2025: M.Sc Geology topped at 118. All CUET-PG marks are out of 300. Overall 2025 General range: 5–225. SC range: 5–123. OBC range: 11–205. EWS range: 29–118. Round-6 marks are much lower as seats remain. Verify category-wise lists at <strong>cupcuet.samarth.edu.in</strong> after results.
+    </div>
+  </div>
+
+  <!-- ── M.Tech GATE Cut-Off ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>M.Tech — GATE Closing Marks <span class="actual-badge">✅ Official Data</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Specialisation</th><th>2025 (Closing)</th><th>2024 (Closing)</th><th>2023</th><th>2022</th><th>2021</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>M.Tech CSE</td><td>~364</td><td>364</td><td>~350</td><td>~320</td><td>—</td></tr>
+        <tr><td>M.Tech Cyber Security</td><td>366</td><td>364</td><td>~355</td><td>—</td><td>—</td></tr>
+        <tr><td>GATE Range (General)</td><td>268–444</td><td>350–546</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">
+      ℹ️ M.Tech Cyber Security is the most competitive M.Tech program with closing marks rising to 366 in 2025. 50% of M.Tech seats are filled via <strong>CCMT counselling</strong> (GATE); remaining 50% via CUET-PG. GATE scores shown are marks out of 100. CCMT counselling portal: <strong>ccmt.admissions.nic.in</strong>
+    </div>
+  </div>
+
+  <!-- ── PhD ── -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>PhD — Qualifying Criteria</div>
+    <table class="cutoff-table">
+      <thead><tr><th>Discipline</th><th>Qualifying Exam</th><th>Selection</th></tr></thead>
+      <tbody>
+        <tr><td>Sciences (Physics, Chem, Maths, Bio)</td><td>CSIR-NET / UGC-NET (JRF/LS)</td><td>Qualified + Interview</td></tr>
+        <tr><td>Computer Science</td><td>GATE (CS/IT)</td><td>GATE Score + Interview</td></tr>
+        <tr><td>Pharmacy</td><td>GPAT / UGC-NET</td><td>Qualified + Interview</td></tr>
+        <tr><td>Humanities &amp; Social Sciences</td><td>UGC-NET</td><td>Qualified + Interview</td></tr>
+        <tr><td>Management / Commerce</td><td>UGC-NET / CAT</td><td>NET Qualified + Interview</td></tr>
+        <tr><td>All Disciplines (No NET/GATE)</td><td>CUP Entrance Test</td><td>50% Written + Interview</td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ JRF holders are prioritised and eligible for monthly stipend. PhD total fee: ₹1.41L–1.61L. Check <strong>cup.edu.in/phd-admissions</strong> for each session's notification.</div>
+  </div>
+
+</div><!-- /panel-7 -->
+
+</div><!-- /left column -->
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<div>
+  <div class="sidebar-card">
+    <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+    <button class="cta-btn cta-outline" onclick="window.open('https://www.cup.edu.in/','_blank')">🌐 Visit Official Website</button>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Key Facts</div>
+    <div class="key-val"><span class="k">Established</span><span class="v">2009</span></div>
+    <div class="key-val"><span class="k">University Type</span><span class="v">Central University</span></div>
+    <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">A+</span></div>
+    <div class="key-val"><span class="k">NIRF Rank (2025)</span><span class="v">#83 (University)</span></div>
+    <div class="key-val"><span class="k">Campus</span><span class="v">~500 Acres</span></div>
+    <div class="key-val"><span class="k">Location</span><span class="v">Bathinda, Punjab</span></div>
+    <div class="key-val"><span class="k">Total PG Courses</span><span class="v">39</span></div>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">UG — Only 5 Programs</div>
+    <div class="key-val"><span class="k">B.Tech</span><span class="v">CSE only</span></div>
+    <div class="key-val"><span class="k">B.Pharmacy</span><span class="v">4 Years</span></div>
+    <div class="key-val"><span class="k">BA LLB</span><span class="v">5 Years (Integrated)</span></div>
+    <div class="key-val"><span class="k">B.Sc-B.Ed</span><span class="v">4 Years (NCET)</span></div>
+    <div class="key-val"><span class="k">BA-B.Ed</span><span class="v">4 Years (NCET)</span></div>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Entrance Exams</div>
+    <table class="exam-table">
+      <tr><th>Course</th><th>Exam</th></tr>
+      <tr>
+        <td>B.Tech CSE</td>
+        <td>
+          <span class="tag tag-exam" style="display:inline-block;margin-bottom:3px;">CUET-UG</span><br>
+          <span class="tag tag-jee">JEE Main</span>
+        </td>
+      </tr>
+      <tr><td>B.Pharmacy</td><td><span class="tag tag-exam">CUET-UG</span></td></tr>
+      <tr><td>BA LLB</td><td><span class="tag tag-exam">CUET-UG</span></td></tr>
+      <tr><td>B.Ed Programs</td><td><span class="tag tag-exam">NCET</span></td></tr>
+      <tr><td>PG Programs</td><td><span class="tag tag-exam">CUET-PG</span></td></tr>
+      <tr><td>M.Tech (50%)</td><td><span class="tag tag-exam">GATE+CCMT</span></td></tr>
+      <tr><td>M.Pharmacy</td><td><span class="tag tag-exam">GPAT</span></td></tr>
+      <tr><td>PhD</td><td><span class="tag tag-exam">NET/GATE</span></td></tr>
+    </table>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">B.Tech CSE — Cut-Off Snapshot</div>
+    <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid rgba(99,179,237,0.2);">CUET-UG 2025 (Marks)</div>
+    <div class="key-val"><span class="k">General R1</span><span class="v v-gold">482 marks</span></div>
+    <div class="key-val"><span class="k">SC R1</span><span class="v">349 marks</span></div>
+    <div class="key-val"><span class="k">ST R1</span><span class="v">243 marks</span></div>
+    <div class="key-val"><span class="k">EWS R1</span><span class="v">292 marks</span></div>
+    <div style="font-size:0.68rem;color:#c4b5fd;text-transform:uppercase;letter-spacing:0.05em;margin:10px 0 6px;padding-bottom:4px;border-bottom:1px solid rgba(167,139,250,0.2);">JEE Main 2025 (Percentile, CSAB)</div>
+    <div class="key-val"><span class="k">General Closing</span><span class="v" style="color:#c4b5fd;">55–68 %ile</span></div>
+    <div class="key-val"><span class="k">OBC-NCL Closing</span><span class="v" style="color:#c4b5fd;">45–58 %ile</span></div>
+    <div class="key-val"><span class="k">SC Closing</span><span class="v" style="color:#c4b5fd;">28–40 %ile</span></div>
+    <div class="key-val"><span class="k">ST Closing</span><span class="v" style="color:#c4b5fd;">15–28 %ile</span></div>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:8px;line-height:1.5;">Verify at <strong style="color:var(--white);">csab.nic.in</strong> for JEE route & <strong style="color:var(--white);">cupcuet.samarth.edu.in</strong> for CUET route</div>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Approx. Total Fees</div>
+    <div class="key-val"><span class="k">B.Tech CSE (4yr)</span><span class="v v-gold">₹1.7–2.8L</span></div>
+    <div class="key-val"><span class="k">B.Pharmacy (4yr)</span><span class="v v-gold">₹3–4L</span></div>
+    <div class="key-val"><span class="k">BA LLB (5yr)</span><span class="v v-gold">₹2–3L</span></div>
+    <div class="key-val"><span class="k">B.Sc/BA-B.Ed (4yr)</span><span class="v v-gold">~₹2L</span></div>
+    <div class="key-val"><span class="k">M.Sc / M.A (2yr)</span><span class="v v-gold">₹39K–61K</span></div>
+    <div class="key-val"><span class="k">MBA Agribusiness</span><span class="v v-gold">₹68,350</span></div>
+    <div class="key-val"><span class="k">M.Tech (2yr)</span><span class="v v-gold">₹81,350</span></div>
+    <div class="key-val"><span class="k">LLM (2yr)</span><span class="v v-gold">₹50,950</span></div>
+    <div class="key-val"><span class="k">PhD</span><span class="v v-gold">₹1.41L–1.61L</span></div>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Placement Snapshot</div>
+    <div class="key-val"><span class="k">Median PG Package</span><span class="v" style="color:var(--accent-green);">₹3.40 LPA (2024)</span></div>
+    <div class="key-val"><span class="k">Students Placed</span><span class="v">120 (NIRF 2025)</span></div>
+    <div class="key-val"><span class="k">LLM Median</span><span class="v">₹6 LPA (2023)</span></div>
+    <div class="key-val"><span class="k">Pharma Median</span><span class="v">₹3.47 LPA (2023)</span></div>
+  </div>
+</div><!-- /sidebar -->
+
 </div><!-- /content-wrap -->
- 
+
 <!-- LOGOUT MODAL -->
 <div class="modal-overlay" id="logoutModal">
   <div class="modal">
@@ -951,86 +1225,60 @@ Central University of Punjab offers Undergraduate, Postgraduate and Doctoral pro
     </div>
   </div>
 </div>
- 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <span id="toastIcon"></span>
-  <span id="toastMsg"></span>
-</div>
- 
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
 <script>
-  /* ── SHORTLIST STATE ── */
-  let shortlisted = false;
- 
-  function toggleShortlist() {
-    shortlisted = !shortlisted;
-    const badge   = document.getElementById('shortlistBadge');
-    const navBtn  = document.getElementById('navShortlistBtn');
-    const sideBtn = document.getElementById('sidebarShortlistBtn');
- 
-    badge.textContent = shortlisted ? '1' : '0';
-    badge.classList.add('pop');
-    setTimeout(() => badge.classList.remove('pop'), 300);
- 
-    if (shortlisted) {
-      navBtn.classList.add('added');
-      navBtn.innerHTML = '✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
-      sideBtn.classList.add('added');
-      sideBtn.textContent = '✅ Shortlisted';
-      showToast('⭐', 'Central University of Punjab added to shortlist!');
-    } else {
-      navBtn.classList.remove('added');
-      navBtn.innerHTML = '⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
-      sideBtn.classList.remove('added');
-      sideBtn.textContent = '⭐ Add to Shortlist';
-      showToast('🗑️', 'Removed from shortlist.');
-    }
+let shortlisted=false;
+function toggleShortlist(){
+  shortlisted=!shortlisted;
+  const badge=document.getElementById('shortlistBadge');
+  const navBtn=document.getElementById('navShortlistBtn');
+  const sideBtn=document.getElementById('sidebarShortlistBtn');
+  badge.textContent=shortlisted?'1':'0';
+  badge.classList.add('pop');
+  setTimeout(()=>badge.classList.remove('pop'),300);
+  if(shortlisted){
+    navBtn.classList.add('added');
+    navBtn.innerHTML='✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';
+    sideBtn.classList.add('added');sideBtn.textContent='✅ Shortlisted';
+    showToast('⭐','Central University of Punjab added to shortlist!');
+  }else{
+    navBtn.classList.remove('added');
+    navBtn.innerHTML='⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';
+    sideBtn.classList.remove('added');sideBtn.textContent='⭐ Add to Shortlist';
+    showToast('🗑️','Removed from shortlist.');
   }
- 
-  /* ── TABS ── */
-  function switchTab(index, el) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('panel-' + index).classList.add('active');
-    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 62, behavior: 'smooth' });
-  }
- 
-  /* ── STREAM DROPDOWN ── */
-  function toggleStream(e) {
-    e.stopPropagation();
-    document.getElementById('streamDropdown').classList.toggle('open');
-  }
- 
-  function selectStream(el, name, icon) {
-    document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('streamLabel').innerHTML = name;
-    document.getElementById('streamDropdown').classList.remove('open');
-    showToast(icon, 'Stream changed to ' + name);
-  }
- 
-  document.addEventListener('click', function(e) {
-    const dd = document.getElementById('streamDropdown');
-    if (!e.target.closest('#streamBtn') && !e.target.closest('#streamDropdown')) {
-      dd.classList.remove('open');
-    }
-  });
- 
-  /* ── LOGOUT MODAL ── */
-  function openLogout()  { document.getElementById('logoutModal').classList.add('open'); }
-  function closeLogout() { document.getElementById('logoutModal').classList.remove('open'); }
- 
-  /* ── TOAST ── */
-  let toastTimer;
-  function showToast(icon, msg) {
-    const t = document.getElementById('toast');
-    document.getElementById('toastIcon').textContent = icon;
-    document.getElementById('toastMsg').textContent  = msg;
-    t.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
-  }
+}
+function switchTab(index,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+index).classList.add('active');
+  window.scrollTo({top:document.querySelector('.tabs-bar').offsetTop-62,behavior:'smooth'});
+}
+function toggleStream(e){e.stopPropagation();document.getElementById('streamDropdown').classList.toggle('open');}
+function selectStream(el,name,icon){
+  document.querySelectorAll('.stream-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('streamLabel').innerHTML=name;
+  document.getElementById('streamDropdown').classList.remove('open');
+  showToast(icon,'Stream changed to '+name);
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('streamDropdown');
+  if(!e.target.closest('#streamBtn')&&!e.target.closest('#streamDropdown'))dd.classList.remove('open');
+});
+function openLogout(){document.getElementById('logoutModal').classList.add('open');}
+function closeLogout(){document.getElementById('logoutModal').classList.remove('open');}
+let toastTimer;
+function showToast(icon,msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastIcon').textContent=icon;
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
 </script>
 </body>
 </html>
