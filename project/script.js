@@ -3360,9 +3360,7 @@ function handleLogin() {
 function handleDemoLogin() {
   goToStreamPage("Demo Student");
 }
-function handleDemoLogin() {
-   // your code
-}
+
 window.handleDemoLogin = handleDemoLogin;
 function showRegister() {
   showAlert("Registration coming soon! Use Demo Login to explore.", "success");
@@ -4243,7 +4241,3 @@ Object.assign(window, {
   toggleChip, setRecommend, submitFeedback, resetFeedback,
   jumpToSection
 });
-window.handleLogin = handleLogin;
-window.handleDemoLogin = handleDemoLogin;
-window.showRegister = showRegister;
-window.togglePassword = togglePassword;
