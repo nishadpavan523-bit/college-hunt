@@ -22,7 +22,7 @@
 // Import the functions you need from the SDKs you need
 // firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB8gAv4OzC0NOdgqcOk9PgOxm8gjrpmt8c",
@@ -38,4 +38,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
-export { db, collection, addDoc, serverTimestamp };
+export { db, collection, addDoc, serverTimestamp, doc, setDoc }

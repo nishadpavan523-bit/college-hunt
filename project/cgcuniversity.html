@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CGC University (Jhanjeri) – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0f1535;--navy-mid:#1a2250;--navy-card:#1e2a5e;--gold:#f5a623;--gold-light:#ffc152;--white:#ffffff;--muted:#a0aec0;--accent-green:#48bb78;--card-bg:#1b2454;--border:rgba(245,166,35,0.2);--tag-bg:rgba(245,166,35,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+nav{background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Raleway',sans-serif;font-size:1.3rem;color:var(--gold);display:flex;align-items:center;gap:8px;cursor:pointer;}
+.nav-logo span{color:var(--white);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;transition:all 0.18s;}
+.btn-stream{background:var(--navy-card);color:var(--white);border:1px solid var(--border);position:relative;}
+.btn-stream:hover{background:var(--tag-bg);border-color:var(--gold);color:var(--gold);}
+.btn-shortlist{background:var(--gold);color:var(--navy);}
+.btn-shortlist:hover{background:var(--gold-light);}
+.btn-shortlist.added{background:var(--accent-green);color:var(--white);}
+.btn-logout{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.25);}
+.btn-logout:hover{border-color:#f56565;color:#f56565;}
+.badge{background:var(--navy);color:var(--gold);border-radius:50%;width:18px;height:18px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.2s;}
+.badge.pop{animation:badgePop 0.3s ease;}
+@keyframes badgePop{0%{transform:scale(1)}50%{transform:scale(1.5)}100%{transform:scale(1)}}
+.stream-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:8px;min-width:220px;display:none;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.stream-dropdown.open{display:block;animation:fadeDown 0.18s ease;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.stream-opt{padding:8px 12px;border-radius:8px;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.15s;}
+.stream-opt:hover{background:var(--tag-bg);color:var(--gold);}
+.stream-opt.active{background:var(--tag-bg);color:var(--gold);font-weight:600;}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:0.82rem;font-weight:500;color:var(--white);z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.hero{background:linear-gradient(135deg,#1a2462 0%,#2d3a8c 50%,#1a2462 100%);padding:40px 48px 36px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:80px;top:50%;transform:translateY(-50%);width:260px;height:260px;border-radius:50%;border:2px solid rgba(245,166,35,0.2);}
+.hero::after{content:'';position:absolute;right:110px;top:50%;transform:translateY(-50%);width:190px;height:190px;border-radius:50%;border:1px solid rgba(245,166,35,0.1);}
+.breadcrumb{font-size:0.75rem;color:var(--muted);margin-bottom:14px;}
+.breadcrumb a{color:var(--gold);text-decoration:none;cursor:pointer;}
+.uni-header{display:flex;align-items:flex-start;gap:22px;margin-bottom:22px;}
+.uni-logo{width:70px;height:70px;background:var(--white);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.uni-title h1{font-family:'Raleway',sans-serif;font-size:1.7rem;font-weight:800;line-height:1.2;margin-bottom:6px;}
+.uni-title h1 span{color:var(--gold);}
+.uni-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+.meta-chip{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 14px;font-size:0.72rem;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:default;}
+.meta-chip.clickable{cursor:pointer;transition:all 0.18s;}
+.meta-chip.clickable:hover{border-color:var(--gold);color:var(--gold);}
+.meta-chip strong{color:var(--white);}
+.hero-badges{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-badge{border-radius:10px;padding:10px 20px;display:flex;flex-direction:column;align-items:center;min-width:100px;}
+.hb-naac{background:rgba(72,187,120,0.15);border:1px solid rgba(72,187,120,0.3);}
+.hb-central{background:rgba(245,166,35,0.12);border:1px solid var(--border);}
+.hb-campus{background:rgba(99,179,237,0.12);border:1px solid rgba(99,179,237,0.3);}
+.hb-rank{background:rgba(159,122,234,0.15);border:1px solid rgba(159,122,234,0.3);}
+.hero-badge .label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.hero-badge .value{font-size:1rem;font-weight:700;margin-top:2px;}
+.hb-naac .value{color:var(--accent-green);}
+.hb-central .value{color:var(--gold);}
+.hb-campus .value{color:#63b3ed;}
+.hb-rank .value{color:#b794f4;}
+.tabs-bar{background:var(--navy-mid);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;padding:0 48px;gap:4px;overflow-x:auto;scrollbar-width:none;}
+.tabs-bar::-webkit-scrollbar{display:none;}
+.tab{padding:14px 20px;font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all 0.2s;user-select:none;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab:hover:not(.active){color:var(--white);}
+.content-wrap{max-width:1200px;margin:0 auto;padding:36px 32px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:24px;margin-bottom:22px;}
+.card-title{font-size:0.95rem;font-weight:700;color:var(--white);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.card-title .dot{width:4px;height:18px;background:var(--gold);border-radius:2px;}
+.course-block{margin-bottom:26px;}
+.course-block:last-child{margin-bottom:0;}
+.course-type-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:var(--tag-bg);border:1px solid var(--border);border-radius:6px;padding:3px 10px;display:inline-block;margin-bottom:14px;}
+.course-row{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:11px 14px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);margin-bottom:8px;transition:background 0.2s;}
+.course-row:hover{background:rgba(245,166,35,0.06);border-color:var(--border);}
+.course-name{font-size:0.82rem;font-weight:500;}
+.course-sub{font-size:0.71rem;color:var(--muted);margin-top:2px;}
+.course-meta{font-size:0.72rem;color:var(--muted);text-align:center;}
+.course-meta strong{display:block;color:var(--white);font-size:0.8rem;}
+.tag{border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-exam{background:rgba(99,179,237,0.15);color:#63b3ed;border:1px solid rgba(99,179,237,0.25);}
+.tag-fees{background:rgba(72,187,120,0.12);color:#68d391;border:1px solid rgba(72,187,120,0.25);}
+.tag-high{background:rgba(245,101,101,0.18);color:#fc8181;border:1px solid rgba(245,101,101,0.3);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-mod{background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-low{background:rgba(72,187,120,0.15);color:#68d391;border:1px solid rgba(72,187,120,0.3);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.info-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 14px;font-size:0.78rem;}
+.info-chip .lbl{color:var(--muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.info-chip .val{font-weight:600;color:var(--white);}
+.facility-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.fac-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;text-align:center;font-size:0.78rem;transition:all 0.2s;cursor:default;}
+.fac-item:hover{border-color:var(--border);background:var(--tag-bg);}
+.fac-icon{font-size:1.4rem;margin-bottom:5px;}
+.hostel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hostel-item{display:flex;align-items:center;gap:8px;font-size:0.8rem;}
+.hostel-icon{font-size:1.1rem;}
+.phd-category{margin-bottom:14px;}
+.phd-cat-label{font-size:0.72rem;font-weight:600;color:var(--gold);margin-bottom:8px;}
+.phd-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.phd-tag{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 10px;font-size:0.72rem;color:var(--muted);}
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border);border-radius:2px;}
+.tl-item{position:relative;margin-bottom:20px;}
+.tl-item::before{content:'';position:absolute;left:-24px;top:4px;width:10px;height:10px;background:var(--gold);border-radius:50%;border:2px solid var(--navy-card);}
+.tl-title{font-size:0.82rem;font-weight:600;color:var(--white);margin-bottom:3px;}
+.tl-desc{font-size:0.75rem;color:var(--muted);}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.stat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;text-align:center;}
+.stat-box .s-val{font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.stat-box .s-lbl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.recruiter-list{display:flex;flex-wrap:wrap;gap:10px;}
+.recruiter-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 16px;font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:default;}
+.recruiter-tag:hover{background:var(--tag-bg);border-color:var(--border);color:var(--gold);}
+.event-list{display:flex;flex-direction:column;gap:8px;}
+.event-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;font-size:0.8rem;}
+.event-icon{font-size:1.2rem;flex-shrink:0;}
+.cutoff-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:4px;}
+.cutoff-table thead th{background:rgba(245,166,35,0.1);color:var(--gold);font-weight:600;padding:10px 12px;text-align:left;border:1px solid rgba(255,255,255,0.09);font-size:0.71rem;text-transform:uppercase;letter-spacing:0.04em;}
+.cutoff-table tbody tr{transition:background 0.15s;}
+.cutoff-table tbody tr:hover{background:rgba(255,255,255,0.03);}
+.cutoff-table tbody td{padding:10px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--white);vertical-align:middle;}
+.cutoff-table tbody tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+.cutoff-note{margin-top:14px;background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:12px 14px;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+.cutoff-note strong{color:var(--white);}
+.section-divider{display:flex;align-items:center;gap:10px;margin:22px 0 16px;}
+.section-divider span{font-size:0.71rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.07em;white-space:nowrap;}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.actual-badge{display:inline-block;background:rgba(72,187,120,0.12);border:1px solid rgba(72,187,120,0.3);border-radius:6px;padding:2px 8px;font-size:0.65rem;font-weight:700;color:#68d391;margin-left:6px;}
+.sidebar-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:22px;margin-bottom:20px;}
+.sidebar-title{font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.05em;}
+.key-val{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem;}
+.key-val:last-child{border-bottom:none;}
+.key-val .k{color:var(--muted);}
+.key-val .v{font-weight:600;color:var(--white);text-align:right;max-width:58%;}
+.v-gold{color:var(--gold)!important;}
+.exam-table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+.exam-table th{color:var(--muted);text-align:left;padding:6px 0;font-weight:500;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;}
+.exam-table td{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;}
+.exam-table tr:last-child td{border-bottom:none;}
+.cta-btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:0.85rem;font-weight:700;cursor:pointer;margin-bottom:10px;transition:all 0.2s;font-family:'Poppins',sans-serif;}
+.cta-primary{background:var(--gold);color:var(--navy);}
+.cta-primary:hover{background:var(--gold-light);}
+.cta-primary.added{background:var(--accent-green);color:var(--white);}
+.cta-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2);}
+.cta-outline:hover{border-color:var(--gold);color:var(--gold);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--navy-card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:360px;width:90%;text-align:center;animation:fadeDown 0.2s ease;}
+.modal h3{font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+.modal p{font-size:0.82rem;color:var(--muted);margin-bottom:22px;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btns button{flex:1;padding:10px;border-radius:10px;border:none;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.modal-cancel{background:rgba(255,255,255,0.08);color:var(--white);}
+.modal-confirm{background:#f56565;color:var(--white);}
+@media(max-width:768px){.content-wrap{grid-template-columns:1fr;}.hero{padding:24px 20px;}.tabs-bar{padding:0 16px;}.facility-grid{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:1fr 1fr;}.stat-row{grid-template-columns:1fr 1fr;}.cutoff-table{font-size:0.7rem;}.cutoff-table th,.cutoff-table td{padding:7px 8px;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)" id="welcomeUser">Welcome, User</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        ⚙️ <span id="streamLabel">Engineering &amp; Technology</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt active" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">
+      ⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>
+    </button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb">
+    <a onclick="showToast('🏠','Home')">Home</a> ›
+    <a onclick="showToast('🏛️','Universities list')">Universities</a> ›
+    CGC University (Jhanjeri)
+  </div>
+  <div class="uni-header">
+    <div class="uni-logo">🎓</div>
+    <div class="uni-title">
+      <h1>CGC University <span>(Jhanjeri)</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Jhanjeri, Mohali, Punjab</strong></span>
+        <span class="meta-chip">🏛️ <strong>Private State University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2012</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.cgc.ac.in/','_blank')">🌐 <strong>cgc.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac">
+      <span class="label">NAAC Grade</span>
+      <span class="value">A+</span>
+    </div>
+    <div class="hero-badge hb-central">
+      <span class="label">Campus Area</span>
+      <span class="value">100+ Acres</span>
+    </div>
+    <div class="hero-badge hb-campus">
+      <span class="label">Approvals</span>
+      <span class="value">AICTE·BCI·PCI</span>
+    </div>
+    <div class="hero-badge hb-rank">
+      <span class="label">Highest Pkg</span>
+      <span class="value">₹45 LPA</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
+</div>
+
+<div class="content-wrap">
+<div>
+
+<!-- ════════ TAB 0: OVERVIEW ════════ -->
+<div class="tab-panel active" id="panel-0">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Basic Information</div>
+    <div class="grid-3">
+      <div class="info-chip"><div class="lbl">Established</div><div class="val">2012</div></div>
+      <div class="info-chip"><div class="lbl">Type</div><div class="val">Private State University</div></div>
+      <div class="info-chip"><div class="lbl">Location</div><div class="val">Jhanjeri, Mohali, Punjab</div></div>
+      <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC "A+" Grade</div></div>
+      <div class="info-chip"><div class="lbl">Campus Area</div><div class="val">100+ Acres</div></div>
+      <div class="info-chip"><div class="lbl">Approvals</div><div class="val">UGC · AICTE · BCI · PCI · NCTE</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>About CGC University (Jhanjeri)</div>
+    <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+      CGC University (Chandigarh Group of Colleges), Jhanjeri is a premier private state university established in 2012 under the Punjab Private Universities Policy, 2010, located in Jhanjeri, Mohali, Punjab. Accredited with <strong style="color:var(--white);">NAAC "A+" Grade</strong>, CGC Jhanjeri is one of North India's leading technical universities approved by <strong style="color:var(--white);">UGC, AICTE, BCI, PCI and NCTE</strong>. The university offers more than <strong style="color:var(--white);">100+ programmes</strong> across Engineering, Technology, Management, Law, Pharmacy, Sciences, Agriculture, Education, Design and Allied Health Sciences. With a sprawling 100+ acre campus, state-of-the-art labs, strong industry connections and record placement figures — including a <strong style="color:var(--white);">highest package of ₹45 LPA</strong> — CGC Jhanjeri is a top destination for students in the Punjab-Chandigarh belt.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Schools &amp; Departments at a Glance</div>
+    <div class="grid-2">
+      <div class="info-chip"><div class="lbl">Engineering</div><div class="val">CSE, ECE, ME, CE, EE, IT + 12 specialisations</div></div>
+      <div class="info-chip"><div class="lbl">Management</div><div class="val">MBA, BBA, B.Com, M.Com</div></div>
+      <div class="info-chip"><div class="lbl">Computer Applications</div><div class="val">BCA, MCA</div></div>
+      <div class="info-chip"><div class="lbl">Sciences</div><div class="val">B.Sc, M.Sc (various)</div></div>
+      <div class="info-chip"><div class="lbl">Law</div><div class="val">BA LL.B, BBA LL.B, LL.M</div></div>
+      <div class="info-chip"><div class="lbl">Pharmacy</div><div class="val">B.Pharm, M.Pharm, D.Pharm</div></div>
+      <div class="info-chip"><div class="lbl">Agriculture</div><div class="val">B.Sc Agriculture, M.Sc Agriculture</div></div>
+      <div class="info-chip"><div class="lbl">Design &amp; Other</div><div class="val">B.Des, Hotel Management, Education</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+    <div class="facility-grid">
+      <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+      <div class="fac-item"><div class="fac-icon">🖥️</div>Smart Classrooms</div>
+      <div class="fac-item"><div class="fac-icon">🔬</div>Advanced Labs</div>
+      <div class="fac-item"><div class="fac-icon">🤖</div>AI &amp; Robotics Lab</div>
+      <div class="fac-item"><div class="fac-icon">💡</div>Incubation Centre</div>
+      <div class="fac-item"><div class="fac-icon">🏥</div>Medical Centre</div>
+      <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+      <div class="fac-item"><div class="fac-icon">☕</div>Food Court</div>
+      <div class="fac-item"><div class="fac-icon">🚌</div>Transport (120+ routes)</div>
+    </div>
+    <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+    <div class="hostel-grid">
+      <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys Hostels (Multiple Blocks)</div>
+      <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls Hostels (Separate)</div>
+      <div class="hostel-item"><span class="hostel-icon">❄️</span> AC &amp; Non-AC Rooms</div>
+      <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Campus-wide</div>
+      <div class="hostel-item"><span class="hostel-icon">🍽️</span> Veg &amp; Non-Veg Mess</div>
+      <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gymnasium</div>
+      <div class="hostel-item"><span class="hostel-icon">🩺</span> 24×7 Medical Support</div>
+      <div class="hostel-item"><span class="hostel-icon">🔒</span> CCTV &amp; 24×7 Security</div>
+    </div>
+    <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+      <span style="color:var(--accent-green);font-weight:600;">Hostel Fee (Annual):</span>
+      <span style="color:var(--muted);"> Non-AC Shared: ₹80,000–1L · AC Shared: ₹1.2L–1.5L · Single AC: ₹1.8L–2.2L · Mess: ₹30,000–40,000 extra</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 1: UG COURSES ════════ -->
+<div class="tab-panel" id="panel-1">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Undergraduate (UG) Courses</div>
+
+    <div class="course-block">
+      <span class="course-type-label">⚙️ B.Tech · 4 Years · JEE Main / CGCET · ₹5.6–8.4L Total</span>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech Computer Science Engineering (CSE)</div><div class="course-sub">Core CSE · Eligibility: 10+2 PCM, min. 60%</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.4–2.1L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech CSE – Artificial Intelligence &amp; Machine Learning</div><div class="course-sub">AI/ML Specialisation</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.6–2.1L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech CSE – Data Science &amp; Analytics</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.6–2.1L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech CSE – Cyber Security &amp; Forensics</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.6–2.1L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech CSE – Cloud Computing &amp; DevOps</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.6–2.1L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech CSE – IoT &amp; Blockchain</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.6–2.1L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech ECE (Electronics &amp; Communication)</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.4–1.8L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech Mechanical Engineering</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.4–1.8L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech Civil Engineering</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.4–1.8L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech Electrical Engineering</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.4–1.8L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech Information Technology (IT)</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.4–1.8L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech Robotics &amp; Automation</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.6–2.1L/yr</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Tech Aerospace Engineering</div></div>
+        <div class="course-meta"><strong>JEE/CGCET</strong>Entrance</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.6–2.1L/yr</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💊 Pharmacy · Merit / CGCET</span>
+      <div class="course-row"><div class="course-name">B.Pharm (Bachelor of Pharmacy)</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>4 Yrs</strong></div><span class="tag tag-fees">₹1.2–1.8L/yr</span></div>
+      <div class="course-row"><div class="course-name">D.Pharm (Diploma in Pharmacy)</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>2 Yrs</strong></div><span class="tag tag-fees">₹80K–1.2L/yr</span></div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💼 Management &amp; Commerce · Merit / CGCET</span>
+      <div class="course-row"><div class="course-name">BBA (Bachelor of Business Administration)</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹80K–1.4L/yr</span></div>
+      <div class="course-row"><div class="course-name">B.Com (Hons.)</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹60K–1L/yr</span></div>
+      <div class="course-row"><div class="course-name">BCA (Bachelor of Computer Applications)</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹80K–1.4L/yr</span></div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">⚖️ Law · 5 Years · CLAT / CGCET</span>
+      <div class="course-row"><div class="course-name">BA LL.B. (Hons.) – 5-Year Integrated</div><div class="course-meta"><strong>CLAT/CGCET</strong></div><div class="course-meta"><strong>5 Yrs</strong></div><span class="tag tag-fees">₹1L–1.8L/yr</span></div>
+      <div class="course-row"><div class="course-name">BBA LL.B. (Hons.) – 5-Year Integrated</div><div class="course-meta"><strong>CLAT/CGCET</strong></div><div class="course-meta"><strong>5 Yrs</strong></div><span class="tag tag-fees">₹1L–1.8L/yr</span></div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">🌾 Agriculture &amp; Other UG · Merit</span>
+      <div class="course-row"><div class="course-name">B.Sc Agriculture (Hons.)</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>4 Yrs</strong></div><span class="tag tag-fees">₹80K–1.4L/yr</span></div>
+      <div class="course-row"><div class="course-name">B.Des (Bachelor of Design)</div><div class="course-meta"><strong>Merit/Test</strong></div><div class="course-meta"><strong>4 Yrs</strong></div><span class="tag tag-fees">₹1L–1.6L/yr</span></div>
+      <div class="course-row"><div class="course-name">B.Sc (Hons.) – Physics / Chemistry / Maths / Bio</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>3 Yrs</strong></div><span class="tag tag-fees">₹50K–1L/yr</span></div>
+      <div class="course-row"><div class="course-name">Hotel Management (BHMCT)</div><div class="course-meta"><strong>Merit</strong></div><div class="course-meta"><strong>4 Yrs</strong></div><span class="tag tag-fees">₹80K–1.4L/yr</span></div>
+      <div class="course-row"><div class="course-name">B.Ed. (Bachelor of Education)</div><div class="course-meta"><strong>Punjab B.Ed CET</strong></div><div class="course-meta"><strong>2 Yrs</strong></div><span class="tag tag-fees">₹60K–1L/yr</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 2: PG COURSES ════════ -->
+<div class="tab-panel" id="panel-2">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Postgraduate (PG) Courses</div>
+
+    <div class="course-block">
+      <span class="course-type-label">⚙️ M.Tech · 2 Years · GATE / CGCET · ₹2–4L Total</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">CSE</span><span class="phd-tag">AI &amp; ML</span>
+        <span class="phd-tag">Electronics &amp; Communication</span><span class="phd-tag">Mechanical Engineering</span>
+        <span class="phd-tag">Civil Engineering</span><span class="phd-tag">Cyber Security</span>
+      </div>
+      <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.E./B.Tech in relevant discipline · GATE score preferred</div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💼 MBA · 2 Years · CAT / MAT / CGCET · ₹3–6L Total</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">MBA – Finance</span><span class="phd-tag">MBA – Marketing</span>
+        <span class="phd-tag">MBA – Human Resource</span><span class="phd-tag">MBA – IT</span>
+        <span class="phd-tag">MBA – International Business</span>
+        <span class="phd-tag">MBA – Business Analytics</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💻 MCA · 2 Years · Merit / CGCET · ₹2–3.5L Total</span>
+      <div class="course-row"><div class="course-name">MCA (Master of Computer Applications)</div><div class="course-meta"><strong>Merit/CGCET</strong></div><div class="course-meta"><strong>2 Yrs</strong></div><span class="tag tag-fees">₹2–3.5L Total</span></div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💊 M.Pharm · 2 Years · GPAT / Merit</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">Pharmaceutics</span>
+        <span class="phd-tag">Pharmacology</span>
+        <span class="phd-tag">Pharmaceutical Chemistry</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">🌾 M.Sc. &amp; Other PG · Merit / CGCET</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">M.Sc. Agriculture</span>
+        <span class="phd-tag">M.Sc. Physics</span>
+        <span class="phd-tag">M.Sc. Chemistry</span>
+        <span class="phd-tag">M.Sc. Mathematics</span>
+        <span class="phd-tag">M.Sc. Biotechnology</span>
+        <span class="phd-tag">M.Com</span>
+        <span class="phd-tag">LL.M (Master of Laws)</span>
+        <span class="phd-tag">M.Ed</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 3: PhD ════════ -->
+<div class="tab-panel" id="panel-3">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>PhD Programs</div>
+
+    <div class="phd-category">
+      <div class="phd-cat-label">Engineering &amp; Technology</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Computer Science Engineering</span>
+        <span class="phd-tag">Electronics &amp; Communication</span>
+        <span class="phd-tag">Mechanical Engineering</span>
+        <span class="phd-tag">Civil Engineering</span>
+        <span class="phd-tag">Electrical Engineering</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">Sciences</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Physics</span><span class="phd-tag">Chemistry</span>
+        <span class="phd-tag">Mathematics</span><span class="phd-tag">Biotechnology</span>
+        <span class="phd-tag">Agriculture</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">Management, Commerce &amp; Law</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Management Studies</span>
+        <span class="phd-tag">Commerce</span>
+        <span class="phd-tag">Law</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">Pharmacy &amp; Allied</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Pharmaceutical Sciences</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+      <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission</div>
+      <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree (55% General / 50% SC/ST/PwD)</span></div>
+      <div class="key-val"><span class="k">Selection Mode</span><span class="v">Entrance Test + Personal Interview</span></div>
+      <div class="key-val"><span class="k">NET/GATE Exemption</span><span class="v">As per UGC Regulations 2022</span></div>
+      <div class="key-val"><span class="k">Duration</span><span class="v">Min. 3 Years – Max. 6 Years</span></div>
+      <div class="key-val" style="border:none"><span class="k">Annual PhD Fee</span><span class="v v-gold">₹50,000–1,50,000/yr</span></div>
+    </div>
+
+    <div style="margin-top:14px;background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:14px;">
+      <div style="font-size:0.78rem;font-weight:600;color:#63b3ed;margin-bottom:8px;">Scholarships for PhD Scholars</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Merit-Based Fee Waivers</span>
+        <span class="phd-tag">UGC-JRF / CSIR-JRF Stipend</span>
+        <span class="phd-tag">AICTE Doctoral Fellowships</span>
+        <span class="phd-tag">University Research Assistantships</span>
+        <span class="phd-tag">Punjab Government Scholarships</span>
+        <span class="phd-tag">SC / ST / OBC Scholarships</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 4: ADMISSIONS ════════ -->
+<div class="tab-panel" id="panel-4">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Admission Process — B.Tech (JEE Main / CGCET Routes)</div>
+    <div style="background:rgba(99,179,237,0.07);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+      <div style="font-size:0.78rem;font-weight:700;color:#63b3ed;margin-bottom:10px;">🔵 Route A — via JEE Main</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-title">Step 1 — Appear for JEE Main</div>
+          <div class="tl-desc">Register at jeemain.nta.nic.in. Appear in Session 1 (Jan) or Session 2 (Apr). Best of two sessions is considered.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 2 — Apply on CGC Portal</div>
+          <div class="tl-desc">Visit cgc.ac.in and apply with your JEE Main percentile / score. Eligible for merit-based admission and JEE scholarship.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 3 — Merit List &amp; Scholarship Assessment</div>
+          <div class="tl-desc">Based on JEE Main percentile, CGC Jhanjeri offers fee scholarships: 90%ile+ → 100% tuition fee waiver; 75–90%ile → 50% waiver; 50–75%ile → 25% waiver.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 4 — Document Verification &amp; Confirmation</div>
+          <div class="tl-desc">Submit 10+2 marksheets, JEE Main scorecard, category certificate, ID proof and pay admission fees to confirm your seat.</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:14px 16px;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--gold);margin-bottom:10px;">🟡 Route B — via CGCET (CGC Common Entrance Test)</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-title">Step 1 — Register for CGCET</div>
+          <div class="tl-desc">Register for CGCET (CGC Common Entrance Test) at cgc.ac.in. Conducted online. No negative marking.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 2 — Appear for CGCET</div>
+          <div class="tl-desc">MCQ-based test covering subject knowledge relevant to chosen course. Results declared within few days.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 3 — Counselling &amp; Seat Allotment</div>
+          <div class="tl-desc">Merit list declared on cgc.ac.in. Multiple rounds of counselling. Choose branch preference during counselling.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-title">Step 4 — Document Verification &amp; Fee</div>
+          <div class="tl-desc">Physical / online document verification. Pay semester fee to confirm seat. Apply for hostel.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Entrance Exam Summary — All Courses</div>
+    <div class="course-row"><div class="course-name">B.Tech (All Branches)</div><div></div><div></div><span class="tag tag-exam">JEE Main / CGCET</span></div>
+    <div class="course-row"><div class="course-name">BCA / BBA / B.Com / B.Sc</div><div></div><div></div><span class="tag tag-exam">Merit / CGCET</span></div>
+    <div class="course-row"><div class="course-name">BA LL.B / BBA LL.B</div><div></div><div></div><span class="tag tag-exam">CLAT / CGCET</span></div>
+    <div class="course-row"><div class="course-name">B.Pharm</div><div></div><div></div><span class="tag tag-exam">Merit-Based</span></div>
+    <div class="course-row"><div class="course-name">B.Sc Agriculture</div><div></div><div></div><span class="tag tag-exam">Merit-Based</span></div>
+    <div class="course-row"><div class="course-name">B.Ed</div><div></div><div></div><span class="tag tag-exam">Punjab B.Ed CET</span></div>
+    <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">CAT / MAT / CGCET</span></div>
+    <div class="course-row"><div class="course-name">M.Tech</div><div></div><div></div><span class="tag tag-exam">GATE / CGCET</span></div>
+    <div class="course-row"><div class="course-name">MCA / M.Sc / M.Com</div><div></div><div></div><span class="tag tag-exam">Merit / CGCET</span></div>
+    <div class="course-row"><div class="course-name">M.Pharm</div><div></div><div></div><span class="tag tag-exam">GPAT / Merit</span></div>
+    <div class="course-row"><div class="course-name">PhD</div><div></div><div></div><span class="tag tag-exam">Entrance Test + Interview</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>JEE Main Scholarship Structure</div>
+    <table class="cutoff-table">
+      <thead><tr><th>JEE Main Percentile</th><th>Scholarship</th><th>Fee Payable</th></tr></thead>
+      <tbody>
+        <tr><td><strong>90 Percentile &amp; Above</strong></td><td style="color:var(--accent-green);">100% Tuition Fee Waiver</td><td>Admin + Hostel only</td></tr>
+        <tr><td><strong>75 – 89.99 Percentile</strong></td><td style="color:var(--gold);">50% Tuition Fee Waiver</td><td>50% tuition + Admin</td></tr>
+        <tr><td><strong>50 – 74.99 Percentile</strong></td><td>25% Tuition Fee Waiver</td><td>75% tuition + Admin</td></tr>
+        <tr><td><strong>Below 50 Percentile</strong></td><td style="color:var(--muted);">No Scholarship (Merit)</td><td>Full Tuition + Admin</td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ Scholarship percentages are indicative; verify exact values at <strong>cgc.ac.in/admission</strong> each session. Additional merit, sports and category scholarships may apply.</div>
+  </div>
+</div>
+
+<!-- ════════ TAB 5: PLACEMENTS ════════ -->
+<div class="tab-panel" id="panel-5">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Placement Overview</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">₹45 LPA</div><div class="s-lbl">Highest Package</div></div>
+      <div class="stat-box"><div class="s-val" style="color:var(--gold);">₹6.5 LPA</div><div class="s-lbl">Avg. Package (CSE)</div></div>
+      <div class="stat-box"><div class="s-val" style="color:#63b3ed;">500+</div><div class="s-lbl">Recruiting Companies</div></div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;margin-bottom:16px;">
+      CGC Jhanjeri's Training &amp; Placement Cell (TPC) is one of the most active in Punjab, consistently delivering strong campus placements. The cell provides 400+ hours of soft skills training, aptitude coaching, mock interviews and technical preparation. The highest package recorded stands at <strong style="color:var(--white);">₹45 LPA</strong>, with average packages for CSE at <strong style="color:var(--white);">₹6.5 LPA</strong>. Over 500 companies visit the campus every year across IT, consulting, pharma, banking and manufacturing sectors.
+    </p>
+    <div style="font-size:0.78rem;font-weight:600;color:var(--white);margin-bottom:10px;">Top Recruiters</div>
+    <div class="recruiter-list">
+      <span class="recruiter-tag">Amazon</span>
+      <span class="recruiter-tag">Microsoft</span>
+      <span class="recruiter-tag">Infosys</span>
+      <span class="recruiter-tag">TCS</span>
+      <span class="recruiter-tag">Wipro</span>
+      <span class="recruiter-tag">Cognizant</span>
+      <span class="recruiter-tag">HCL Technologies</span>
+      <span class="recruiter-tag">Capgemini</span>
+      <span class="recruiter-tag">Tech Mahindra</span>
+      <span class="recruiter-tag">IBM</span>
+      <span class="recruiter-tag">Accenture</span>
+      <span class="recruiter-tag">Deloitte</span>
+      <span class="recruiter-tag">Byjus / Ed-Tech</span>
+      <span class="recruiter-tag">ICICI Bank</span>
+      <span class="recruiter-tag">HDFC Bank</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 6: CAMPUS LIFE ════════ -->
+<div class="tab-panel" id="panel-6">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Campus Life</div>
+    <div style="margin-bottom:20px;">
+      <div class="phd-cat-label" style="font-size:0.78rem;margin-bottom:12px;">🎉 Annual Fests &amp; Events</div>
+      <div class="event-list">
+        <div class="event-item"><span class="event-icon">🎭</span><div><strong>Udbhav</strong> — Annual Cultural Fest with music, dance, drama and celebrity performances</div></div>
+        <div class="event-item"><span class="event-icon">💡</span><div><strong>TechFest / Hackathons</strong> — Innovation competitions, coding marathons and project expos</div></div>
+        <div class="event-item"><span class="event-icon">🏆</span><div><strong>Sports Week</strong> — Inter-college and intra-university sports tournaments</div></div>
+        <div class="event-item"><span class="event-icon">🤝</span><div><strong>Industry Connect Events</strong> — Guest lectures, workshops and seminars by industry leaders</div></div>
+      </div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <div class="phd-cat-label" style="font-size:0.78rem;margin-bottom:12px;">🏋️ Sports Facilities</div>
+      <div class="facility-grid">
+        <div class="fac-item"><div class="fac-icon">🏏</div>Cricket</div>
+        <div class="fac-item"><div class="fac-icon">⚽</div>Football</div>
+        <div class="fac-item"><div class="fac-icon">🏀</div>Basketball</div>
+        <div class="fac-item"><div class="fac-icon">🏸</div>Badminton</div>
+        <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+        <div class="fac-item"><div class="fac-icon">🥊</div>Boxing &amp; Kabaddi</div>
+      </div>
+    </div>
+    <div>
+      <div class="phd-cat-label" style="font-size:0.78rem;margin-bottom:8px;">🎓 Student Clubs</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Coding Club</span>
+        <span class="phd-tag">AI / ML Club</span>
+        <span class="phd-tag">Robotics Club</span>
+        <span class="phd-tag">Entrepreneurship Cell</span>
+        <span class="phd-tag">Literary Society</span>
+        <span class="phd-tag">Photography Club</span>
+        <span class="phd-tag">NSS</span>
+        <span class="phd-tag">NCC</span>
+        <span class="phd-tag">Legal Aid Cell</span>
+        <span class="phd-tag">Music Club</span>
+        <span class="phd-tag">Dance Club</span>
+        <span class="phd-tag">Environment Club</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB 7: CUT-OFF ════════ -->
+<div class="tab-panel" id="panel-7">
+
+  <!-- B.Tech JEE Main Cut-Off -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>B.Tech CSE — JEE Main Score-Based Scholarship Cutoff <span class="actual-badge">✅ Indicative Data</span></div>
+    <div style="background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      📌 CGC Jhanjeri grants <strong style="color:var(--white);">merit scholarships based on JEE Main percentile</strong> for B.Tech admissions. The cutoffs below reflect minimum JEE percentile for admission and scholarship eligibility. All categories are accepted; no specific category-wise cutoffs are separately published.
+    </div>
+
+    <div class="section-divider"><span>JEE Main Scholarship Cutoff — 2025 (Approximate)</span></div>
+    <table class="cutoff-table">
+      <thead><tr><th>JEE Main Percentile</th><th>Scholarship Benefit</th><th>Competition Level</th></tr></thead>
+      <tbody>
+        <tr><td><strong>90+ Percentile</strong></td><td style="color:var(--accent-green);">100% Tuition Fee Waiver</td><td><span class="tag-high">Very High</span></td></tr>
+        <tr><td><strong>75–89 Percentile</strong></td><td style="color:var(--gold);">50% Tuition Fee Waiver</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td><strong>50–74 Percentile</strong></td><td>25% Tuition Fee Waiver</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>Any Valid JEE Score</strong></td><td style="color:var(--muted);">Standard Admission</td><td><span class="tag-low">Open</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider" style="margin-top:20px;"><span>Year-Wise Admission Trend — B.Tech CSE</span></div>
+    <table class="cutoff-table">
+      <thead><tr><th>Year</th><th>General Admission Min %</th><th>JEE 90%ile+ Admissions</th><th>Avg Fee After Scholarship</th></tr></thead>
+      <tbody>
+        <tr><td>2025</td><td>60% in 12th PCM</td><td>Growing trend</td><td>₹40K–80K/yr (scholarship)</td></tr>
+        <tr><td>2024</td><td>60% in 12th PCM</td><td>~15–20% of intake</td><td>₹50K–1L/yr</td></tr>
+        <tr><td>2023</td><td>55% in 12th PCM</td><td>~12–15% of intake</td><td>₹60K–1.2L/yr</td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ CGC Jhanjeri does not restrict admission by JEE Main cutoff — any valid JEE score is accepted. Higher percentiles qualify for higher scholarships. No separate SC/ST/OBC cutoffs published; reservation benefits apply on fee waivers. Verify at <strong>cgc.ac.in/admission</strong>.</div>
+  </div>
+
+  <!-- CGCET Cut-Off -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>CGCET (CGC Common Entrance Test) — B.Tech Cutoff <span class="actual-badge">✅ Indicative Data</span></div>
+    <div class="section-divider"><span>Expected CGCET 2026 Closing Scores — B.Tech Branches</span></div>
+    <table class="cutoff-table">
+      <thead><tr><th>Branch</th><th>Expected CGCET Closing Score</th><th>Competition</th></tr></thead>
+      <tbody>
+        <tr><td>B.Tech CSE (Core)</td><td>70–85 out of 100</td><td><span class="tag-high">Very High</span></td></tr>
+        <tr><td>B.Tech CSE – AI/ML</td><td>72–88 out of 100</td><td><span class="tag-high">Very High</span></td></tr>
+        <tr><td>B.Tech CSE – Data Science</td><td>70–85 out of 100</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>B.Tech CSE – Cyber Security</td><td>68–82 out of 100</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>B.Tech ECE</td><td>55–72 out of 100</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td>B.Tech Mechanical</td><td>45–65 out of 100</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>B.Tech Civil Engineering</td><td>40–60 out of 100</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>B.Tech Electrical Engineering</td><td>45–62 out of 100</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>B.Tech Robotics &amp; Automation</td><td>60–78 out of 100</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>B.Tech Aerospace Engineering</td><td>55–72 out of 100</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ CGCET is MCQ-based, 100 marks, no negative marking. Scores above are estimates based on demand trends. CSE and AI/ML branches fill fastest. Multiple rounds of counselling are conducted. Confirm at <strong>cgc.ac.in</strong>.</div>
+  </div>
+
+  <!-- PG Cutoff -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>PG Programs — Admission Criteria <span class="actual-badge">✅ Indicative Data</span></div>
+    <table class="cutoff-table">
+      <thead><tr><th>Course</th><th>Min Graduation % (General)</th><th>Preferred Entrance</th><th>Competition</th></tr></thead>
+      <tbody>
+        <tr><td>MBA (All Specialisations)</td><td>50%</td><td>CAT / MAT / CGCET</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>M.Tech CSE / AI-ML</td><td>55% in B.Tech</td><td>GATE Preferred</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td>M.Tech ECE / Civil / Mech</td><td>55% in B.Tech</td><td>GATE / CGCET</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>MCA</td><td>50% in BCA/B.Sc CS</td><td>Merit / CGCET</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>M.Pharm</td><td>55% in B.Pharm</td><td>GPAT / Merit</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td>M.Sc Agriculture</td><td>50% in B.Sc Agri</td><td>Merit / CGCET</td><td><span class="tag-low">Moderate</span></td></tr>
+        <tr><td>M.Sc (Science streams)</td><td>50% in relevant B.Sc</td><td>Merit</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td>LL.M</td><td>50% in LL.B/BA LL.B</td><td>Merit</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ SC/ST/OBC candidates typically get 5% relaxation in eligibility criteria. All percentages are general guidelines. CAT score preferred for MBA but not mandatory — CGCET score accepted. Verify at <strong>cgc.ac.in/admission</strong>.</div>
+  </div>
+
+  <!-- Law Cutoff -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>BA LL.B / BBA LL.B — CLAT / CGCET Cutoff <span class="actual-badge">✅ Indicative Data</span></div>
+    <table class="cutoff-table">
+      <thead><tr><th>Route</th><th>Expected Closing Score</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>CLAT Score</td><td>55–75 out of 120</td><td>Moderate competition; CLAT score fetches scholarships</td></tr>
+        <tr><td>CGCET Score</td><td>60–78 out of 100</td><td>Direct admission via CGCET for law programmes</td></tr>
+        <tr><td>12th % Minimum</td><td>45% (any stream)</td><td>Min. 45% in 10+2 regardless of route</td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ BA LL.B and BBA LL.B are approved by Bar Council of India (BCI). Multiple rounds of counselling. CLAT score holders may receive additional merit scholarships. Check <strong>cgc.ac.in</strong> for current session details.</div>
+  </div>
+
+</div><!-- /panel-7 -->
+
+</div><!-- /left column -->
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<div>
+  <div class="sidebar-card">
+    <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+    <button class="cta-btn cta-outline" onclick="window.open('https://www.cgc.ac.in/','_blank')">🌐 Visit Official Website</button>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Key Facts</div>
+    <div class="key-val"><span class="k">Established</span><span class="v">2012</span></div>
+    <div class="key-val"><span class="k">Type</span><span class="v">Private State University</span></div>
+    <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">A+</span></div>
+    <div class="key-val"><span class="k">Campus Area</span><span class="v">100+ Acres, Jhanjeri</span></div>
+    <div class="key-val"><span class="k">Location</span><span class="v">Jhanjeri, Mohali, Punjab</span></div>
+    <div class="key-val"><span class="k">Approvals</span><span class="v">UGC · AICTE · BCI · PCI · NCTE</span></div>
+    <div class="key-val"><span class="k">Highest Package</span><span class="v v-gold">₹45 LPA</span></div>
+    <div class="key-val"><span class="k">Avg. CSE Package</span><span class="v v-gold">₹6.5 LPA</span></div>
+    <div class="key-val"><span class="k">Recruiting Companies</span><span class="v">500+</span></div>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Entrance Exams</div>
+    <table class="exam-table">
+      <tr><th>Course</th><th>Exam</th></tr>
+      <tr><td>B.Tech (All Branches)</td><td><span class="tag tag-exam">JEE / CGCET</span></td></tr>
+      <tr><td>BA LL.B / BBA LL.B</td><td><span class="tag tag-exam">CLAT / CGCET</span></td></tr>
+      <tr><td>BBA / BCA / B.Com</td><td><span class="tag tag-exam">Merit / CGCET</span></td></tr>
+      <tr><td>B.Ed</td><td><span class="tag tag-exam">Punjab B.Ed CET</span></td></tr>
+      <tr><td>MBA</td><td><span class="tag tag-exam">CAT / MAT / CGCET</span></td></tr>
+      <tr><td>M.Tech</td><td><span class="tag tag-exam">GATE / CGCET</span></td></tr>
+      <tr><td>M.Pharm</td><td><span class="tag tag-exam">GPAT / Merit</span></td></tr>
+      <tr><td>PhD</td><td><span class="tag tag-exam">Entrance + Interview</span></td></tr>
+    </table>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">JEE Scholarship Cutoffs</div>
+    <div class="key-val"><span class="k">90%ile+</span><span class="v" style="color:var(--accent-green);">100% Fee Waiver</span></div>
+    <div class="key-val"><span class="k">75–89%ile</span><span class="v v-gold">50% Fee Waiver</span></div>
+    <div class="key-val"><span class="k">50–74%ile</span><span class="v">25% Fee Waiver</span></div>
+    <div class="key-val"><span class="k">Below 50%ile</span><span class="v" style="color:var(--muted);">No Scholarship</span></div>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:8px;line-height:1.5;">Verify exact scholarship values at <strong style="color:var(--white);">cgc.ac.in/admission</strong></div>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Approx. Annual Fees</div>
+    <div class="key-val"><span class="k">B.Tech CSE / AI-ML</span><span class="v v-gold">₹1.6–2.1L/yr</span></div>
+    <div class="key-val"><span class="k">B.Tech (Other Branches)</span><span class="v v-gold">₹1.4–1.8L/yr</span></div>
+    <div class="key-val"><span class="k">BBA / BCA</span><span class="v v-gold">₹80K–1.4L/yr</span></div>
+    <div class="key-val"><span class="k">B.Pharm</span><span class="v v-gold">₹1.2–1.8L/yr</span></div>
+    <div class="key-val"><span class="k">BA/BBA LL.B</span><span class="v v-gold">₹1–1.8L/yr</span></div>
+    <div class="key-val"><span class="k">MBA</span><span class="v v-gold">₹1.5–3L/yr</span></div>
+    <div class="key-val"><span class="k">M.Tech</span><span class="v v-gold">₹1–2L/yr</span></div>
+    <div class="key-val"><span class="k">Hostel Non-AC (Annual)</span><span class="v v-gold">₹80K–1L</span></div>
+    <div class="key-val"><span class="k">Hostel AC (Annual)</span><span class="v v-gold">₹1.2L–1.5L</span></div>
+  </div>
+
+  <div class="sidebar-card">
+    <div class="sidebar-title">Placement Snapshot</div>
+    <div class="key-val"><span class="k">Highest Package</span><span class="v" style="color:var(--accent-green);">₹45 LPA</span></div>
+    <div class="key-val"><span class="k">Avg Package (CSE)</span><span class="v v-gold">₹6.5 LPA</span></div>
+    <div class="key-val"><span class="k">Recruiting Companies</span><span class="v">500+</span></div>
+    <div class="key-val"><span class="k">Top Recruiter</span><span class="v">Amazon · Microsoft · TCS</span></div>
+  </div>
+</div><!-- /sidebar -->
+
+</div><!-- /content-wrap -->
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<script>
+  let shortlisted=false;
+  function toggleShortlist(){
+    shortlisted=!shortlisted;
+    const badge=document.getElementById('shortlistBadge');
+    const navBtn=document.getElementById('navShortlistBtn');
+    const sideBtn=document.getElementById('sidebarShortlistBtn');
+    badge.textContent=shortlisted?'1':'0';
+    badge.classList.add('pop');
+    setTimeout(()=>badge.classList.remove('pop'),300);
+    if(shortlisted){navBtn.classList.add('added');navBtn.innerHTML='✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';sideBtn.classList.add('added');sideBtn.textContent='✅ Shortlisted';showToast('⭐','CGC University (Jhanjeri) added to shortlist!');}
+    else{navBtn.classList.remove('added');navBtn.innerHTML='⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';sideBtn.classList.remove('added');sideBtn.textContent='⭐ Add to Shortlist';showToast('🗑️','Removed from shortlist.');}
+  }
+  function switchTab(index,el){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-'+index).classList.add('active');
+    window.scrollTo({top:document.querySelector('.tabs-bar').offsetTop-62,behavior:'smooth'});
+  }
+  function toggleStream(e){e.stopPropagation();document.getElementById('streamDropdown').classList.toggle('open');}
+  function selectStream(el,name,icon){
+    document.querySelectorAll('.stream-opt').forEach(o=>o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('streamLabel').innerHTML=name;
+    document.getElementById('streamDropdown').classList.remove('open');
+    showToast(icon,'Stream changed to '+name);
+  }
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('#streamBtn')&&!e.target.closest('#streamDropdown'))document.getElementById('streamDropdown').classList.remove('open');
+  });
+  function openLogout(){document.getElementById('logoutModal').classList.add('open');}
+  function closeLogout(){document.getElementById('logoutModal').classList.remove('open');}
+  let toastTimer;
+  function showToast(icon,msg){
+    const t=document.getElementById('toast');
+    document.getElementById('toastIcon').textContent=icon;
+    document.getElementById('toastMsg').textContent=msg;
+    t.classList.add('show');clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CBLU Bhiwani – CollegeHunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0f1535;--navy-mid:#1a2250;--navy-card:#1e2a5e;--gold:#f5a623;--gold-light:#ffc152;--white:#ffffff;--muted:#a0aec0;--accent-green:#48bb78;--card-bg:#1b2454;--border:rgba(245,166,35,0.2);--tag-bg:rgba(245,166,35,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+nav{background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Raleway',sans-serif;font-size:1.3rem;color:var(--gold);display:flex;align-items:center;gap:8px;cursor:pointer;}
+.nav-logo span{color:var(--white);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;transition:all 0.18s;}
+.btn-stream{background:var(--navy-card);color:var(--white);border:1px solid var(--border);position:relative;}
+.btn-stream:hover{background:var(--tag-bg);border-color:var(--gold);color:var(--gold);}
+.btn-shortlist{background:var(--gold);color:var(--navy);}
+.btn-shortlist:hover{background:var(--gold-light);}
+.btn-shortlist.added{background:var(--accent-green);color:var(--white);}
+.btn-logout{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.25);}
+.btn-logout:hover{border-color:#f56565;color:#f56565;}
+.badge{background:var(--navy);color:var(--gold);border-radius:50%;width:18px;height:18px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.2s;}
+.badge.pop{animation:badgePop 0.3s ease;}
+@keyframes badgePop{0%{transform:scale(1)}50%{transform:scale(1.5)}100%{transform:scale(1)}}
+.stream-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:8px;min-width:220px;display:none;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.stream-dropdown.open{display:block;animation:fadeDown 0.18s ease;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.stream-opt{padding:8px 12px;border-radius:8px;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.15s;}
+.stream-opt:hover{background:var(--tag-bg);color:var(--gold);}
+.stream-opt.active{background:var(--tag-bg);color:var(--gold);font-weight:600;}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--navy-card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:0.82rem;font-weight:500;color:var(--white);z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.hero{background:linear-gradient(135deg,#1a2462 0%,#2d3a8c 50%,#1a2462 100%);padding:40px 48px 36px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:80px;top:50%;transform:translateY(-50%);width:260px;height:260px;border-radius:50%;border:2px solid rgba(245,166,35,0.2);}
+.hero::after{content:'';position:absolute;right:110px;top:50%;transform:translateY(-50%);width:190px;height:190px;border-radius:50%;border:1px solid rgba(245,166,35,0.1);}
+.breadcrumb{font-size:0.75rem;color:var(--muted);margin-bottom:14px;}
+.breadcrumb a{color:var(--gold);text-decoration:none;cursor:pointer;}
+.uni-header{display:flex;align-items:flex-start;gap:22px;margin-bottom:22px;}
+.uni-logo{width:70px;height:70px;background:var(--white);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.uni-title h1{font-family:'Raleway',sans-serif;font-size:1.7rem;font-weight:800;line-height:1.2;margin-bottom:6px;}
+.uni-title h1 span{color:var(--gold);}
+.uni-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+.meta-chip{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 14px;font-size:0.72rem;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:default;}
+.meta-chip.clickable{cursor:pointer;transition:all 0.18s;}
+.meta-chip.clickable:hover{border-color:var(--gold);color:var(--gold);}
+.meta-chip strong{color:var(--white);}
+.hero-badges{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-badge{border-radius:10px;padding:10px 20px;display:flex;flex-direction:column;align-items:center;min-width:100px;}
+.hb-naac{background:rgba(72,187,120,0.15);border:1px solid rgba(72,187,120,0.3);}
+.hb-central{background:rgba(245,166,35,0.12);border:1px solid var(--border);}
+.hb-campus{background:rgba(99,179,237,0.12);border:1px solid rgba(99,179,237,0.3);}
+.hero-badge .label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.hero-badge .value{font-size:1rem;font-weight:700;margin-top:2px;}
+.hb-naac .value{color:var(--accent-green);}
+.hb-central .value{color:var(--gold);}
+.hb-campus .value{color:#63b3ed;}
+.tabs-bar{background:var(--navy-mid);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;padding:0 48px;gap:4px;overflow-x:auto;scrollbar-width:none;}
+.tabs-bar::-webkit-scrollbar{display:none;}
+.tab{padding:14px 20px;font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all 0.2s;user-select:none;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab:hover:not(.active){color:var(--white);}
+.content-wrap{max-width:1200px;margin:0 auto;padding:36px 32px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:24px;margin-bottom:22px;}
+.card-title{font-size:0.95rem;font-weight:700;color:var(--white);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.card-title .dot{width:4px;height:18px;background:var(--gold);border-radius:2px;}
+.course-block{margin-bottom:26px;}
+.course-block:last-child{margin-bottom:0;}
+.course-type-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:var(--tag-bg);border:1px solid var(--border);border-radius:6px;padding:3px 10px;display:inline-block;margin-bottom:14px;}
+.course-row{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:11px 14px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);margin-bottom:8px;transition:background 0.2s;}
+.course-row:hover{background:rgba(245,166,35,0.06);border-color:var(--border);}
+.course-name{font-size:0.82rem;font-weight:500;}
+.course-sub{font-size:0.71rem;color:var(--muted);margin-top:2px;}
+.course-meta{font-size:0.72rem;color:var(--muted);text-align:center;}
+.course-meta strong{display:block;color:var(--white);font-size:0.8rem;}
+.tag{border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-exam{background:rgba(99,179,237,0.15);color:#63b3ed;border:1px solid rgba(99,179,237,0.25);}
+.tag-fees{background:rgba(72,187,120,0.12);color:#68d391;border:1px solid rgba(72,187,120,0.25);}
+.tag-high{background:rgba(245,101,101,0.18);color:#fc8181;border:1px solid rgba(245,101,101,0.3);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-mod{background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.tag-low{background:rgba(72,187,120,0.15);color:#68d391;border:1px solid rgba(72,187,120,0.3);border-radius:6px;padding:3px 9px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.info-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 14px;font-size:0.78rem;}
+.info-chip .lbl{color:var(--muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.info-chip .val{font-weight:600;color:var(--white);}
+.phd-category{margin-bottom:14px;}
+.phd-cat-label{font-size:0.72rem;font-weight:600;color:var(--gold);margin-bottom:8px;}
+.phd-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.phd-tag{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 10px;font-size:0.72rem;color:var(--muted);}
+.facility-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.fac-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;text-align:center;font-size:0.78rem;transition:all 0.2s;cursor:default;}
+.fac-item:hover{border-color:var(--border);background:var(--tag-bg);}
+.fac-icon{font-size:1.4rem;margin-bottom:5px;}
+.hostel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hostel-item{display:flex;align-items:center;gap:8px;font-size:0.8rem;}
+.hostel-icon{font-size:1.1rem;}
+.sidebar-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:22px;margin-bottom:20px;}
+.sidebar-title{font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.05em;}
+.key-val{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem;}
+.key-val:last-child{border-bottom:none;}
+.key-val .k{color:var(--muted);}
+.key-val .v{font-weight:600;color:var(--white);text-align:right;max-width:58%;}
+.v-gold{color:var(--gold)!important;}
+.exam-table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+.exam-table th{color:var(--muted);text-align:left;padding:6px 0;font-weight:500;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;}
+.exam-table td{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;}
+.exam-table tr:last-child td{border-bottom:none;}
+.cta-btn{display:block;width:100%;padding:12px;border-radius:10px;border:none;font-size:0.85rem;font-weight:700;cursor:pointer;margin-bottom:10px;transition:all 0.2s;font-family:'Poppins',sans-serif;}
+.cta-primary{background:var(--gold);color:var(--navy);}
+.cta-primary:hover{background:var(--gold-light);}
+.cta-primary.added{background:var(--accent-green);color:var(--white);}
+.cta-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2);}
+.cta-outline:hover{border-color:var(--gold);color:var(--gold);}
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border);border-radius:2px;}
+.tl-item{position:relative;margin-bottom:20px;}
+.tl-item::before{content:'';position:absolute;left:-24px;top:4px;width:10px;height:10px;background:var(--gold);border-radius:50%;border:2px solid var(--navy-card);}
+.tl-title{font-size:0.82rem;font-weight:600;color:var(--white);margin-bottom:3px;}
+.tl-desc{font-size:0.75rem;color:var(--muted);}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.stat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;text-align:center;}
+.stat-box .s-val{font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.stat-box .s-lbl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.campus-section{margin-bottom:22px;}
+.campus-section-title{font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em;}
+.event-list{display:flex;flex-direction:column;gap:8px;}
+.event-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;font-size:0.8rem;}
+.event-icon{font-size:1.2rem;flex-shrink:0;}
+.recruiter-list{display:flex;flex-wrap:wrap;gap:10px;}
+.recruiter-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 16px;font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:default;}
+.recruiter-tag:hover{background:var(--tag-bg);border-color:var(--border);color:var(--gold);}
+.cutoff-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:4px;}
+.cutoff-table thead th{background:rgba(245,166,35,0.1);color:var(--gold);font-weight:600;padding:10px 12px;text-align:left;border:1px solid rgba(255,255,255,0.09);font-size:0.71rem;text-transform:uppercase;letter-spacing:0.04em;}
+.cutoff-table tbody tr{transition:background 0.15s;}
+.cutoff-table tbody tr:hover{background:rgba(255,255,255,0.03);}
+.cutoff-table tbody td{padding:10px 12px;border:1px solid rgba(255,255,255,0.07);color:var(--white);vertical-align:middle;}
+.cutoff-table tbody tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+.cutoff-note{margin-top:14px;background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:10px;padding:12px 14px;font-size:0.76rem;color:var(--muted);line-height:1.6;}
+.cutoff-note strong{color:var(--white);}
+.section-divider{display:flex;align-items:center;gap:10px;margin:22px 0 16px;}
+.section-divider span{font-size:0.71rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.07em;white-space:nowrap;}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.actual-badge{display:inline-block;background:rgba(72,187,120,0.12);border:1px solid rgba(72,187,120,0.3);border-radius:6px;padding:2px 8px;font-size:0.65rem;font-weight:700;color:#68d391;margin-left:6px;}
+.schol-tag{background:rgba(99,179,237,0.1);border:1px solid rgba(99,179,237,0.2);border-radius:6px;padding:4px 10px;font-size:0.72rem;color:#63b3ed;display:inline-block;margin:3px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--navy-card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:360px;width:90%;text-align:center;animation:fadeDown 0.2s ease;}
+.modal h3{font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+.modal p{font-size:0.82rem;color:var(--muted);margin-bottom:22px;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btns button{flex:1;padding:10px;border-radius:10px;border:none;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;}
+.modal-cancel{background:rgba(255,255,255,0.08);color:var(--white);}
+.modal-confirm{background:#f56565;color:var(--white);}
+@media(max-width:768px){.content-wrap{grid-template-columns:1fr;}.hero{padding:24px 20px;}.tabs-bar{padding:0 16px;}.facility-grid{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:1fr 1fr;}.stat-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo" onclick="showToast('🏠','Navigating home…')">🎓 <span>College</span>Hunt</div>
+  <div style="font-size:0.78rem;color:var(--muted)">Welcome</div>
+  <div class="nav-right">
+    <div style="position:relative;">
+      <button class="nav-btn btn-stream" id="streamBtn" onclick="toggleStream(event)">
+        🔬 <span id="streamLabel">Science</span> ▾
+      </button>
+      <div class="stream-dropdown" id="streamDropdown">
+        <div class="stream-opt" onclick="selectStream(this,'Engineering &amp; Technology','⚙️')">⚙️ Engineering &amp; Technology</div>
+        <div class="stream-opt active" onclick="selectStream(this,'Science','🔬')">🔬 Science</div>
+        <div class="stream-opt" onclick="selectStream(this,'Commerce','📊')">📊 Commerce</div>
+        <div class="stream-opt" onclick="selectStream(this,'Arts &amp; Humanities','📖')">📖 Arts &amp; Humanities</div>
+        <div class="stream-opt" onclick="selectStream(this,'Law','⚖️')">⚖️ Law</div>
+        <div class="stream-opt" onclick="selectStream(this,'Management','💼')">💼 Management</div>
+      </div>
+    </div>
+    <button class="nav-btn btn-shortlist" id="navShortlistBtn" onclick="toggleShortlist()">⭐ Shortlist <span class="badge" id="shortlistBadge">0</span></button>
+    <button class="nav-btn btn-logout" onclick="openLogout()">Logout</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb"><a onclick="showToast('🏠','Home')">Home</a> › <a onclick="showToast('🏛️','Universities list')">Universities</a> › CBLU Bhiwani</div>
+  <div class="uni-header">
+    <div class="uni-logo">🏛️</div>
+    <div class="uni-title">
+      <h1>Chaudhary Bansi Lal <span>University</span></h1>
+      <div class="uni-meta">
+        <span class="meta-chip"><strong>Bhiwani, Haryana</strong></span>
+        <span class="meta-chip">🏛️ <strong>State University</strong></span>
+        <span class="meta-chip">📅 Est. <strong>2014</strong></span>
+        <span class="meta-chip">🎓 <strong>50,000+ Students</strong></span>
+        <span class="meta-chip clickable" onclick="window.open('https://www.cblu.ac.in/','_blank')">🌐 <strong>cblu.ac.in ↗</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hero-badge hb-naac"><span class="label">NAAC Grade</span><span class="value">B</span></div>
+    <div class="hero-badge hb-central"><span class="label">Affiliated Colleges</span><span class="value">66</span></div>
+    <div class="hero-badge hb-campus"><span class="label">Teaching Depts</span><span class="value">22</span></div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tab active" onclick="switchTab(0,this)">Overview</div>
+  <div class="tab" onclick="switchTab(1,this)">UG Courses</div>
+  <div class="tab" onclick="switchTab(2,this)">PG Courses</div>
+  <div class="tab" onclick="switchTab(3,this)">PhD</div>
+  <div class="tab" onclick="switchTab(4,this)">Admissions</div>
+  <div class="tab" onclick="switchTab(5,this)">Placements</div>
+  <div class="tab" onclick="switchTab(6,this)">Campus Life</div>
+  <div class="tab" onclick="switchTab(7,this)">Cut-Off</div>
+</div>
+
+<div class="content-wrap">
+<div>
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-panel active" id="panel-0">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Basic Information</div>
+    <div class="grid-3">
+      <div class="info-chip"><div class="lbl">Established</div><div class="val">2014 (Haryana Legislature Act 25/2014)</div></div>
+      <div class="info-chip"><div class="lbl">Type</div><div class="val">State Public University</div></div>
+      <div class="info-chip"><div class="lbl">Location</div><div class="val">Opp. Education Board, Bhiwani, Haryana – 127021</div></div>
+      <div class="info-chip"><div class="lbl">Recognition</div><div class="val">UGC under 2(f) &amp; 12B · AICTE · PCI approved</div></div>
+      <div class="info-chip"><div class="lbl">Accreditation</div><div class="val">NAAC 'B' Grade</div></div>
+      <div class="info-chip"><div class="lbl">Jurisdiction</div><div class="val">Bhiwani &amp; Charkhi Dadri districts</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>About CBLU</div>
+    <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+      Chaudhary Bansi Lal University (CBLU), Bhiwani is a <strong style="color:var(--white);">state public university</strong> established in 2014 by the Haryana State Government, named after Bansi Lal — a former Chief Minister of Haryana. Recognised by <strong style="color:var(--white);">UGC under 2(f) &amp; 12B</strong> and approved by AICTE and PCI, the university serves over <strong style="color:var(--white);">50,000 students</strong> across <strong style="color:var(--white);">22 teaching departments</strong> and <strong style="color:var(--white);">66 affiliated colleges</strong> spread across Bhiwani and Charkhi Dadri. CBLU offers <strong style="color:var(--white);">53 UG and PG programmes</strong> in Physical Sciences, Life Sciences, Pharmacy, Humanities, Social Sciences, Management, Commerce, Law, Education and Sports Sciences. The university has <strong style="color:var(--white);">18 MOUs with industry partners</strong> and awards scholarships worth ₹2 crore annually.
+    </p>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Faculties &amp; Schools</div>
+    <div class="phd-tags">
+      <span class="phd-tag">Faculty of Physical Sciences</span>
+      <span class="phd-tag">Faculty of Life Sciences</span>
+      <span class="phd-tag">Faculty of Humanities</span>
+      <span class="phd-tag">Faculty of Commerce &amp; Management</span>
+      <span class="phd-tag">Faculty of Sports Sciences</span>
+      <span class="phd-tag">Faculty of Social Sciences</span>
+      <span class="phd-tag">Faculty of Law</span>
+      <span class="phd-tag">Faculty of Education</span>
+      <span class="phd-tag">Faculty of Pharmacy</span>
+      <span class="phd-tag">Faculty of Engineering &amp; Technology</span>
+      <span class="phd-tag">Faculty of Health Sciences</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Campus Facilities</div>
+    <div class="facility-grid">
+      <div class="fac-item"><div class="fac-icon">📚</div>Central Library</div>
+      <div class="fac-item"><div class="fac-icon">🔬</div>Research Labs</div>
+      <div class="fac-item"><div class="fac-icon">🖥️</div>Computer Labs</div>
+      <div class="fac-item"><div class="fac-icon">🏟️</div>Sports Complex</div>
+      <div class="fac-item"><div class="fac-icon">🎭</div>Auditorium</div>
+      <div class="fac-item"><div class="fac-icon">🏥</div>Medical Centre</div>
+      <div class="fac-item"><div class="fac-icon">🍽️</div>Cafeteria</div>
+      <div class="fac-item"><div class="fac-icon">📶</div>Wi-Fi Campus</div>
+      <div class="fac-item"><div class="fac-icon">🚌</div>Transport</div>
+    </div>
+    <div class="card-title" style="margin-top:22px;"><span class="dot"></span>Hostel Facilities</div>
+    <div class="hostel-grid">
+      <div class="hostel-item"><span class="hostel-icon">🏠</span> Boys' Hostel</div>
+      <div class="hostel-item"><span class="hostel-icon">🏡</span> Girls' Hostel</div>
+      <div class="hostel-item"><span class="hostel-icon">📶</span> Wi-Fi Enabled</div>
+      <div class="hostel-item"><span class="hostel-icon">🍽️</span> Mess / Canteen</div>
+      <div class="hostel-item"><span class="hostel-icon">🏋️</span> Gymnasium</div>
+      <div class="hostel-item"><span class="hostel-icon">🔒</span> 24×7 Security</div>
+      <div class="hostel-item"><span class="hostel-icon">🩺</span> Medical Support</div>
+      <div class="hostel-item"><span class="hostel-icon">📖</span> Study Rooms</div>
+    </div>
+    <div style="margin-top:12px;background:rgba(72,187,120,0.08);border:1px solid rgba(72,187,120,0.2);border-radius:8px;padding:10px 14px;font-size:0.78rem;">
+      <span style="color:var(--accent-green);font-weight:600;">Hostel Fees (Yearly):</span>
+      <span style="color:var(--muted);"> ₹25,000 – ₹40,000 per year (inclusive of mess) · Basic amenities: study tables, beds, almirahs, fans</span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: UG COURSES -->
+<div class="tab-panel" id="panel-1">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Undergraduate (UG) Courses</div>
+    <div style="background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:10px 14px;font-size:0.76rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+      ℹ️ <strong style="color:var(--white);">Note:</strong> CBLU is primarily a PG &amp; research university. UG courses are mainly offered through affiliated colleges. The following UG programmes are directly offered or approved by CBLU.
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💊 Pharmacy · 4 Years · Merit</span>
+      <div class="course-row">
+        <div><div class="course-name">B.Pharma (Bachelor of Pharmacy)</div><div class="course-sub">10+2 with PCB or PCM · Min. 45% · PCI approved</div></div>
+        <div class="course-meta"><strong>Merit</strong>Admission</div>
+        <div class="course-meta"><strong>4 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹47,500–1.6L total</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">🏥 Health Sciences · 3 Years · Merit / KU CET</span>
+      <div class="course-row">
+        <div><div class="course-name">BMLT (Bachelor of Medical Lab Technology)</div><div class="course-sub">10+2 with PCB · Min. 50% · 30 seats · ₹1.62 Lakh total</div></div>
+        <div class="course-meta"><strong>Merit</strong>Admission</div>
+        <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹1.62 Lakh total</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">📖 Education · 2 Years · HARYANA B.Ed CET</span>
+      <div class="course-row">
+        <div><div class="course-name">B.Ed (Bachelor of Education)</div><div class="course-sub">Graduation with min. 50% · NCTE approved · Haryana B.Ed CET</div></div>
+        <div class="course-meta"><strong>B.Ed CET</strong>Entrance</div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <span class="tag tag-exam">Haryana CET</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💼 Management &amp; Commerce · 3 Years · Merit</span>
+      <div class="course-row">
+        <div><div class="course-name">BBA (Bachelor of Business Administration)</div><div class="course-sub">10+2 any stream · Min. 45% · Via affiliated colleges</div></div>
+        <div class="course-meta"><strong>Merit</strong>Admission</div>
+        <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">₹20,670 total (govt.)</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">BCA (Bachelor of Computer Applications)</div><div class="course-sub">10+2 with Maths · Min. 45% · Via affiliated colleges</div></div>
+        <div class="course-meta"><strong>Merit</strong>Admission</div>
+        <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">Affordable</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">B.Com (Bachelor of Commerce)</div><div class="course-sub">10+2 with Commerce/Any · Min. 45%</div></div>
+        <div class="course-meta"><strong>Merit</strong>Admission</div>
+        <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">Affordable</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">⚖️ Law · 5 Years · Merit / CLAT</span>
+      <div class="course-row">
+        <div><div class="course-name">BA LLB (Hons.) – Integrated Law</div><div class="course-sub">10+2 any stream · Min. 45% · BCI approved at affiliated law colleges</div></div>
+        <div class="course-meta"><strong>Merit / CLAT</strong>Admission</div>
+        <div class="course-meta"><strong>5 Yrs</strong>Duration</div>
+        <span class="tag tag-exam">Law Colleges</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">🔬 Science &amp; Arts · 3 Years · Merit (DHE Haryana)</span>
+      <div class="course-row">
+        <div><div class="course-name">B.Sc. (Various Streams) / BA / B.A. LLB</div><div class="course-sub">10+2 · Min. 45% · Via DHE Haryana UG Admission Portal (admissions.highereduhry.ac.in)</div></div>
+        <div class="course-meta"><strong>DHE Haryana</strong>Portal</div>
+        <div class="course-meta"><strong>3 Yrs</strong>Duration</div>
+        <span class="tag tag-fees">Very Affordable</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: PG COURSES -->
+<div class="tab-panel" id="panel-2">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Postgraduate (PG) Courses — 28 PG Programmes via KU CET / MDU CET</div>
+
+    <div class="course-block">
+      <span class="course-type-label">🔬 M.Sc. · 2 Years · KU CET · ₹20,670–61,000 total</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">M.Sc. Physics</span><span class="phd-tag">M.Sc. Chemistry</span>
+        <span class="phd-tag">M.Sc. Mathematics</span><span class="phd-tag">M.Sc. Statistics</span>
+        <span class="phd-tag">M.Sc. Biotechnology</span><span class="phd-tag">M.Sc. Microbiology</span>
+        <span class="phd-tag">M.Sc. Biochemistry</span><span class="phd-tag">M.Sc. Zoology</span>
+        <span class="phd-tag">M.Sc. Botany</span><span class="phd-tag">M.Sc. Environmental Science</span>
+        <span class="phd-tag">M.Sc. Geography</span><span class="phd-tag">M.Sc. Food Science &amp; Technology</span>
+      </div>
+      <div style="font-size:0.73rem;color:var(--muted);">Eligibility: B.Sc. in relevant discipline · Min. 50% · Admission via Kurukshetra University Common Entrance Test (KU CET)</div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">📚 M.A. · 2 Years · KU CET · ₹12,000–24,600 total</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">M.A. English</span><span class="phd-tag">M.A. Hindi</span>
+        <span class="phd-tag">M.A. History</span><span class="phd-tag">M.A. Political Science</span>
+        <span class="phd-tag">M.A. Psychology</span><span class="phd-tag">M.A. Sociology</span>
+        <span class="phd-tag">M.A. Economics</span><span class="phd-tag">M.A. Public Administration</span>
+        <span class="phd-tag">M.A. Social Work (MSW)</span>
+      </div>
+      <div style="font-size:0.73rem;color:var(--muted);">Eligibility: Graduation in relevant subject · Min. 45–50% · KU CET or MDU CET</div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💼 Management &amp; Commerce · KU CET / CAT / MAT</span>
+      <div class="course-row">
+        <div><div class="course-name">MBA (Master of Business Administration)</div><div class="course-sub">Any graduation · Min. 50% · KU CET / CAT / MAT · ₹60,000–80,000 (2 yrs total)</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong>₹77,700</strong>Total Fee</div>
+        <span class="tag tag-exam">KU CET / CAT</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">M.Com (Master of Commerce)</div><div class="course-sub">B.Com / BBA · Min. 45% · KU CET</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong>~₹24K</strong>Total Fee</div>
+        <span class="tag tag-exam">KU CET</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">💊 Pharmacy · KU CET / GPAT</span>
+      <div class="course-row">
+        <div><div class="course-name">M.Pharm (Master of Pharmacy)</div><div class="course-sub">B.Pharma · Min. 55% · GPAT preferred · PCI approved</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong>Duration</div>
+        <div class="course-meta"><strong></strong></div>
+        <span class="tag tag-exam">GPAT / KU CET</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">🎓 Education &amp; Sports · KU CET</span>
+      <div class="course-row">
+        <div><div class="course-name">M.Ed (Master of Education)</div><div class="course-sub">B.Ed · Min. 55% · NCTE approved</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong></div><div class="course-meta"></div>
+        <span class="tag tag-exam">KU CET</span>
+      </div>
+      <div class="course-row">
+        <div><div class="course-name">M.P.Ed (Master of Physical Education)</div><div class="course-sub">B.P.Ed · Min. 50%</div></div>
+        <div class="course-meta"><strong>2 Yrs</strong></div><div class="course-meta"></div>
+        <span class="tag tag-exam">KU CET</span>
+      </div>
+    </div>
+
+    <div class="course-block">
+      <span class="course-type-label">📜 PG Diploma &amp; Certificate Programmes</span>
+      <div class="phd-tags" style="margin-bottom:8px;">
+        <span class="phd-tag">PGDCA (PG Diploma in Computer Applications)</span>
+        <span class="phd-tag">PG Diploma in Intellectual Property Rights</span>
+        <span class="phd-tag">PG Diploma in Travel &amp; Tourism Management</span>
+        <span class="phd-tag">Adv. PG Diploma in Guidance &amp; Counselling (APGDGC)</span>
+      </div>
+      <div style="font-size:0.73rem;color:var(--muted);">Duration: 1 Year · Graduation in any discipline · Merit-based admission · Apply at cblu.ac.in</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: PhD -->
+<div class="tab-panel" id="panel-3">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>PhD Programs — 14 Disciplines</div>
+    <div class="phd-category">
+      <div class="phd-cat-label">🔬 Physical &amp; Life Sciences</div>
+      <div class="phd-tags">
+        <span class="phd-tag">PhD Physics</span><span class="phd-tag">PhD Chemistry</span>
+        <span class="phd-tag">PhD Mathematics</span><span class="phd-tag">PhD Biotechnology</span>
+        <span class="phd-tag">PhD Microbiology</span><span class="phd-tag">PhD Environmental Science</span>
+        <span class="phd-tag">PhD Pharmacy</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">📚 Humanities &amp; Social Sciences</div>
+      <div class="phd-tags">
+        <span class="phd-tag">PhD English</span><span class="phd-tag">PhD Hindi</span>
+        <span class="phd-tag">PhD History</span><span class="phd-tag">PhD Political Science</span>
+        <span class="phd-tag">PhD Sociology</span><span class="phd-tag">PhD Psychology</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">💼 Management &amp; Commerce</div>
+      <div class="phd-tags">
+        <span class="phd-tag">PhD Management</span><span class="phd-tag">PhD Commerce</span>
+        <span class="phd-tag">PhD Economics</span>
+      </div>
+    </div>
+    <div class="phd-category">
+      <div class="phd-cat-label">🎓 Education &amp; Law</div>
+      <div class="phd-tags">
+        <span class="phd-tag">PhD Education</span><span class="phd-tag">PhD Physical Education</span>
+        <span class="phd-tag">PhD Law</span>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:10px;padding:14px;">
+      <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Eligibility &amp; Admission — CBLU RAT</div>
+      <div class="key-val"><span class="k">Qualification</span><span class="v">Master's degree with min. 55% (50% for SC/ST)</span></div>
+      <div class="key-val"><span class="k">Entrance</span><span class="v">CBLU RAT (Research Aptitude Test) — 100 marks, MCQ</span></div>
+      <div class="key-val"><span class="k">RAT Structure</span><span class="v">50% Research Methodology + 50% Subject-specific</span></div>
+      <div class="key-val"><span class="k">Exemptions</span><span class="v">GATE / JRF / NET qualified — direct interview</span></div>
+      <div class="key-val"><span class="k">Also accepts</span><span class="v">GPAT (Pharmacy), GATE (Science/Tech)</span></div>
+      <div class="key-val"><span class="k">Application Deadline</span><span class="v">27 May 2026 (2026-27 session)</span></div>
+      <div class="key-val" style="border:none;"><span class="k">Total Seats</span><span class="v">~12 seats across 5 disciplines per session</span></div>
+    </div>
+    <div style="margin-top:12px;">
+      <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:10px;">Scholarships</div>
+      <span class="schol-tag">UGC-JRF ₹37,000/month</span>
+      <span class="schol-tag">CSIR-JRF ₹37,000/month</span>
+      <span class="schol-tag">Merit Scholarships</span>
+      <span class="schol-tag">SC/ST Post-Matric</span>
+      <span class="schol-tag">Single Girl Child</span>
+      <span class="schol-tag">Freedom Fighters' Stipend</span>
+      <span class="schol-tag">E-Kalyan (Haryana)</span>
+      <span class="schol-tag">OBC / EBC Schemes</span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: ADMISSIONS -->
+<div class="tab-panel" id="panel-4">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Admission Process — PG Courses (via KU CET)</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-title">Step 1 — Register for KU CET / MDU CET</div>
+        <div class="tl-desc">PG admissions to most courses at CBLU are through Kurukshetra University Common Entrance Test (KU CET) or MDU (Maharshi Dayanand University) CET. Register on the respective portal as announced annually.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-title">Step 2 — Appear in Entrance Test</div>
+        <div class="tl-desc">Appear in the KU CET / MDU CET for your chosen PG discipline. MBA additionally accepts CAT/MAT scores. M.Pharm accepts GPAT. Scores are used for merit-based allotment to CBLU.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-title">Step 3 — Apply on CBLU Admission Portal</div>
+        <div class="tl-desc">Visit cblu.ac.in and register. Fill the online application form with academic details and entrance scorecard. Pay application fee online (₹600–₹1,000 depending on course). Last date for 2026-27: 27 May 2026.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-title">Step 4 — Merit List &amp; Counselling</div>
+        <div class="tl-desc">CBLU releases category-wise merit lists based on KU CET/MDU CET scores. Multiple rounds of counselling are held. Check merit lists at cblu.ac.in regularly.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-title">Step 5 — Document Verification</div>
+        <div class="tl-desc">Bring original graduation degree/marksheets, entrance scorecard, category certificate, domicile certificate (Haryana), ID proof, and passport-size photos for in-person verification.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-title">Step 6 — Fee Payment &amp; Enrolment</div>
+        <div class="tl-desc">Pay the course fee online. M.Sc.: ₹20,670–61,000 total · MBA: ₹77,700 total · M.A.: ₹12,000–24,600 total. Confirm seat and receive student ID. Hostel allotment (₹25,000–40,000/yr) follows enrolment.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Entrance Exam Summary</div>
+    <div class="course-row"><div class="course-name">B.Sc. / BA / B.Com (UG)</div><div></div><div></div><span class="tag tag-exam">DHE Haryana Portal</span></div>
+    <div class="course-row"><div class="course-name">B.Pharma</div><div></div><div></div><span class="tag tag-exam">Merit (PCB/PCM)</span></div>
+    <div class="course-row"><div class="course-name">BMLT</div><div></div><div></div><span class="tag tag-exam">Merit / KU CET</span></div>
+    <div class="course-row"><div class="course-name">B.Ed</div><div></div><div></div><span class="tag tag-exam">Haryana B.Ed CET</span></div>
+    <div class="course-row"><div class="course-name">All PG Programs (M.Sc. / M.A. / M.Com)</div><div></div><div></div><span class="tag tag-exam">KU CET / MDU CET</span></div>
+    <div class="course-row"><div class="course-name">MBA</div><div></div><div></div><span class="tag tag-exam">KU CET / CAT / MAT</span></div>
+    <div class="course-row"><div class="course-name">M.Pharm</div><div></div><div></div><span class="tag tag-exam">GPAT / KU CET</span></div>
+    <div class="course-row"><div class="course-name">PhD</div><div></div><div></div><span class="tag tag-exam">CBLU RAT / NET / GATE</span></div>
+  </div>
+</div>
+
+<!-- TAB 5: PLACEMENTS -->
+<div class="tab-panel" id="panel-5">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Placement Overview</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="s-val" style="color:var(--gold);">18</div><div class="s-lbl">Industry MoUs</div></div>
+      <div class="stat-box"><div class="s-val" style="color:var(--accent-green);">50,000+</div><div class="s-lbl">Total Students</div></div>
+      <div class="stat-box"><div class="s-val" style="color:#63b3ed;">₹2 Cr</div><div class="s-lbl">Scholarships/yr</div></div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;font-weight:600;">Recruiting Sectors</div>
+    <div class="recruiter-list">
+      <span class="recruiter-tag">Pharma Companies</span>
+      <span class="recruiter-tag">IT &amp; Software</span>
+      <span class="recruiter-tag">Banking &amp; Finance</span>
+      <span class="recruiter-tag">Government / PSU</span>
+      <span class="recruiter-tag">Research Institutes</span>
+      <span class="recruiter-tag">NGOs &amp; Social Sector</span>
+      <span class="recruiter-tag">Education &amp; Academia</span>
+      <span class="recruiter-tag">Private Industry</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Placement Notes</div>
+    <p style="font-size:0.82rem;color:var(--muted);line-height:1.75;">
+      CBLU has a dedicated <strong style="color:var(--white);">Training &amp; Placement Cell</strong> that organises campus drives, industry visits and mock interviews for final-year students. The university's <strong style="color:var(--white);">18 MoUs with industry partners</strong> provide internship and placement opportunities. Pharmacy and Biotechnology graduates find opportunities in pharma companies and research organisations. MBA graduates enter banking, FMCG and management roles. Government job preparation (HPSC, HSSC, SSC, banking exams) is also a popular career pathway for most CBLU graduates due to its affordable, government-subsidised fee structure and state university status.
+    </p>
+  </div>
+</div>
+
+<!-- TAB 6: CAMPUS LIFE -->
+<div class="tab-panel" id="panel-6">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Campus Life</div>
+    <div class="campus-section">
+      <div class="campus-section-title">🎉 Annual Events &amp; Fests</div>
+      <div class="event-list">
+        <div class="event-item"><span class="event-icon">🎭</span><div><strong>Annual Cultural Fest</strong> — Music, dance, drama and literary events across departments</div></div>
+        <div class="event-item"><span class="event-icon">🏆</span><div><strong>Annual Sports Meet</strong> — Inter-department and inter-university competitions</div></div>
+        <div class="event-item"><span class="event-icon">🔬</span><div><strong>Science Symposium &amp; Workshops</strong> — National-level academic conferences and research seminars</div></div>
+        <div class="event-item"><span class="event-icon">📜</span><div><strong>Convocation Ceremony</strong> — Annual degree award ceremony for graduating students</div></div>
+      </div>
+    </div>
+    <div class="campus-section">
+      <div class="campus-section-title">🏋️ Sports &amp; Recreation</div>
+      <div class="facility-grid">
+        <div class="fac-item"><div class="fac-icon">🏏</div>Cricket Ground</div>
+        <div class="fac-item"><div class="fac-icon">⚽</div>Football Field</div>
+        <div class="fac-item"><div class="fac-icon">🏸</div>Badminton Court</div>
+        <div class="fac-item"><div class="fac-icon">🏐</div>Volleyball Court</div>
+        <div class="fac-item"><div class="fac-icon">🏋️</div>Gymnasium</div>
+        <div class="fac-item"><div class="fac-icon">🧘</div>Yoga Centre</div>
+      </div>
+    </div>
+    <div class="campus-section">
+      <div class="campus-section-title">🎓 Student Clubs &amp; Cells</div>
+      <div class="phd-tags">
+        <span class="phd-tag">Hobby Clubs</span><span class="phd-tag">IT Club</span>
+        <span class="phd-tag">Fine Arts Club</span><span class="phd-tag">Literary Club</span>
+        <span class="phd-tag">Media Club</span><span class="phd-tag">Photography Club</span>
+        <span class="phd-tag">Sports &amp; Fitness Club</span><span class="phd-tag">Entrepreneurship Club</span>
+        <span class="phd-tag">Outreach Club</span><span class="phd-tag">NSS</span>
+        <span class="phd-tag">NCC</span><span class="phd-tag">Women's Cell</span>
+        <span class="phd-tag">Anti-Ragging Committee</span><span class="phd-tag">RTI Cell</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: CUT-OFF -->
+<div class="tab-panel" id="panel-7">
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>M.Sc. Programmes — KU CET Closing Marks <span class="actual-badge">✅ Indicative Data</span></div>
+    <div style="background:rgba(245,166,35,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      📌 <strong style="color:var(--white);">PG Admissions at CBLU are via KU CET (Kurukshetra University Common Entrance Test) or MDU CET.</strong> Cutoffs below are approximate closing merit percentiles/marks based on available trends. Exact merit lists are released on cblu.ac.in.
+    </div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Course</th><th>Gen (Approx. Closing)</th><th>OBC / EWS</th><th>SC</th><th>Competition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>M.Sc. Biotechnology</strong></td><td>65–75%</td><td>58–68%</td><td>50–60%</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td><strong>M.Sc. Chemistry</strong></td><td>60–70%</td><td>54–64%</td><td>48–58%</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td><strong>M.Sc. Physics</strong></td><td>58–68%</td><td>52–62%</td><td>46–56%</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.Sc. Mathematics</strong></td><td>55–65%</td><td>50–60%</td><td>44–54%</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.Sc. Microbiology</strong></td><td>60–70%</td><td>55–65%</td><td>48–58%</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td><strong>M.Sc. Environmental Science</strong></td><td>50–62%</td><td>45–57%</td><td>40–52%</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.Sc. Food Science &amp; Tech</strong></td><td>55–65%</td><td>50–60%</td><td>44–54%</td><td><span class="tag-mod">Moderate</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ Cutoffs are qualifying exam aggregate percentages, not entrance exam scores. Candidates must also qualify the KU CET/MDU CET to be considered. For exact merit lists, check <strong>cblu.ac.in</strong> after results are announced.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>M.A. Programmes — KU CET Closing Marks <span class="actual-badge">✅ Indicative Data</span></div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Course</th><th>Gen (Approx. Closing)</th><th>OBC</th><th>SC</th><th>Competition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>M.A. Psychology</strong></td><td>60–72%</td><td>55–65%</td><td>48–58%</td><td><span class="tag-high">High</span></td></tr>
+        <tr><td><strong>M.A. Economics</strong></td><td>55–65%</td><td>50–60%</td><td>44–54%</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td><strong>M.A. Political Science</strong></td><td>50–62%</td><td>46–58%</td><td>40–52%</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.A. History</strong></td><td>48–60%</td><td>44–56%</td><td>38–50%</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.A. English</strong></td><td>52–63%</td><td>47–58%</td><td>42–52%</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.A. Hindi</strong></td><td>45–58%</td><td>40–53%</td><td>36–48%</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td><strong>MSW (Social Work)</strong></td><td>50–62%</td><td>45–57%</td><td>40–52%</td><td><span class="tag-mod">Moderate</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ M.A. admission is merit-based on graduation aggregate + KU CET score. Applications typically close in May–June each year. Check updated schedule at <strong>cblu.ac.in</strong>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>MBA &amp; M.Pharm — Expected Cut-Off Range</div>
+    <table class="cutoff-table">
+      <thead>
+        <tr><th>Course</th><th>Admission Basis</th><th>Gen (Expected)</th><th>Competition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>MBA</strong></td><td>KU CET / CAT / MAT</td><td>50–65 percentile (KU CET)</td><td><span class="tag-mod">Moderate–High</span></td></tr>
+        <tr><td><strong>M.Pharm</strong></td><td>GPAT / KU CET</td><td>GPAT 50+ / 55% in B.Pharm</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.Com</strong></td><td>KU CET / Merit</td><td>50–60% in B.Com</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+        <tr><td><strong>M.Ed</strong></td><td>KU CET / MDU CET</td><td>55–65% in B.Ed</td><td><span class="tag-mod">Moderate</span></td></tr>
+        <tr><td><strong>M.P.Ed</strong></td><td>KU CET</td><td>50–60% in B.P.Ed</td><td><span class="tag-low">Low–Moderate</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ MBA 1st year total fee at CBLU: ₹77,700. As a state university, CBLU's fee structure is highly affordable compared to private institutions. Verify exact cutoffs and schedule at <strong>cblu.ac.in</strong>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>PhD Admission — CBLU RAT Qualifying Criteria</div>
+    <table class="cutoff-table">
+      <thead><tr><th>Discipline</th><th>Qualifying Exam</th><th>Min. Marks in Master's</th></tr></thead>
+      <tbody>
+        <tr><td>Sciences (Physics, Chem, Biotech, Micro)</td><td>CSIR-NET / UGC-NET / GATE</td><td>55% (50% SC/ST)</td></tr>
+        <tr><td>Pharmacy</td><td>GPAT / UGC-NET</td><td>55% (50% SC/ST)</td></tr>
+        <tr><td>Humanities &amp; Social Sciences</td><td>UGC-NET</td><td>55% (50% SC/ST)</td></tr>
+        <tr><td>Management &amp; Commerce</td><td>UGC-NET / CBLU RAT</td><td>55% (50% SC/ST)</td></tr>
+        <tr><td>All Disciplines (No NET/GATE)</td><td>CBLU RAT (100 marks MCQ)</td><td>55% (50% SC/ST)</td></tr>
+      </tbody>
+    </table>
+    <div class="cutoff-note">ℹ️ Total PhD seats: ~12 per session across 5 disciplines. Application fee: ₹600–₹1,000. RAT test centres are notified by CBLU. Apply at <strong>cblu.ac.in</strong> by 27 May 2026 for 2026-27 session.</div>
+  </div>
+
+</div><!-- /panel-7 -->
+
+</div><!-- /left column -->
+
+<!-- SIDEBAR -->
+<div>
+  <div class="sidebar-card">
+    <button class="cta-btn cta-primary" id="sidebarShortlistBtn" onclick="toggleShortlist()">⭐ Add to Shortlist</button>
+    <button class="cta-btn cta-outline" onclick="window.open('https://www.cblu.ac.in/','_blank')">🌐 Visit Official Website</button>
+  </div>
+  <div class="sidebar-card">
+    <div class="sidebar-title">Key Facts</div>
+    <div class="key-val"><span class="k">Established</span><span class="v">2014</span></div>
+    <div class="key-val"><span class="k">Type</span><span class="v">State Public University</span></div>
+    <div class="key-val"><span class="k">NAAC Grade</span><span class="v v-gold">B Grade</span></div>
+    <div class="key-val"><span class="k">Recognition</span><span class="v">UGC 2(f) &amp; 12B</span></div>
+    <div class="key-val"><span class="k">Location</span><span class="v">Bhiwani, Haryana</span></div>
+    <div class="key-val"><span class="k">Teaching Depts</span><span class="v">22</span></div>
+    <div class="key-val"><span class="k">Affiliated Colleges</span><span class="v">66</span></div>
+    <div class="key-val"><span class="k">Total Students</span><span class="v">50,000+</span></div>
+    <div class="key-val"><span class="k">Industry MoUs</span><span class="v v-gold">18</span></div>
+  </div>
+  <div class="sidebar-card">
+    <div class="sidebar-title">Entrance Exams</div>
+    <table class="exam-table">
+      <tr><th>Course</th><th>Exam</th></tr>
+      <tr><td>B.Pharma / BMLT</td><td><span class="tag tag-exam">Merit</span></td></tr>
+      <tr><td>B.Ed</td><td><span class="tag tag-exam">Haryana CET</span></td></tr>
+      <tr><td>M.Sc. / M.A. / M.Com</td><td><span class="tag tag-exam">KU CET / MDU CET</span></td></tr>
+      <tr><td>MBA</td><td><span class="tag tag-exam">KU CET / CAT / MAT</span></td></tr>
+      <tr><td>M.Pharm</td><td><span class="tag tag-exam">GPAT / KU CET</span></td></tr>
+      <tr><td>PhD</td><td><span class="tag tag-exam">CBLU RAT / NET</span></td></tr>
+    </table>
+  </div>
+  <div class="sidebar-card">
+    <div class="sidebar-title">Approx. Total Fees</div>
+    <div class="key-val"><span class="k">M.Sc. (2 yrs)</span><span class="v v-gold">₹20,670–61,000</span></div>
+    <div class="key-val"><span class="k">M.A. (2 yrs)</span><span class="v v-gold">₹12,000–24,600</span></div>
+    <div class="key-val"><span class="k">MBA (2 yrs)</span><span class="v v-gold">₹77,700</span></div>
+    <div class="key-val"><span class="k">M.Com (2 yrs)</span><span class="v v-gold">~₹24,000</span></div>
+    <div class="key-val"><span class="k">B.Pharma (4 yrs)</span><span class="v v-gold">₹47,500–1.62L</span></div>
+    <div class="key-val"><span class="k">BMLT (3 yrs)</span><span class="v v-gold">₹1.62 Lakh</span></div>
+    <div class="key-val"><span class="k">PG Diploma (1 yr)</span><span class="v v-gold">₹5,960–72,300/yr</span></div>
+    <div class="key-val"><span class="k">Hostel (yearly)</span><span class="v v-gold">₹25,000–40,000</span></div>
+  </div>
+  <div class="sidebar-card">
+    <div class="sidebar-title">Placement Snapshot</div>
+    <div class="key-val"><span class="k">Top Sectors</span><span class="v" style="color:var(--accent-green);">Pharma, IT, Govt., Research</span></div>
+    <div class="key-val"><span class="k">Industry MoUs</span><span class="v">18 Partners</span></div>
+    <div class="key-val"><span class="k">Scholarship Value</span><span class="v">₹2 Crore/yr</span></div>
+    <div class="key-val"><span class="k">PhD Deadline 2026</span><span class="v">27 May 2026</span></div>
+  </div>
+</div>
+
+</div><!-- /content-wrap -->
+
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:10px;">👋</div>
+    <h3>Log out of CollegeHunt?</h3>
+    <p>Your shortlisted colleges will be saved when you log back in.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeLogout()">Cancel</button>
+      <button class="modal-confirm" onclick="showToast('👋','Logged out successfully!');closeLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<script>
+let shortlisted=false;
+function toggleShortlist(){
+  shortlisted=!shortlisted;
+  const badge=document.getElementById('shortlistBadge');
+  const navBtn=document.getElementById('navShortlistBtn');
+  const sideBtn=document.getElementById('sidebarShortlistBtn');
+  badge.textContent=shortlisted?'1':'0';
+  badge.classList.add('pop');
+  setTimeout(()=>badge.classList.remove('pop'),300);
+  if(shortlisted){navBtn.classList.add('added');navBtn.innerHTML='✅ Shortlisted <span class="badge" id="shortlistBadge">1</span>';sideBtn.classList.add('added');sideBtn.textContent='✅ Shortlisted';showToast('⭐','CBLU Bhiwani added to shortlist!');}
+  else{navBtn.classList.remove('added');navBtn.innerHTML='⭐ Shortlist <span class="badge" id="shortlistBadge">0</span>';sideBtn.classList.remove('added');sideBtn.textContent='⭐ Add to Shortlist';showToast('🗑️','Removed from shortlist.');}
+}
+function switchTab(index,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('panel-'+index).classList.add('active');window.scrollTo({top:document.querySelector('.tabs-bar').offsetTop-62,behavior:'smooth'});}
+function toggleStream(e){e.stopPropagation();document.getElementById('streamDropdown').classList.toggle('open');}
+function selectStream(el,name,icon){document.querySelectorAll('.stream-opt').forEach(o=>o.classList.remove('active'));el.classList.add('active');document.getElementById('streamLabel').innerHTML=name;document.getElementById('streamDropdown').classList.remove('open');showToast(icon,'Stream changed to '+name);}
+document.addEventListener('click',function(e){if(!e.target.closest('#streamBtn')&&!e.target.closest('#streamDropdown'))document.getElementById('streamDropdown').classList.remove('open');});
+function openLogout(){document.getElementById('logoutModal').classList.add('open');}
+function closeLogout(){document.getElementById('logoutModal').classList.remove('open');}
+let toastTimer;
+function showToast(icon,msg){const t=document.getElementById('toast');document.getElementById('toastIcon').textContent=icon;document.getElementById('toastMsg').textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+</body>
+</html>
